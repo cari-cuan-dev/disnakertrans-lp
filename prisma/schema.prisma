@@ -1,0 +1,388 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model abouts {
+  id                             BigInt    @id @default(autoincrement())
+  type                           String    @db.VarChar(255)
+  content                        String
+  created_at                     DateTime? @db.Timestamp(0)
+  updated_at                     DateTime? @db.Timestamp(0)
+  deleted_at                     DateTime? @db.Timestamp(0)
+  created_by                     BigInt?
+  updated_by                     BigInt?
+  deleted_by                     BigInt?
+  users_abouts_created_byTousers users?    @relation("abouts_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "abouts_created_by_foreign")
+  users_abouts_deleted_byTousers users?    @relation("abouts_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "abouts_deleted_by_foreign")
+  users_abouts_updated_byTousers users?    @relation("abouts_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "abouts_updated_by_foreign")
+}
+
+model blogs {
+  id                            BigInt           @id @default(autoincrement())
+  category_id                   BigInt
+  title                         String           @db.VarChar(255)
+  img_cover_path                String           @db.VarChar(255)
+  content                       String
+  tags                          Json             @db.Json
+  status                        Boolean          @default(true)
+  created_at                    DateTime?        @db.Timestamp(0)
+  updated_at                    DateTime?        @db.Timestamp(0)
+  deleted_at                    DateTime?        @db.Timestamp(0)
+  created_by                    BigInt?
+  updated_by                    BigInt?
+  deleted_by                    BigInt?
+  sort                          Int?
+  categories                    categories       @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "blogs_category_id_foreign")
+  users_blogs_created_byTousers users?           @relation("blogs_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "blogs_created_by_foreign")
+  users_blogs_deleted_byTousers users?           @relation("blogs_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "blogs_deleted_by_foreign")
+  users_blogs_updated_byTousers users?           @relation("blogs_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "blogs_updated_by_foreign")
+  quick_accesses                quick_accesses[]
+  sliders                       sliders[]
+}
+
+model cache {
+  key        String @id @db.VarChar(255)
+  value      String
+  expiration Int
+}
+
+model cache_locks {
+  key        String @id @db.VarChar(255)
+  owner      String @db.VarChar(255)
+  expiration Int
+}
+
+model categories {
+  id                                 BigInt             @id @default(autoincrement())
+  name                               String             @db.VarChar(255)
+  created_at                         DateTime?          @db.Timestamp(0)
+  updated_at                         DateTime?          @db.Timestamp(0)
+  deleted_at                         DateTime?          @db.Timestamp(0)
+  created_by                         BigInt?
+  updated_by                         BigInt?
+  deleted_by                         BigInt?
+  blogs                              blogs[]
+  users_categories_created_byTousers users?             @relation("categories_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "categories_created_by_foreign")
+  users_categories_deleted_byTousers users?             @relation("categories_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "categories_deleted_by_foreign")
+  users_categories_updated_byTousers users?             @relation("categories_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "categories_updated_by_foreign")
+  footer_services                    footer_services[]
+  menu_headers                       menu_headers[]
+  menu_sub_headers                   menu_sub_headers[]
+  quick_accesses                     quick_accesses[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model documentations {
+  id                                     BigInt    @id @default(autoincrement())
+  title                                  String    @db.VarChar(255)
+  subtitle                               String    @db.VarChar(255)
+  type                                   String?   @db.VarChar(255)
+  file_path                              String    @db.VarChar(255)
+  size                                   String?   @db.VarChar(255)
+  status                                 Boolean   @default(true)
+  created_at                             DateTime? @db.Timestamp(0)
+  updated_at                             DateTime? @db.Timestamp(0)
+  deleted_at                             DateTime? @db.Timestamp(0)
+  created_by                             BigInt?
+  updated_by                             BigInt?
+  deleted_by                             BigInt?
+  users_documentations_created_byTousers users?    @relation("documentations_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "documentations_created_by_foreign")
+  users_documentations_deleted_byTousers users?    @relation("documentations_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "documentations_deleted_by_foreign")
+  users_documentations_updated_byTousers users?    @relation("documentations_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "documentations_updated_by_foreign")
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement())
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String
+  queue      String
+  payload    String
+  exception  String
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model footer_contacts {
+  id                                      BigInt    @id @default(autoincrement())
+  type                                    String    @db.VarChar(255)
+  title                                   String    @db.VarChar(255)
+  url                                     String?   @db.VarChar(255)
+  created_at                              DateTime? @db.Timestamp(0)
+  updated_at                              DateTime? @db.Timestamp(0)
+  deleted_at                              DateTime? @db.Timestamp(0)
+  created_by                              BigInt?
+  updated_by                              BigInt?
+  deleted_by                              BigInt?
+  users_footer_contacts_created_byTousers users?    @relation("footer_contacts_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "footer_contacts_created_by_foreign")
+  users_footer_contacts_deleted_byTousers users?    @relation("footer_contacts_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "footer_contacts_deleted_by_foreign")
+  users_footer_contacts_updated_byTousers users?    @relation("footer_contacts_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "footer_contacts_updated_by_foreign")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model footer_services {
+  id                                      BigInt      @id @default(autoincrement())
+  name                                    String      @db.VarChar(255)
+  type                                    String      @db.VarChar(255)
+  url                                     String?     @db.VarChar(255)
+  category_id                             BigInt?
+  status                                  Boolean     @default(true)
+  created_at                              DateTime?   @db.Timestamp(0)
+  updated_at                              DateTime?   @db.Timestamp(0)
+  deleted_at                              DateTime?   @db.Timestamp(0)
+  created_by                              BigInt?
+  updated_by                              BigInt?
+  deleted_by                              BigInt?
+  categories                              categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "footer_services_category_id_foreign")
+  users_footer_services_created_byTousers users?      @relation("footer_services_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "footer_services_created_by_foreign")
+  users_footer_services_deleted_byTousers users?      @relation("footer_services_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "footer_services_deleted_by_foreign")
+  users_footer_services_updated_byTousers users?      @relation("footer_services_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "footer_services_updated_by_foreign")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model hexa_role_user {
+  role_id    BigInt
+  user_id    BigInt
+  hexa_roles hexa_roles @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hexa_role_user_role_id_foreign")
+
+  @@ignore
+}
+
+model hexa_roles {
+  id              BigInt           @id @default(autoincrement())
+  uuid            String           @unique(map: "hexa_roles_uuid_unique") @db.Uuid
+  name            String           @db.VarChar(255)
+  team_id         BigInt?
+  created_by_name String?          @db.VarChar(255)
+  access          Json?
+  gates           Json?
+  checkall        Json?
+  guard           String           @default("web") @db.VarChar(255)
+  created_at      DateTime?        @db.Timestamp(0)
+  updated_at      DateTime?        @db.Timestamp(0)
+  hexa_role_user  hexa_role_user[] @ignore
+}
+
+model job_batches {
+  id             String  @id @db.VarChar(255)
+  name           String  @db.VarChar(255)
+  total_jobs     Int
+  pending_jobs   Int
+  failed_jobs    Int
+  failed_job_ids String
+  options        String?
+  cancelled_at   Int?
+  created_at     Int
+  finished_at    Int?
+}
+
+model jobs {
+  id           BigInt @id @default(autoincrement())
+  queue        String @db.VarChar(255)
+  payload      String
+  attempts     Int    @db.SmallInt
+  reserved_at  Int?
+  available_at Int
+  created_at   Int
+
+  @@index([queue], map: "jobs_queue_index")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model menu_headers {
+  id                                   BigInt             @id @default(autoincrement())
+  name                                 String             @db.VarChar(255)
+  type                                 String             @db.VarChar(255)
+  url                                  String?            @db.VarChar(255)
+  category_id                          BigInt?
+  status                               Boolean            @default(true)
+  created_at                           DateTime?          @db.Timestamp(0)
+  updated_at                           DateTime?          @db.Timestamp(0)
+  deleted_at                           DateTime?          @db.Timestamp(0)
+  created_by                           BigInt?
+  updated_by                           BigInt?
+  deleted_by                           BigInt?
+  sort                                 Int?
+  categories                           categories?        @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "menu_headers_category_id_foreign")
+  users_menu_headers_created_byTousers users?             @relation("menu_headers_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "menu_headers_created_by_foreign")
+  users_menu_headers_deleted_byTousers users?             @relation("menu_headers_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "menu_headers_deleted_by_foreign")
+  users_menu_headers_updated_byTousers users?             @relation("menu_headers_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "menu_headers_updated_by_foreign")
+  menu_sub_headers                     menu_sub_headers[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model menu_sub_headers {
+  id                                       BigInt       @id @default(autoincrement())
+  menu_header_id                           BigInt
+  name                                     String       @db.VarChar(255)
+  type                                     String       @db.VarChar(255)
+  url                                      String?      @db.VarChar(255)
+  category_id                              BigInt?
+  status                                   Boolean      @default(true)
+  created_at                               DateTime?    @db.Timestamp(0)
+  updated_at                               DateTime?    @db.Timestamp(0)
+  deleted_at                               DateTime?    @db.Timestamp(0)
+  created_by                               BigInt?
+  updated_by                               BigInt?
+  deleted_by                               BigInt?
+  sort                                     Int?
+  categories                               categories?  @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "menu_sub_headers_category_id_foreign")
+  users_menu_sub_headers_created_byTousers users?       @relation("menu_sub_headers_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "menu_sub_headers_created_by_foreign")
+  users_menu_sub_headers_deleted_byTousers users?       @relation("menu_sub_headers_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "menu_sub_headers_deleted_by_foreign")
+  menu_headers                             menu_headers @relation(fields: [menu_header_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "menu_sub_headers_menu_header_id_foreign")
+  users_menu_sub_headers_updated_byTousers users?       @relation("menu_sub_headers_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "menu_sub_headers_updated_by_foreign")
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement())
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model note_visitors {
+  id                                    BigInt    @id @default(autoincrement())
+  icon                                  String    @db.VarChar(255)
+  title                                 String    @db.VarChar(255)
+  subtitle                              String    @db.VarChar(255)
+  created_at                            DateTime? @db.Timestamp(0)
+  updated_at                            DateTime? @db.Timestamp(0)
+  deleted_at                            DateTime? @db.Timestamp(0)
+  created_by                            BigInt?
+  updated_by                            BigInt?
+  deleted_by                            BigInt?
+  users_note_visitors_created_byTousers users?    @relation("note_visitors_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "note_visitors_created_by_foreign")
+  users_note_visitors_deleted_byTousers users?    @relation("note_visitors_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "note_visitors_deleted_by_foreign")
+  users_note_visitors_updated_byTousers users?    @relation("note_visitors_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "note_visitors_updated_by_foreign")
+}
+
+model password_reset_tokens {
+  email      String    @id @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model quick_accesses {
+  id                                     BigInt      @id @default(autoincrement())
+  icon                                   String      @db.VarChar(255)
+  title                                  String      @db.VarChar(255)
+  subtitle                               String      @db.VarChar(255)
+  type                                   String      @db.VarChar(255)
+  category_id                            BigInt?
+  blog_id                                BigInt?
+  url                                    String?     @db.VarChar(255)
+  status                                 Boolean     @default(true)
+  created_at                             DateTime?   @db.Timestamp(0)
+  updated_at                             DateTime?   @db.Timestamp(0)
+  deleted_at                             DateTime?   @db.Timestamp(0)
+  created_by                             BigInt?
+  updated_by                             BigInt?
+  deleted_by                             BigInt?
+  blogs                                  blogs?      @relation(fields: [blog_id], references: [id], onUpdate: NoAction, map: "quick_accesses_blog_id_foreign")
+  categories                             categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "quick_accesses_category_id_foreign")
+  users_quick_accesses_created_byTousers users?      @relation("quick_accesses_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "quick_accesses_created_by_foreign")
+  users_quick_accesses_deleted_byTousers users?      @relation("quick_accesses_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "quick_accesses_deleted_by_foreign")
+  users_quick_accesses_updated_byTousers users?      @relation("quick_accesses_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "quick_accesses_updated_by_foreign")
+}
+
+model sessions {
+  id            String  @id @db.VarChar(255)
+  user_id       BigInt?
+  ip_address    String? @db.VarChar(45)
+  user_agent    String?
+  payload       String
+  last_activity Int
+
+  @@index([last_activity], map: "sessions_last_activity_index")
+  @@index([user_id], map: "sessions_user_id_index")
+}
+
+model sliders {
+  id                              BigInt    @id @default(autoincrement())
+  title                           String    @db.VarChar(255)
+  subtitle                        String    @db.VarChar(255)
+  image_path                      String    @db.VarChar(255)
+  blog_id                         BigInt?
+  status                          Boolean   @default(true)
+  created_at                      DateTime? @db.Timestamp(0)
+  updated_at                      DateTime? @db.Timestamp(0)
+  deleted_at                      DateTime? @db.Timestamp(0)
+  created_by                      BigInt?
+  updated_by                      BigInt?
+  deleted_by                      BigInt?
+  blogs                           blogs?    @relation(fields: [blog_id], references: [id], onUpdate: NoAction, map: "sliders_blog_id_foreign")
+  users_sliders_created_byTousers users?    @relation("sliders_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "sliders_created_by_foreign")
+  users_sliders_deleted_byTousers users?    @relation("sliders_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "sliders_deleted_by_foreign")
+  users_sliders_updated_byTousers users?    @relation("sliders_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "sliders_updated_by_foreign")
+}
+
+model social_media {
+  id                                   BigInt    @id @default(autoincrement())
+  icon                                 String    @db.VarChar(255)
+  color                                String    @db.VarChar(255)
+  name                                 String    @db.VarChar(255)
+  url                                  String?   @db.VarChar(255)
+  status                               Boolean   @default(true)
+  created_at                           DateTime? @db.Timestamp(0)
+  updated_at                           DateTime? @db.Timestamp(0)
+  deleted_at                           DateTime? @db.Timestamp(0)
+  created_by                           BigInt?
+  updated_by                           BigInt?
+  deleted_by                           BigInt?
+  sort                                 Int?
+  users_social_media_created_byTousers users?    @relation("social_media_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "social_media_created_by_foreign")
+  users_social_media_deleted_byTousers users?    @relation("social_media_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "social_media_deleted_by_foreign")
+  users_social_media_updated_byTousers users?    @relation("social_media_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "social_media_updated_by_foreign")
+}
+
+model users {
+  id                                                  BigInt             @id @default(autoincrement())
+  name                                                String             @db.VarChar(255)
+  email                                               String             @unique(map: "users_email_unique") @db.VarChar(255)
+  email_verified_at                                   DateTime?          @db.Timestamp(0)
+  password                                            String             @db.VarChar(255)
+  remember_token                                      String?            @db.VarChar(100)
+  created_at                                          DateTime?          @db.Timestamp(0)
+  updated_at                                          DateTime?          @db.Timestamp(0)
+  abouts_abouts_created_byTousers                     abouts[]           @relation("abouts_created_byTousers")
+  abouts_abouts_deleted_byTousers                     abouts[]           @relation("abouts_deleted_byTousers")
+  abouts_abouts_updated_byTousers                     abouts[]           @relation("abouts_updated_byTousers")
+  blogs_blogs_created_byTousers                       blogs[]            @relation("blogs_created_byTousers")
+  blogs_blogs_deleted_byTousers                       blogs[]            @relation("blogs_deleted_byTousers")
+  blogs_blogs_updated_byTousers                       blogs[]            @relation("blogs_updated_byTousers")
+  categories_categories_created_byTousers             categories[]       @relation("categories_created_byTousers")
+  categories_categories_deleted_byTousers             categories[]       @relation("categories_deleted_byTousers")
+  categories_categories_updated_byTousers             categories[]       @relation("categories_updated_byTousers")
+  documentations_documentations_created_byTousers     documentations[]   @relation("documentations_created_byTousers")
+  documentations_documentations_deleted_byTousers     documentations[]   @relation("documentations_deleted_byTousers")
+  documentations_documentations_updated_byTousers     documentations[]   @relation("documentations_updated_byTousers")
+  footer_contacts_footer_contacts_created_byTousers   footer_contacts[]  @relation("footer_contacts_created_byTousers")
+  footer_contacts_footer_contacts_deleted_byTousers   footer_contacts[]  @relation("footer_contacts_deleted_byTousers")
+  footer_contacts_footer_contacts_updated_byTousers   footer_contacts[]  @relation("footer_contacts_updated_byTousers")
+  footer_services_footer_services_created_byTousers   footer_services[]  @relation("footer_services_created_byTousers")
+  footer_services_footer_services_deleted_byTousers   footer_services[]  @relation("footer_services_deleted_byTousers")
+  footer_services_footer_services_updated_byTousers   footer_services[]  @relation("footer_services_updated_byTousers")
+  menu_headers_menu_headers_created_byTousers         menu_headers[]     @relation("menu_headers_created_byTousers")
+  menu_headers_menu_headers_deleted_byTousers         menu_headers[]     @relation("menu_headers_deleted_byTousers")
+  menu_headers_menu_headers_updated_byTousers         menu_headers[]     @relation("menu_headers_updated_byTousers")
+  menu_sub_headers_menu_sub_headers_created_byTousers menu_sub_headers[] @relation("menu_sub_headers_created_byTousers")
+  menu_sub_headers_menu_sub_headers_deleted_byTousers menu_sub_headers[] @relation("menu_sub_headers_deleted_byTousers")
+  menu_sub_headers_menu_sub_headers_updated_byTousers menu_sub_headers[] @relation("menu_sub_headers_updated_byTousers")
+  note_visitors_note_visitors_created_byTousers       note_visitors[]    @relation("note_visitors_created_byTousers")
+  note_visitors_note_visitors_deleted_byTousers       note_visitors[]    @relation("note_visitors_deleted_byTousers")
+  note_visitors_note_visitors_updated_byTousers       note_visitors[]    @relation("note_visitors_updated_byTousers")
+  quick_accesses_quick_accesses_created_byTousers     quick_accesses[]   @relation("quick_accesses_created_byTousers")
+  quick_accesses_quick_accesses_deleted_byTousers     quick_accesses[]   @relation("quick_accesses_deleted_byTousers")
+  quick_accesses_quick_accesses_updated_byTousers     quick_accesses[]   @relation("quick_accesses_updated_byTousers")
+  sliders_sliders_created_byTousers                   sliders[]          @relation("sliders_created_byTousers")
+  sliders_sliders_deleted_byTousers                   sliders[]          @relation("sliders_deleted_byTousers")
+  sliders_sliders_updated_byTousers                   sliders[]          @relation("sliders_updated_byTousers")
+  social_media_social_media_created_byTousers         social_media[]     @relation("social_media_created_byTousers")
+  social_media_social_media_deleted_byTousers         social_media[]     @relation("social_media_deleted_byTousers")
+  social_media_social_media_updated_byTousers         social_media[]     @relation("social_media_updated_byTousers")
+}

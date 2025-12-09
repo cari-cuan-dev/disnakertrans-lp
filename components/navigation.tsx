@@ -1,0 +1,370 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Menu, X, Search, Facebook, Twitter, Instagram, Linkedin, Youtube, ChevronDown } from "lucide-react"
+import SearchModal from "./search-modal"
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+
+interface SocialMediaItem {
+  id: string;  // bigint is serialized as string in JSON
+  icon: string;
+  color: string;
+  name: string;
+  url: string | null;
+  status: boolean;
+  sort: number;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export interface MenuHeader {
+  id: string;
+  name: string;
+  type: string;
+  url: string | null;
+  status: boolean;
+  sort: number;
+  created_at?: string | null;
+  updated_at?: string | null;
+  menu_sub_headers: MenuSubHeader[];
+}
+
+export interface MenuSubHeader {
+  id: string;
+  menu_header_id: string;
+  name: string;
+  type: string;
+  url: string | null;
+  status: boolean;
+  sort: number;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export default function Navigation() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [layananOpen, setLayananOpen] = useState(false)
+  const [socialMedia, setSocialMedia] = useState<SocialMediaItem[]>([]);
+  const [socialMediaLoading, setSocialMediaLoading] = useState(true);
+  const [menuHeaders, setMenuHeaders] = useState<MenuHeader[]>([]);
+  const [menuHeadersLoading, setMenuHeadersLoading] = useState(true);
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch social media
+      try {
+        const socialMediaResponse = await fetch('/api/social-media');
+        console.log(socialMediaResponse);
+        if (socialMediaResponse.ok) {
+          const socialMediaData: SocialMediaItem[] = await socialMediaResponse.json();
+          setSocialMedia(socialMediaData);
+        } else {
+          console.error('Failed to fetch social media:', socialMediaResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching social media:', error);
+      } finally {
+        setSocialMediaLoading(false);
+      }
+
+      // Fetch menu headers
+      try {
+        const menuHeadersResponse = await fetch('/api/menu-headers');
+        if (menuHeadersResponse.ok) {
+          const menuHeadersData: MenuHeader[] = await menuHeadersResponse.json();
+          setMenuHeaders(menuHeadersData);
+        } else {
+          console.error('Failed to fetch menu headers:', menuHeadersResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching menu headers:', error);
+      } finally {
+        setMenuHeadersLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+
+  // Map social media names to Lucide icons
+  const getSocialIcon = (name: string) => {
+    switch (name.toLowerCase()) {
+      case 'facebook':
+        return Facebook;
+      case 'twitter':
+      case 'x':
+        return Twitter;
+      case 'instagram':
+        return Instagram;
+      case 'linkedin':
+        return Linkedin;
+      case 'youtube':
+        return Youtube;
+      default:
+        // Generic icon or name-based logic
+        return ({ size, className }: { size: number; className: string }) => (
+          <div className={className} style={{ width: size, height: size }} />
+        );
+    }
+  };
+
+  // Get appropriate hover color for the icon
+  const getSocialHoverColor = (name: string) => {
+    switch (name.toLowerCase()) {
+      case 'facebook':
+        return 'hover:text-blue-600';
+      case 'twitter':
+      case 'x':
+        return 'hover:text-blue-400';
+      case 'instagram':
+        return 'hover:text-pink-600';
+      case 'linkedin':
+        return 'hover:text-blue-700';
+      case 'youtube':
+        return 'hover:text-red-600';
+      default:
+        return 'hover:text-gray-700';
+    }
+  };
+
+  return (
+    <>
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-purple-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">D</span>
+              </div>
+              <span className="hidden sm:inline font-bold text-gray-900">Disnakertrans Kalteng</span>
+            </Link>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center gap-8">
+              {!menuHeadersLoading ? (
+                menuHeaders.map((header) => {
+                  if (!header.status) return null;
+
+                  // Check if this menu item has sub-headers
+                  if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
+                    return (
+                      <div key={header.id} className="relative group">
+                        <button className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium flex items-center gap-1">
+                          {header.name}
+                          <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
+                        </button>
+                        <div className="absolute left-0 mt-0 w-48 bg-white border border-purple-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
+                          {header.menu_sub_headers.map((subHeader) => {
+                            if (!subHeader.status) return null;
+                            return (
+                              <Link
+                                key={subHeader.id}
+                                href={subHeader.url || '#'}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                              >
+                                {subHeader.name}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    // Menu header without sub-headers
+                    return (
+                      <Link
+                        key={header.id}
+                        href={header.url || '#'}
+                        className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium"
+                      >
+                        {header.name}
+                      </Link>
+                    );
+                  }
+                })
+              ) : (
+                // Loading placeholders
+                <>
+                  <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
+                </>
+              )}
+            </div>
+
+            {/* Search, Social Media and Actions */}
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="hidden lg:flex items-center gap-2">
+                {!socialMediaLoading && socialMedia.length > 0 ? (
+                  socialMedia.map((social) => {
+                    if (!social.url) return null;
+                    const IconComponent = getSocialIcon(social.name);
+                    return (
+                      <a
+                        key={social.id}
+                        href={social.url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`p-2 hover:bg-purple-50 rounded-lg transition-colors ${getSocialHoverColor(social.name)}`}
+                        title={social.name}
+                      >
+                        <IconComponent size={18} className="text-gray-700 hover:text-current" />
+                      </a>
+                    );
+                  })
+                ) : (
+                  // Show loading placeholders only
+                  <div className="flex gap-2">
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="hidden sm:flex p-2 hover:bg-purple-50 rounded-lg transition-colors items-center gap-2 text-gray-600 text-xs font-medium"
+                title="Cari berita (Ctrl+K)"
+              >
+                <Search size={20} className="text-gray-700" />
+                <span className="hidden lg:inline">Ctrl+K</span>
+              </button>
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="sm:hidden p-2 hover:bg-purple-50 rounded-lg transition-colors"
+              >
+                <Search size={20} className="text-gray-700" />
+              </button>
+
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="md:hidden p-2 hover:bg-purple-50 rounded-lg transition-colors"
+              >
+                {isOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isOpen && (
+            <div className="md:hidden pb-4 border-t border-purple-100">
+              {!menuHeadersLoading ? (
+                menuHeaders.map((header) => {
+                  if (!header.status) return null;
+
+                  // Check if this menu item has sub-headers
+                  if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
+                    const isCurrentLayananOpen = header.name === 'Layanan' ? layananOpen : false;
+                    const toggleLayanan = () => {
+                      if (header.name === 'Layanan') {
+                        setLayananOpen(!layananOpen);
+                      }
+                    };
+
+                    return (
+                      <div key={header.id}>
+                        <button
+                          onClick={toggleLayanan}
+                          className="w-full text-left py-2 text-gray-700 hover:text-purple-600 transition-colors flex items-center justify-between"
+                        >
+                          {header.name}
+                          <ChevronDown size={16} className={`transition-transform ${isCurrentLayananOpen ? "rotate-180" : ""}`} />
+                        </button>
+                        {isCurrentLayananOpen && (
+                          <div className="bg-purple-50 rounded-lg mt-2 py-2">
+                            {header.menu_sub_headers.map((subHeader) => {
+                              if (!subHeader.status) return null;
+                              return (
+                                <Link
+                                  key={subHeader.id}
+                                  href={subHeader.url || '#'}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:text-purple-600 transition-colors"
+                                >
+                                  {subHeader.name}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  } else {
+                    // Menu header without sub-headers
+                    return (
+                      <Link
+                        key={header.id}
+                        href={header.url || '#'}
+                        className="block py-2 text-gray-700 hover:text-purple-600 transition-colors"
+                      >
+                        {header.name}
+                      </Link>
+                    );
+                  }
+                })
+              ) : (
+                // Loading placeholders
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-4/6 animate-pulse"></div>
+                </div>
+              )}
+              <Link href="/login" className="block py-2 text-gray-700 hover:text-purple-600 transition-colors">
+                Portal
+              </Link>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-purple-100">
+                {!socialMediaLoading && socialMedia.length > 0 ? (
+                  socialMedia.map((social) => {
+                    if (!social.url) return null;
+                    const IconComponent = getSocialIcon(social.name);
+                    return (
+                      <a
+                        key={social.id}
+                        href={social.url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                      >
+                        <IconComponent size={18} className="text-gray-700 hover:text-current" />
+                      </a>
+                    );
+                  })
+                ) : (
+                  // Show loading placeholders only
+                  <div className="flex gap-2">
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
+  )
+}
