@@ -5,146 +5,70 @@ import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { ChevronLeft } from "lucide-react"
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-const blogArticles = [
-  {
-    id: 1,
-    title: "Kepala Disnakertrans Lepas 40 Peserta Magang ke Jepang",
-    category: "Berita",
-    service: "Magang",
-    date: "25 November 2023",
-    author: "Nur Sirait",
-    image: "/magang-jepang-program-internasional.jpg",
-    excerpt:
-      "Kepala Disnakertrans Kalimantan Tengah melepas 40 peserta magang yang akan mengikuti program magang di Jepang tahun ini.",
-    content: `Dalam acara pelepasan yang meriah, Kepala Disnakertrans Kalimantan Tengah memberikan motivasi kepada para peserta magang untuk membawa nama baik Kalimantan Tengah dan Indonesia di negeri Jepang.
-
-Program magang ke Jepang ini merupakan kerjasama dengan Pemerintah Jepang dalam rangka meningkatkan kualitas Sumber Daya Manusia Indonesia. Para peserta akan mempelajari teknologi dan keahlian kerja yang kemudian dapat diterapkan di Kalimantan Tengah.
-
-Peserta magang yang terpilih merupakan hasil seleksi ketat yang mempertimbangkan kompetensi, karakter, dan motivasi kerja yang kuat. Mereka akan ditempatkan di berbagai industri manufaktur di Jepang selama kurang lebih 3 bulan.`,
-    tags: ["Magang", "Jepang", "Internasional", "Kerja"],
-  },
-  {
-    id: 2,
-    title: "Program Pelatihan Gratis untuk Meningkatkan Skill Kerja",
-    category: "Pengumuman",
-    service: "Pelatihan",
-    date: "24 November 2023",
-    author: "Budi Santoso",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-    excerpt:
-      "Disnakertrans membuka program pelatihan gratis untuk meningkatkan kompetensi dan keterampilan kerja bagi masyarakat Kalimantan Tengah.",
-    content: `Dalam upaya meningkatkan kompetensi tenaga kerja, Disnakertrans Kalimantan Tengah kembali membuka program pelatihan gratis yang terbuka untuk semua masyarakat.
-
-Program pelatihan ini mencakup berbagai bidang keahlian seperti:
-- Mesin Industri dan Otomasi
-- Teknik Elektronika
-- Welding (Las)
-- Administrasi Perkantoran
-- Pariwisata dan Perhotelan
-
-Setiap peserta akan mendapatkan sertifikat resmi setelah menyelesaikan program. Pendaftaran dibuka dengan kuota terbatas untuk memastikan kualitas pembelajaran yang optimal.`,
-    tags: ["Pelatihan", "Skill", "Gratis", "Keterampilan"],
-  },
-  {
-    id: 3,
-    title: "Pembukaan Layanan Sertifikasi BNSP Tahun 2023",
-    category: "Berita",
-    service: "Sertifikasi",
-    date: "23 November 2023",
-    author: "Siti Nurhaliza",
-    image: "/sertifikasi-bnsp-profesional.jpg",
-    excerpt:
-      "Layanan sertifikasi BNSP kini tersedia di lokasi terpilih di Kalimantan Tengah untuk memudahkan masyarakat.",
-    content: `Badan Nasional Sertifikasi Profesi (BNSP) telah membuka layanan sertifikasi di beberapa kota besar di Kalimantan Tengah. Langkah ini diambil untuk memudahkan masyarakat lokal mendapatkan sertifikasi profesional.
-
-Sertifikasi BNSP diakui secara nasional dan internasional, sehingga akan meningkatkan kompetensi dan daya saing para pencari kerja di pasar global.
-
-Lokasi sertifikasi tersedia di:
-- Palangka Raya
-- Sampit
-- Kuala Kurun
-
-Untuk informasi lebih lanjut dan pendaftaran, silakan menghubungi Disnakertrans atau kunjungi kantor sertifikasi terdekat.`,
-    tags: ["BNSP", "Sertifikasi", "Profesional"],
-  },
-  {
-    id: 4,
-    title: "Kerja Berkah: Solusi Berkelanjutan untuk Pengangguran",
-    category: "Artikel",
-    service: "Kerja Berkah",
-    date: "22 November 2023",
-    author: "Rinto Harahap",
-    image: "/kerja-berkah-program-sosial.jpg",
-    excerpt: "Program Kerja Berkah telah membantu ribuan masyarakat mendapatkan pekerjaan yang layak.",
-    content: `Kerja Berkah adalah program Pemerintah Provinsi Kalimantan Tengah yang bertujuan memberikan kesempatan kerja kepada masyarakat yang kurang beruntung.
-
-Program ini telah terbukti efektif dalam mengurangi tingkat pengangguran dan meningkatkan kualitas hidup masyarakat. Ribuan masyarakat telah merasakan manfaat dari program ini.
-
-Manfaat Program Kerja Berkah:
-- Memberikan kesempatan kerja
-- Meningkatkan pendapatan keluarga
-- Memberdayakan masyarakat lokal
-- Menjaga kelestarian lingkungan
-
-Jika Anda tertarik mengikuti program ini, segera daftarkan diri Anda di kantor Disnakertrans terdekat.`,
-    tags: ["Kerja Berkah", "Program", "Pemberdayaan"],
-  },
-  {
-    id: 5,
-    title: "PPID Disnakertrans Buka Layanan Informasi Publik",
-    category: "Berita",
-    service: "PPID",
-    date: "21 November 2023",
-    author: "Ahmad Syaiful",
-    image: "/ppid-information-service.jpg",
-    excerpt:
-      "Pejabat Pengelola Informasi dan Dokumentasi (PPID) Disnakertrans melayani permintaan informasi publik dari masyarakat.",
-    content: `PPID Disnakertrans Kalimantan Tengah resmi membuka layanan informasi publik untuk memenuhi hak masyarakat mendapatkan akses informasi.
-
-Layanan ini mencakup berbagai dokumen dan informasi yang berkaitan dengan kegiatan dan kebijakan Disnakertrans. Masyarakat dapat mengajukan permohonan informasi sesuai dengan prosedur yang berlaku.
-
-Informasi yang dapat diakses:
-- Laporan tahunan Disnakertrans
-- Kebijakan dan peraturan
-- Data statistik ketenagakerjaan
-- Program dan kegiatan
-
-Untuk informasi lebih lanjut, silakan mengunjungi website PPID atau menghubungi kontak yang tersedia.`,
-    tags: ["PPID", "Informasi Publik", "Transparansi"],
-  },
-  {
-    id: 6,
-    title: "Penempatan Tenaga Kerja Lokal Meningkat 50%",
-    category: "Pengumuman",
-    service: "Penempatan",
-    date: "20 November 2023",
-    author: "Dewi Lestari",
-    image: "/worker-placement-statistics.jpg",
-    excerpt:
-      "Disnakertrans melaporkan peningkatan signifikan dalam penempatan tenaga kerja lokal ke industri lokal dan nasional.",
-    content: `Pencapaian luar biasa telah diraih Disnakertrans Kalimantan Tengah dengan peningkatan penempatan tenaga kerja mencapai 50% dibandingkan periode sebelumnya.
-
-Peningkatan ini menunjukkan efektivitas program-program yang telah dilaksanakan dalam meningkatkan kualitas dan kompetensi tenaga kerja lokal.
-
-Statistik penempatan:
-- Tenaga kerja bersertifikat: 1.200 orang
-- Penempatan ke industri: 800 orang
-- Penempatan ke luar negeri: 400 orang
-
-Kesuksesan ini adalah hasil kerja keras dan dedikasi seluruh tim Disnakertrans dalam melayani masyarakat.`,
-    tags: ["Penempatan", "Kerja", "Statistik"],
-  },
-]
+export interface BlogItem {
+  id: string;
+  title: string;
+  img_cover_path: string;
+  content: string;
+  tags: string[];
+  status: boolean;
+  created_at: string;
+  updated_at: string;
+  category_id: string;
+  sort: number | null;
+  categories: {
+    id: string;
+    name: string;
+  };
+}
 
 export default function BlogDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const id = Number.parseInt(params.id as string)
-  const article = blogArticles.find((a) => a.id === id)
+  const [article, setArticle] = useState<BlogItem | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  if (!article) {
+  useEffect(() => {
+    const fetchBlogDetail = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/blogs/${params.id}`)
+        if (response.ok) {
+          const data: BlogItem = await response.json()
+          setArticle(data)
+        } else {
+          setError(true)
+        }
+      } catch (err) {
+        console.error('Error fetching blog detail:', err)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBlogDetail()
+  }, [params.id])
+
+  if (loading) {
+    return (
+      <>
+        <Navigation />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Memuat artikel...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    )
+  }
+
+  if (error || !article) {
     return (
       <>
         <Navigation />
@@ -184,7 +108,7 @@ export default function BlogDetailPage() {
               {/* Featured Image */}
               <div className="w-full h-96 overflow-hidden bg-gray-200">
                 <img
-                  src={article.image || "/placeholder.svg"}
+                  src={article.img_cover_path || "/placeholder.svg"}
                   alt={article.title}
                   className="w-full h-full object-cover"
                 />
@@ -195,11 +119,11 @@ export default function BlogDetailPage() {
                 {/* Meta Information */}
                 <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-gray-200">
                   <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                    {article.category}
+                    {article.categories.name}
                   </span>
-                  <span className="text-sm text-gray-600">{article.date}</span>
+                  <span className="text-sm text-gray-600">{new Date(article.created_at).toLocaleDateString('id-ID')}</span>
                   <span className="text-sm text-gray-600">
-                    Oleh <strong>{article.author}</strong>
+                    Oleh <strong>Admin</strong>
                   </span>
                 </div>
 
@@ -219,9 +143,9 @@ export default function BlogDetailPage() {
                 <div className="mb-8 pb-8 border-b border-gray-200">
                   <h3 className="text-sm font-semibold text-gray-900 mb-3">Tags:</h3>
                   <div className="flex flex-wrap gap-2">
-                    {article.tags.map((tag) => (
+                    {Array.isArray(article.tags) && article.tags.map((tag, index) => (
                       <span
-                        key={tag}
+                        key={index}
                         className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200 hover:bg-blue-100 cursor-pointer transition-colors"
                       >
                         #{tag}
@@ -245,7 +169,7 @@ export default function BlogDetailPage() {
   )
 }
 
-function BlogArticleActions({ article }: { article: (typeof blogArticles)[0] }) {
+function BlogArticleActions({ article }: { article: BlogItem }) {
   return (
     <div className="flex flex-wrap gap-4 mb-12 pb-8 border-b border-gray-200">
       {/* Share Button */}
@@ -285,7 +209,7 @@ function BlogArticleActions({ article }: { article: (typeof blogArticles)[0] }) 
   )
 }
 
-function BlogComments({ articleId }: { articleId: number }) {
+function BlogComments({ articleId }: { articleId: string }) {
   const [comments, setComments] = useState<Array<{ name: string; email: string; text: string; date: string }>>([
     {
       name: "Adi Pratama",

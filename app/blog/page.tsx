@@ -2,195 +2,98 @@
 
 import type React from "react"
 import { useSearchParams } from "next/navigation"
-import { useState, useMemo, useEffect } from "react"
+import { useState, useEffect } from "react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { ChevronLeft, ArrowUpDown } from "lucide-react"
 
-const blogArticles = [
-  {
-    id: 1,
-    title: "Kepala Disnakertrans Lepas 40 Peserta Magang ke Jepang",
-    category: "Berita",
-    service: "Magang",
-    date: "25 November 2023",
-    author: "Nur Sirait",
-    image: "/magang-jepang-program-internasional.jpg",
-    excerpt:
-      "Kepala Disnakertrans Kalimantan Tengah melepas 40 peserta magang yang akan mengikuti program magang di Jepang tahun ini.",
-    content: `Dalam acara pelepasan yang meriah, Kepala Disnakertrans Kalimantan Tengah memberikan motivasi kepada para peserta magang untuk membawa nama baik Kalimantan Tengah dan Indonesia di negeri Jepang.
-
-Program magang ke Jepang ini merupakan kerjasama dengan Pemerintah Jepang dalam rangka meningkatkan kualitas Sumber Daya Manusia Indonesia. Para peserta akan mempelajari teknologi dan keahlian kerja yang kemudian dapat diterapkan di Kalimantan Tengah.
-
-Peserta magang yang terpilih merupakan hasil seleksi ketat yang mempertimbangkan kompetensi, karakter, dan motivasi kerja yang kuat. Mereka akan ditempatkan di berbagai industri manufaktur di Jepang selama kurang lebih 3 bulan.`,
-    tags: ["Magang", "Jepang", "Internasional", "Kerja"],
-  },
-  {
-    id: 2,
-    title: "Program Pelatihan Gratis untuk Meningkatkan Skill Kerja",
-    category: "Pengumuman",
-    service: "Pelatihan",
-    date: "24 November 2023",
-    author: "Budi Santoso",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-    excerpt:
-      "Disnakertrans membuka program pelatihan gratis untuk meningkatkan kompetensi dan keterampilan kerja bagi masyarakat Kalimantan Tengah.",
-    content: `Dalam upaya meningkatkan kompetensi tenaga kerja, Disnakertrans Kalimantan Tengah kembali membuka program pelatihan gratis yang terbuka untuk semua masyarakat.
-
-Program pelatihan ini mencakup berbagai bidang keahlian seperti:
-- Mesin Industri dan Otomasi
-- Teknik Elektronika
-- Welding (Las)
-- Administrasi Perkantoran
-- Pariwisata dan Perhotelan
-
-Setiap peserta akan mendapatkan sertifikat resmi setelah menyelesaikan program. Pendaftaran dibuka dengan kuota terbatas untuk memastikan kualitas pembelajaran yang optimal.`,
-    tags: ["Pelatihan", "Skill", "Gratis", "Keterampilan"],
-  },
-  {
-    id: 3,
-    title: "Pembukaan Layanan Sertifikasi BNSP Tahun 2023",
-    category: "Berita",
-    service: "Sertifikasi",
-    date: "23 November 2023",
-    author: "Siti Nurhaliza",
-    image: "/sertifikasi-bnsp-profesional.jpg",
-    excerpt:
-      "Layanan sertifikasi BNSP kini tersedia di lokasi terpilih di Kalimantan Tengah untuk memudahkan masyarakat.",
-    content: `Badan Nasional Sertifikasi Profesi (BNSP) telah membuka layanan sertifikasi di beberapa kota besar di Kalimantan Tengah. Langkah ini diambil untuk memudahkan masyarakat lokal mendapatkan sertifikasi profesional.
-
-Sertifikasi BNSP diakui secara nasional dan internasional, sehingga akan meningkatkan kompetensi dan daya saing para pencari kerja di pasar global.
-
-Lokasi sertifikasi tersedia di:
-- Palangka Raya
-- Sampit
-- Kuala Kurun
-
-Untuk informasi lebih lanjut dan pendaftaran, silakan menghubungi Disnakertrans atau kunjungi kantor sertifikasi terdekat.`,
-    tags: ["BNSP", "Sertifikasi", "Profesional"],
-  },
-  {
-    id: 4,
-    title: "Kerja Berkah: Solusi Berkelanjutan untuk Pengangguran",
-    category: "Artikel",
-    service: "Kerja Berkah",
-    date: "22 November 2023",
-    author: "Rinto Harahap",
-    image: "/kerja-berkah-program-sosial.jpg",
-    excerpt: "Program Kerja Berkah telah membantu ribuan masyarakat mendapatkan pekerjaan yang layak.",
-    content: `Kerja Berkah adalah program Pemerintah Provinsi Kalimantan Tengah yang bertujuan memberikan kesempatan kerja kepada masyarakat yang kurang beruntung.
-
-Program ini telah terbukti efektif dalam mengurangi tingkat pengangguran dan meningkatkan kualitas hidup masyarakat. Ribuan masyarakat telah merasakan manfaat dari program ini.
-
-Manfaat Program Kerja Berkah:
-- Memberikan kesempatan kerja
-- Meningkatkan pendapatan keluarga
-- Memberdayakan masyarakat lokal
-- Menjaga kelestarian lingkungan
-
-Jika Anda tertarik mengikuti program ini, segera daftarkan diri Anda di kantor Disnakertrans terdekat.`,
-    tags: ["Kerja Berkah", "Program", "Pemberdayaan"],
-  },
-  {
-    id: 5,
-    title: "PPID Disnakertrans Buka Layanan Informasi Publik",
-    category: "Berita",
-    service: "PPID",
-    date: "21 November 2023",
-    author: "Ahmad Syaiful",
-    image: "/ppid-information-service.jpg",
-    excerpt:
-      "Pejabat Pengelola Informasi dan Dokumentasi (PPID) Disnakertrans melayani permintaan informasi publik dari masyarakat.",
-    content: `PPID Disnakertrans Kalimantan Tengah resmi membuka layanan informasi publik untuk memenuhi hak masyarakat mendapatkan akses informasi.
-
-Layanan ini mencakup berbagai dokumen dan informasi yang berkaitan dengan kegiatan dan kebijakan Disnakertrans. Masyarakat dapat mengajukan permohonan informasi sesuai dengan prosedur yang berlaku.
-
-Informasi yang dapat diakses:
-- Laporan tahunan Disnakertrans
-- Kebijakan dan peraturan
-- Data statistik ketenagakerjaan
-- Program dan kegiatan
-
-Untuk informasi lebih lanjut, silakan mengunjungi website PPID atau menghubungi kontak yang tersedia.`,
-    tags: ["PPID", "Informasi Publik", "Transparansi"],
-  },
-  {
-    id: 6,
-    title: "Penempatan Tenaga Kerja Lokal Meningkat 50%",
-    category: "Pengumuman",
-    service: "Penempatan",
-    date: "20 November 2023",
-    author: "Dewi Lestari",
-    image: "/worker-placement-statistics.jpg",
-    excerpt:
-      "Disnakertrans melaporkan peningkatan signifikan dalam penempatan tenaga kerja lokal ke industri lokal dan nasional.",
-    content: `Pencapaian luar biasa telah diraih Disnakertrans Kalimantan Tengah dengan peningkatan penempatan tenaga kerja mencapai 50% dibandingkan periode sebelumnya.
-
-Peningkatan ini menunjukkan efektivitas program-program yang telah dilaksanakan dalam meningkatkan kualitas dan kompetensi tenaga kerja lokal.
-
-Statistik penempatan:
-- Tenaga kerja bersertifikat: 1.200 orang
-- Penempatan ke industri: 800 orang
-- Penempatan ke luar negeri: 400 orang
-
-Kesuksesan ini adalah hasil kerja keras dan dedikasi seluruh tim Disnakertrans dalam melayani masyarakat.`,
-    tags: ["Penempatan", "Kerja", "Statistik"],
-  },
-]
+export interface BlogItem {
+  id: string;
+  title: string;
+  img_cover_path: string;
+  content: string;
+  tags: string[];
+  status: boolean;
+  created_at: string;
+  updated_at: string;
+  category_id: string;
+  sort: number | null;
+  categories: {
+    id: string;
+    name: string;
+  };
+}
 
 export default function BlogPage() {
   const searchParams = useSearchParams()
-  const [selectedArticle, setSelectedArticle] = useState<number | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Semua")
   const [sortBy, setSortBy] = useState("terbaru") // terbaru or terlama
+  const [blogData, setBlogData] = useState<BlogItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [categories, setCategories] = useState<string[]>([])
+  const [article, setArticle] = useState<BlogItem | null>(null)
+
+  useEffect(() => {
+    const fetchBlogData = async () => {
+      try {
+        setLoading(true)
+        const category = searchParams.get("category")
+        const service = searchParams.get("service")
+
+        const params = new URLSearchParams();
+        if (category) params.append('category', category);
+        if (service) params.append('service', service);
+        if (searchTerm) params.append('search', searchTerm);
+
+        const response = await fetch(`/api/blogs?${params.toString()}`)
+        if (response.ok) {
+          const data: BlogItem[] = await response.json()
+          setBlogData(data)
+
+          // Extract unique categories
+          const uniqueCategories = Array.from(new Set(data.map((blog) => blog.categories.name)))
+          setCategories(["Semua", ...uniqueCategories])
+        } else {
+          console.error('Failed to fetch blog data:', response.statusText)
+        }
+      } catch (error) {
+        console.error('Error fetching blog data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBlogData()
+  }, [searchParams, searchTerm])
+
+  useEffect(() => {
+    if (selectedArticle) {
+      const article = blogData.find((a) => a.id === selectedArticle)
+      setArticle(article || null)
+    }
+  }, [selectedArticle, blogData])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [selectedArticle])
 
-  const filteredAndSortedArticles = useMemo(() => {
-    const category = searchParams.get("category")
-    const service = searchParams.get("service")
-
-    let filtered = blogArticles
-
-    if (category) {
-      filtered = filtered.filter((article) => article.category === category || article.service === category)
-    }
-
-    if (service) {
-      filtered = filtered.filter(
-        (article) =>
-          article.service.toLowerCase().includes(service.toLowerCase()) ||
-          article.tags.some((tag) => tag.toLowerCase().includes(service.toLowerCase())),
-      )
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (article) =>
-          article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-    }
+  const filteredAndSortedArticles = (() => {
+    let filtered = [...blogData]
 
     if (selectedCategory !== "Semua") {
-      filtered = filtered.filter((article) => article.category === selectedCategory)
+      filtered = filtered.filter((article) => article.categories.name === selectedCategory)
     }
 
     if (sortBy === "terbaru") {
-      // Keep default order (newest first)
+      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     } else if (sortBy === "terlama") {
-      filtered = [...filtered].reverse()
+      filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     }
 
     return filtered
-  }, [searchParams, searchTerm, selectedCategory, sortBy])
-
-  const article = blogArticles.find((a) => a.id === selectedArticle)
-
-  const categories = ["Semua", ...new Set(blogArticles.map((a) => a.category))]
+  })()
 
   return (
     <>
@@ -254,7 +157,25 @@ export default function BlogPage() {
                 </div>
               </div>
 
-              {filteredAndSortedArticles.length > 0 ? (
+              {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200 animate-pulse">
+                      <div className="h-48 bg-gray-200"></div>
+                      <div className="p-6">
+                        <div className="h-4 bg-gray-200 rounded w-1/4 mb-3"></div>
+                        <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                        <div className="flex justify-between">
+                          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredAndSortedArticles.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {filteredAndSortedArticles.map((item) => (
                     <article
@@ -264,7 +185,7 @@ export default function BlogPage() {
                     >
                       <div className="h-48 overflow-hidden bg-gray-200">
                         <img
-                          src={item.image || "/placeholder.svg"}
+                          src={item.img_cover_path || "/placeholder.svg"}
                           alt={item.title}
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
@@ -272,14 +193,14 @@ export default function BlogPage() {
                       <div className="p-6">
                         <div className="flex items-center gap-2 mb-3">
                           <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                            {item.category}
+                            {item.categories.name}
                           </span>
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{item.title}</h2>
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{item.excerpt}</p>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{item.content.substring(0, 100)}...</p>
                         <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>{item.date}</span>
-                          <span>Oleh {item.author}</span>
+                          <span>{new Date(item.created_at).toLocaleDateString('id-ID')}</span>
+                          <span>Oleh Admin</span>
                         </div>
                       </div>
                     </article>
@@ -292,9 +213,7 @@ export default function BlogPage() {
               )}
             </div>
           </section>
-        ) : null}
-
-        {selectedArticle && article ? (
+        ) : article ? (
           <section className="py-12 md:py-20">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <button
@@ -308,7 +227,7 @@ export default function BlogPage() {
               <article className="bg-white rounded-lg overflow-hidden shadow-lg">
                 <div className="w-full h-96 overflow-hidden bg-gray-200">
                   <img
-                    src={article.image || "/placeholder.svg"}
+                    src={article.img_cover_path || "/placeholder.svg"}
                     alt={article.title}
                     className="w-full h-full object-cover"
                   />
@@ -317,11 +236,11 @@ export default function BlogPage() {
                 <div className="p-8 md:p-12">
                   <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-gray-200">
                     <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                      {article.category}
+                      {article.categories.name}
                     </span>
-                    <span className="text-sm text-gray-600">{article.date}</span>
+                    <span className="text-sm text-gray-600">{new Date(article.created_at).toLocaleDateString('id-ID')}</span>
                     <span className="text-sm text-gray-600">
-                      Oleh <strong>{article.author}</strong>
+                      Oleh <strong>Admin</strong>
                     </span>
                   </div>
 
@@ -338,9 +257,9 @@ export default function BlogPage() {
                   <div className="mb-8 pb-8 border-b border-gray-200">
                     <h3 className="text-sm font-semibold text-gray-900 mb-3">Tags:</h3>
                     <div className="flex flex-wrap gap-2">
-                      {article.tags.map((tag) => (
+                      {Array.isArray(article.tags) && article.tags.map((tag, index) => (
                         <span
-                          key={tag}
+                          key={index}
                           className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200 hover:bg-blue-100 cursor-pointer transition-colors"
                         >
                           #{tag}
@@ -356,14 +275,18 @@ export default function BlogPage() {
               </article>
             </div>
           </section>
-        ) : null}
+        ) : (
+          <div className="flex justify-center items-center h-64">
+            <p className="text-gray-600">Artikel tidak ditemukan</p>
+          </div>
+        )}
       </main>
       <Footer />
     </>
   )
 }
 
-function BlogArticleActions({ article }: { article: (typeof blogArticles)[0] }) {
+function BlogArticleActions({ article }: { article: BlogItem }) {
   return (
     <div className="flex flex-wrap gap-4 mb-12 pb-8 border-b border-gray-200">
       <button
@@ -400,7 +323,7 @@ function BlogArticleActions({ article }: { article: (typeof blogArticles)[0] }) 
   )
 }
 
-function BlogComments({ articleId }: { articleId: number }) {
+function BlogComments({ articleId }: { articleId: string }) {
   const [comments, setComments] = useState<Array<{ name: string; email: string; text: string; date: string }>>([
     {
       name: "Adi Pratama",

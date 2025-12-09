@@ -53,6 +53,13 @@ export async function GET(request: NextRequest) {
         sort: true,
         created_at: true,
         updated_at: true,
+        category_id: true,
+        categories: {
+          select: {
+            id: true,
+            name: true,
+          }
+        },
         menu_sub_headers: {
           where: {
             status: true,
@@ -70,6 +77,13 @@ export async function GET(request: NextRequest) {
             sort: true,
             created_at: true,
             updated_at: true,
+            category_id: true,
+            categories: {
+              select: {
+                id: true,
+                name: true,
+              }
+            },
           },
         },
       },
@@ -77,7 +91,7 @@ export async function GET(request: NextRequest) {
 
     // Serialize BigInt values to strings
     const serializedData = serializeBigInt(menuHeaders);
-    
+
     return NextResponse.json(serializedData);
   } catch (error) {
     console.error('Error fetching menu headers:', error);

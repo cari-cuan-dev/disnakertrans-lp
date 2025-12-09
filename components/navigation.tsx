@@ -27,6 +27,11 @@ export interface MenuHeader {
   sort: number;
   created_at?: string | null;
   updated_at?: string | null;
+  category_id: string | null;
+  categories: {
+    id: string;
+    name: string;
+  } | null;
   menu_sub_headers: MenuSubHeader[];
 }
 
@@ -40,6 +45,11 @@ export interface MenuSubHeader {
   sort: number;
   created_at?: string | null;
   updated_at?: string | null;
+  category_id: string | null;
+  categories: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 export default function Navigation() {
@@ -172,10 +182,18 @@ export default function Navigation() {
                         <div className="absolute left-0 mt-0 w-48 bg-white border border-purple-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
                           {header.menu_sub_headers.map((subHeader) => {
                             if (!subHeader.status) return null;
+
+                            // If type is 'category' and category exists, link to /blog?category=NAME
+                            let subLinkUrl = subHeader.url || '#';
+                            if (subHeader.type.toLowerCase() === 'category' && subHeader.categories) {
+                              // If type is 'category' and has category info, link to /blog?category=CATEGORY_NAME
+                              subLinkUrl = `/blog?category=${encodeURIComponent(subHeader.categories.name)}`;
+                            }
+
                             return (
                               <Link
                                 key={subHeader.id}
-                                href={subHeader.url || '#'}
+                                href={subLinkUrl}
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
                               >
                                 {subHeader.name}
@@ -187,10 +205,16 @@ export default function Navigation() {
                     );
                   } else {
                     // Menu header without sub-headers
+                    // If type is 'category' and category exists, link to /blog?category=NAME
+                    let linkUrl = header.url || '#';
+                    if (header.type.toLowerCase() === 'category' && header.categories) {
+                      linkUrl = `/blog?category=${encodeURIComponent(header.categories.name)}`;
+                    }
+
                     return (
                       <Link
                         key={header.id}
-                        href={header.url || '#'}
+                        href={linkUrl}
                         className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium"
                       >
                         {header.name}
@@ -293,10 +317,18 @@ export default function Navigation() {
                           <div className="bg-purple-50 rounded-lg mt-2 py-2">
                             {header.menu_sub_headers.map((subHeader) => {
                               if (!subHeader.status) return null;
+
+                              // If type is 'category' and category exists, link to /blog?category=NAME
+                              let subLinkUrl = subHeader.url || '#';
+                              if (subHeader.type.toLowerCase() === 'category' && subHeader.categories) {
+                                // If type is 'category' and has category info, link to /blog?category=CATEGORY_NAME
+                                subLinkUrl = `/blog?category=${encodeURIComponent(subHeader.categories.name)}`;
+                              }
+
                               return (
                                 <Link
                                   key={subHeader.id}
-                                  href={subHeader.url || '#'}
+                                  href={subLinkUrl}
                                   className="block px-4 py-2 text-sm text-gray-700 hover:text-purple-600 transition-colors"
                                 >
                                   {subHeader.name}
@@ -309,10 +341,16 @@ export default function Navigation() {
                     );
                   } else {
                     // Menu header without sub-headers
+                    // If type is 'category' and category exists, link to /blog?category=NAME
+                    let linkUrl = header.url || '#';
+                    if (header.type.toLowerCase() === 'category' && header.categories) {
+                      linkUrl = `/blog?category=${encodeURIComponent(header.categories.name)}`;
+                    }
+
                     return (
                       <Link
                         key={header.id}
-                        href={header.url || '#'}
+                        href={linkUrl}
                         className="block py-2 text-gray-700 hover:text-purple-600 transition-colors"
                       >
                         {header.name}

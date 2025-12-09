@@ -3,39 +3,50 @@
 import { ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
-const newsItems = [
-  {
-    id: 1,
-    title: "Kepala Disnakertrans Lepas 40 Peserta Magang ke Jepang",
-    category: "Berita",
-    date: "25 November 2023",
-    image: "/magang-jepang-program-internasional.jpg",
-  },
-  {
-    id: 2,
-    title: "Program Pelatihan Gratis untuk Meningkatkan Skill Kerja",
-    category: "Pengumuman",
-    date: "24 November 2023",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-  },
-  {
-    id: 3,
-    title: "Pembukaan Layanan Sertifikasi BNSP Tahun 2023",
-    category: "Berita",
-    date: "23 November 2023",
-    image: "/sertifikasi-bnsp-profesional.jpg",
-  },
-  {
-    id: 4,
-    title: "Kerja Berkah: Solusi Berkelanjutan untuk Pengangguran",
-    category: "Artikel",
-    date: "22 November 2023",
-    image: "/kerja-berkah-program-sosial.jpg",
-  },
-]
+export interface BlogItem {
+  id: string;
+  title: string;
+  img_cover_path: string;
+  content: string;
+  tags: string[];
+  status: boolean;
+  created_at: string;
+  updated_at: string;
+  category_id: string;
+  sort: number | null;
+  categories: {
+    id: string;
+    name: string;
+  };
+}
 
 export default function NewsSection() {
+  const [newsItems, setNewsItems] = useState<BlogItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(`/api/blogs?category_id=1`);
+        if (response.ok) {
+          const data: BlogItem[] = await response.json();
+          // Take only the first 4 items
+          setNewsItems(data.slice(0, 4));
+        } else {
+          console.error('Failed to fetch news:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
   return (
     <section className="py-12 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,30 +63,48 @@ export default function NewsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {newsItems.map((item) => (
-            <Link key={item.id} href={`/blog/${item.id}`}>
-              <article className="group cursor-pointer bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                <div className="relative h-40 md:h-48 overflow-hidden bg-gray-100">
-                  <img
-                    src={item.image || "/placeholder.svg"}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+          {loading ? (
+            // Loading placeholders
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="relative h-40 md:h-48 bg-gray-200 animate-pulse"></div>
                 <div className="p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                      {item.category}
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-500">{item.date}</p>
+                  <div className="h-4 bg-gray-200 rounded w-1/4 mb-2 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/3 animate-pulse"></div>
                 </div>
-              </article>
-            </Link>
-          ))}
+              </div>
+            ))
+          ) : newsItems.length > 0 ? (
+            newsItems.map((item) => (
+              <Link key={item.id} href={`/blog/${item.id}`}>
+                <article className="group cursor-pointer bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="relative h-40 md:h-48 overflow-hidden bg-gray-100">
+                    <img
+                      src={item.img_cover_path || "/placeholder.svg"}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                        {item.categories.name}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-gray-500">{new Date(item.created_at).toLocaleDateString('id-ID')}</p>
+                  </div>
+                </article>
+              </Link>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-600">Tidak ada berita yang ditemukan</p>
+            </div>
+          )}
         </div>
 
         <div className="mt-8 md:hidden">
