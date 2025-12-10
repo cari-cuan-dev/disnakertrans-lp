@@ -1,6 +1,6 @@
 "use client"
 
-import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone } from "lucide-react"
+import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone, Mail as MailIcon, MapPin as MapPinIcon, Phone as PhoneIcon } from "lucide-react"
 import { useState, useEffect } from "react"
 
 interface SocialMediaItem {
@@ -15,29 +15,89 @@ interface SocialMediaItem {
   updated_at?: string | null;
 }
 
+export interface FooterServiceItem {
+  id: string;
+  name: string;
+  type: string;
+  url: string | null;
+  category_id: string | null;
+  status: boolean;
+  created_at?: string | null;
+  updated_at?: string | null;
+  categories?: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 export default function Footer() {
   const [socialMedia, setSocialMedia] = useState<SocialMediaItem[]>([]);
   const [socialMediaLoading, setSocialMediaLoading] = useState(true);
+  const [footerServices, setFooterServices] = useState<FooterServiceItem[]>([]);
+  const [footerServicesLoading, setFooterServicesLoading] = useState(true);
+  const [footerContacts, setFooterContacts] = useState<FooterContactItem[]>([]);
+  const [footerContactsLoading, setFooterContactsLoading] = useState(true);
   const currentYear = new Date().getFullYear()
 
+  interface FooterContactItem {
+    id: string;
+    type: string;
+    title: string;
+    url: string | null;
+    status: boolean;
+    created_at?: string | null;
+    updated_at?: string | null;
+  }
+
   useEffect(() => {
-    const fetchSocialMedia = async () => {
+    const fetchData = async () => {
+      // Fetch social media
       try {
-        const response = await fetch('/api/social-media');
-        if (response.ok) {
-          const data: SocialMediaItem[] = await response.json();
-          setSocialMedia(data);
+        const socialMediaResponse = await fetch('/api/social-media');
+        if (socialMediaResponse.ok) {
+          const socialMediaData: SocialMediaItem[] = await socialMediaResponse.json();
+          setSocialMedia(socialMediaData);
         } else {
-          console.error('Failed to fetch social media:', response.statusText);
+          console.error('Failed to fetch social media:', socialMediaResponse.statusText);
         }
       } catch (error) {
         console.error('Error fetching social media:', error);
       } finally {
         setSocialMediaLoading(false);
       }
+
+      // Fetch footer services
+      try {
+        const footerServicesResponse = await fetch('/api/footer-services');
+        if (footerServicesResponse.ok) {
+          const footerServicesData: FooterServiceItem[] = await footerServicesResponse.json();
+          setFooterServices(footerServicesData);
+        } else {
+          console.error('Failed to fetch footer services:', footerServicesResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching footer services:', error);
+      } finally {
+        setFooterServicesLoading(false);
+      }
+
+      // Fetch footer contacts
+      try {
+        const footerContactsResponse = await fetch('/api/footer-contacts');
+        if (footerContactsResponse.ok) {
+          const footerContactsData: FooterContactItem[] = await footerContactsResponse.json();
+          setFooterContacts(footerContactsData);
+        } else {
+          console.error('Failed to fetch footer contacts:', footerContactsResponse.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching footer contacts:', error);
+      } finally {
+        setFooterContactsLoading(false);
+      }
     };
 
-    fetchSocialMedia();
+    fetchData();
   }, []);
 
   // Map social media names to Lucide icons
@@ -97,26 +157,42 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-white mb-4">Layanan</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:text-purple-400 transition-colors">
-                  Portal Lowongan Kerja
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-purple-400 transition-colors">
-                  Sertifikasi BNSP
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-purple-400 transition-colors">
-                  Kerja Berkah
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-purple-400 transition-colors">
-                  PPID
-                </a>
-              </li>
+              {footerServicesLoading ? (
+                // Loading placeholders
+                <>
+                  <li className="h-4 bg-gray-700 rounded animate-pulse w-3/4"></li>
+                  <li className="h-4 bg-gray-700 rounded animate-pulse w-1/2"></li>
+                  <li className="h-4 bg-gray-700 rounded animate-pulse w-2/3"></li>
+                  <li className="h-4 bg-gray-700 rounded animate-pulse w-1/3"></li>
+                </>
+              ) : footerServices.length > 0 ? (
+                footerServices.map((service) => {
+                  // Determine the URL based on the service type
+                  let linkUrl = '#';
+
+                  if (service.type.toLowerCase() === 'redirect' && service.url) {
+                    // For redirect type, use the provided URL
+                    linkUrl = service.url;
+                  } else if (service.type.toLowerCase() === 'category' && service.categories) {
+                    // For category type, link to blog with category filter
+                    linkUrl = `/blog?category=${encodeURIComponent(service.categories.name)}`;
+                  }
+
+                  return (
+                    <li key={service.id}>
+                      <a
+                        href={linkUrl}
+                        className="hover:text-purple-400 transition-colors"
+                      >
+                        {service.name}
+                      </a>
+                    </li>
+                  );
+                })
+              ) : (
+                // Empty state
+                <li>Tidak ada layanan</li>
+              )}
             </ul>
           </div>
 
@@ -151,22 +227,67 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-white mb-4">Hubungi Kami</h3>
             <div className="space-y-3 text-sm">
-              <div className="flex items-start gap-2">
-                <MapPin size={16} className="mt-0.5 flex-shrink-0" />
-                <span>Jl. Semangat No. 123, Palangka Raya</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone size={16} />
-                <a href="tel:+62536123456" className="hover:text-purple-400 transition-colors">
-                  (0536) 123-4567
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail size={16} />
-                <a href="mailto:info@disnakertrans.go.id" className="hover:text-purple-400 transition-colors">
-                  info@disnakertrans.go.id
-                </a>
-              </div>
+              {footerContactsLoading ? (
+                // Loading placeholders
+                <>
+                  <div className="flex items-start gap-2">
+                    <div className="w-4 h-4 bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-3/4"></div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-1/2"></div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-2/3"></div>
+                  </div>
+                </>
+              ) : footerContacts.length > 0 ? (
+                footerContacts.map((contact) => {
+                  // Determine icon based on contact type
+                  let iconElement;
+                  let displayLinkPrefix = '';
+                  switch(contact.type.toLowerCase()) {
+                    case 'map':
+                    case 'alamat':
+                    case 'location':
+                      iconElement = <MapPin size={16} />;
+                      displayLinkPrefix = '';
+                      break;
+                    case 'telepon':
+                    case 'phone':
+                    case 'telp':
+                      iconElement = <Phone size={16} />;
+                      displayLinkPrefix = 'tel:';
+                      break;
+                    case 'email':
+                    case 'mail':
+                      iconElement = <Mail size={16} />;
+                      displayLinkPrefix = 'mailto:';
+                      break;
+                    default:
+                      // Use generic icon or return a div
+                      iconElement = <div className="w-4 h-4 bg-gray-700 rounded"></div>;
+                      displayLinkPrefix = '';
+                  }
+
+                  return (
+                    <div key={contact.id} className="flex items-center gap-2">
+                      {iconElement}
+                      <a
+                        href={`${displayLinkPrefix}${contact.url || '#'}`}
+                        className="hover:text-purple-400 transition-colors"
+                      >
+                        {contact.title}
+                      </a>
+                    </div>
+                  );
+                })
+              ) : (
+                // Empty state
+                <p>Tidak ada informasi kontak</p>
+              )}
             </div>
           </div>
         </div>

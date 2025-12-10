@@ -3,23 +3,94 @@
 import { FileText, Download, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
-const documents = [
-  { title: "Panduan Layanan 2023", type: "PDF", size: "2.4 MB" },
-  { title: "Laporan Kinerja Tahunan", type: "PDF", size: "3.1 MB" },
-  { title: "Tata Cara Pengajuan Sertifikasi", type: "PDF", size: "1.8 MB" },
-]
+export interface DocumentationItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  type: string;
+  file_path: string;
+  size: string | null;
+  status: boolean;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
 
 export default function DocumentationSection() {
+  const [documents, setDocuments] = useState<DocumentationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDocumentations = async () => {
+      try {
+        const response = await fetch('/api/documentations');
+        if (response.ok) {
+          const data: DocumentationItem[] = await response.json();
+          setDocuments(data);
+        } else {
+          console.error('Failed to fetch documentation:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching documentation:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDocumentations();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-12 md:py-20 bg-gradient-to-r from-purple-50 via-transparent to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">Dokumentasi</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, index) => (  // Change to 4 items
+              <div
+                key={index}
+                className="bg-white rounded-xl p-6 border border-gray-200 animate-pulse"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                  <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <div className="bg-purple-600 text-white px-4 py-2 rounded-lg inline-block animate-pulse">
+              <span className="h-5 bg-purple-700 rounded w-40"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Only show the first 4 documents (the newest ones since they're already sorted by newest first)
+  const displayedDocuments = documents.slice(0, 4);
+
   return (
     <section className="py-12 md:py-20 bg-gradient-to-r from-purple-50 via-transparent to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">Dokumentasi</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {documents.map((doc, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">  {/* Changed grid to show 4 columns */}
+          {displayedDocuments.map((item) => (
             <div
-              key={index}
+              key={item.id}
               className="group bg-white rounded-xl p-6 border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all cursor-pointer"
             >
               <div className="flex items-start gap-4">
@@ -28,10 +99,10 @@ export default function DocumentationSection() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
-                    {doc.title}
+                    {item.title}
                   </h3>
                   <p className="text-xs text-gray-500 mt-2">
-                    {doc.type} • {doc.size}
+                    {item.type} • {item.size || '0 KB'}
                   </p>
                 </div>
               </div>
