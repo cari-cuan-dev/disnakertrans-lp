@@ -34,22 +34,22 @@ const IconoirLoader = ({ iconName, size = 24, className = "text-white" }: { icon
 
   useEffect(() => {
     const loadIcon = async () => {
-      try {
-        // Attempt to load @iconoir/react
-        const iconoirModule = await import('@iconoir/react');
+      // try {
+      //   // Attempt to load @iconoir/react
+      //   const iconoirModule = await import('@iconoir/react');
 
-        // Look for the icon in Iconoir module using the exact name from database
-        if (iconoirModule[iconName]) {
-          setIconComponent(() => iconoirModule[iconName]);
-        } else {
-          setError(true);
-        }
-      } catch (loadError) {
-        console.warn(`Iconoir not available or icon "${iconName}" not found in Iconoir:`, loadError);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
+      //   // Look for the icon in Iconoir module using the exact name from database
+      //   if (iconoirModule[iconName]) {
+      //     setIconComponent(() => iconoirModule[iconName]);
+      //   } else {
+      //     setError(true);
+      //   }
+      // } catch (loadError) {
+      //   console.warn(`Iconoir not available or icon "${iconName}" not found in Iconoir:`, loadError);
+      //   setError(true);
+      // } finally {
+      //   setLoading(false);
+      // }
     };
 
     loadIcon();
