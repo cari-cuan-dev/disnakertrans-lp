@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
@@ -26,9 +26,13 @@ export interface BlogItem {
 
 export default function BlogPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("Semua")
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    const initialCategory = searchParams.get("category") || "Semua";
+    return initialCategory;
+  })
   const [sortBy, setSortBy] = useState("terbaru") // terbaru or terlama
   const [blogData, setBlogData] = useState<BlogItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -36,9 +40,20 @@ export default function BlogPage() {
   const [article, setArticle] = useState<BlogItem | null>(null)
 
   useEffect(() => {
-    const fetchBlogData = async () => {
+    const fetchCategoriesAndData = async () => {
       try {
         setLoading(true)
+
+        // Fetch categories first
+        const categoriesResponse = await fetch('/api/blog-categories');
+        if (categoriesResponse.ok) {
+          const categoryNames: string[] = await categoriesResponse.json();
+          setCategories(["Semua", ...categoryNames]);
+        } else {
+          console.error('Failed to fetch categories:', categoriesResponse.statusText);
+        }
+
+        // Then fetch filtered data
         const category = searchParams.get("category")
         const service = searchParams.get("service")
 
@@ -51,10 +66,6 @@ export default function BlogPage() {
         if (response.ok) {
           const data: BlogItem[] = await response.json()
           setBlogData(data)
-
-          // Extract unique categories
-          const uniqueCategories = Array.from(new Set(data.map((blog) => blog.categories.name)))
-          setCategories(["Semua", ...uniqueCategories])
         } else {
           console.error('Failed to fetch blog data:', response.statusText)
         }
@@ -65,7 +76,7 @@ export default function BlogPage() {
       }
     }
 
-    fetchBlogData()
+    fetchCategoriesAndData()
   }, [searchParams, searchTerm])
 
   useEffect(() => {
@@ -130,7 +141,19 @@ export default function BlogPage() {
                       {categories.map((category) => (
                         <button
                           key={category}
-                          onClick={() => setSelectedCategory(category)}
+                          onClick={() => {
+                            setSelectedCategory(category);
+                            // Update URL with only the new category
+                            const params = new URLSearchParams();
+                            if (category !== "Semua") {
+                              params.set('category', category);
+                            }
+                            // Only preserve service parameter, not search term when switching category
+                            const service = searchParams.get("service");
+                            if (service) params.set('service', service);
+
+                            router.push(`?${params.toString()}`);
+                          }}
                           className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
                             selectedCategory === category
                               ? "bg-purple-600 text-white shadow-lg"
@@ -197,7 +220,9 @@ export default function BlogPage() {
                           </span>
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{item.title}</h2>
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{item.content.substring(0, 100)}...</p>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {item.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...'}
+                        </p>
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>{new Date(item.created_at).toLocaleDateString('id-ID')}</span>
                           <span>Oleh Admin</span>
@@ -246,13 +271,12 @@ export default function BlogPage() {
 
                   <h1 className="text-4xl font-bold text-gray-900 mb-6 text-balance">{article.title}</h1>
 
-                  <div className="prose prose-lg max-w-none mb-8">
-                    {article.content.split("\n\n").map((paragraph, idx) => (
-                      <p key={idx} className="text-gray-700 mb-4 leading-relaxed whitespace-pre-wrap">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                  <div
+                    className="prose prose-lg max-w-none mb-8 [&_p]:text-gray-700 [&_p]:mb-4 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:text-lg [&_h3]:font-medium [&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6 [&_li]:mb-1 [&_strong]:font-bold [&_em]:italic [&_a]:text-purple-600 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-purple-500 [&_blockquote]:pl-4 [&_blockquote]:italic"
+                    dangerouslySetInnerHTML={{
+                      __html: article.content
+                    }}
+                  />
 
                   <div className="mb-8 pb-8 border-b border-gray-200">
                     <h3 className="text-sm font-semibold text-gray-900 mb-3">Tags:</h3>
@@ -304,7 +328,7 @@ function BlogArticleActions({ article }: { article: BlogItem }) {
         Bagikan Artikel
       </button>
 
-      <button
+      {/* <button
         onClick={() => {
           alert("Download PDF sedang dalam proses. Fitur akan tersedia segera.")
         }}
@@ -318,7 +342,7 @@ function BlogArticleActions({ article }: { article: BlogItem }) {
         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
       >
         Cetak
-      </button>
+      </button> */}
     </div>
   )
 }
@@ -360,7 +384,7 @@ function BlogComments({ articleId }: { articleId: string }) {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Komentar ({comments.length})</h2>
+      {/* <h2 className="text-2xl font-bold text-gray-900 mb-8">Komentar ({comments.length})</h2>
 
       <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Tambahkan Komentar</h3>
@@ -412,7 +436,7 @@ function BlogComments({ articleId }: { articleId: string }) {
             <p className="text-gray-700 leading-relaxed">{comment.text}</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }

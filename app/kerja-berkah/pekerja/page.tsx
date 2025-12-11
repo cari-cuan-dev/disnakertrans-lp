@@ -1,83 +1,92 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
 import { MapPin, Briefcase, Award, ArrowLeft } from "lucide-react"
 
-// Mock data untuk pekerja
-const allWorkers = [
-  {
-    id: 1,
-    name: "Budi Santoso",
-    skills: "Web Development",
-    experience: "3-5 Tahun",
-    location: "Palangka Raya",
-    image: "/magang-jepang-program-internasional.jpg",
-    brief: "Web Developer berpengalaman dengan keahlian React dan Node.js",
-  },
-  {
-    id: 2,
-    name: "Siti Nurhaliza",
-    skills: "UI/UX Design",
-    experience: "2-3 Tahun",
-    location: "Palangka Raya",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-    brief: "Designer UI/UX kreatif dengan portfolio yang impressive",
-  },
-  {
-    id: 3,
-    name: "Ahmad Ridho",
-    skills: "Data Analysis",
-    experience: "2 Tahun",
-    location: "Sampit",
-    image: "/sertifikasi-bnsp-profesional.jpg",
-    brief: "Data Analyst detail-oriented dengan keahlian SQL dan Python",
-  },
-  {
-    id: 4,
-    name: "Nur Azizah",
-    skills: "Project Management",
-    experience: "5+ Tahun",
-    location: "Palangka Raya",
-    image: "/kerja-berkah-program-sosial.jpg",
-    brief: "Project Manager berpengalaman dengan sertifikasi PMP",
-  },
-  {
-    id: 5,
-    name: "Reza Pratama",
-    skills: "Digital Marketing",
-    experience: "2-3 Tahun",
-    location: "Palangka Raya",
-    image: "/magang-jepang-program-internasional.jpg",
-    brief: "Marketing specialist dengan expertise di social media dan Google Ads",
-  },
-  {
-    id: 6,
-    name: "Dewi Lestari",
-    skills: "Java Development",
-    experience: "3-5 Tahun",
-    location: "Sukamara",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-    brief: "Java Developer berpengalaman dengan Spring Framework expertise",
-  },
-]
+interface WorkerItem {
+  id: string;
+  name: string;
+  skills: unknown; // JSON type
+  skill: string; // Main skill
+  email: string;
+  phone: string;
+  birth_date: string;
+  experience: string;
+  city: string;
+  address: string;
+  education: string;
+  languages: unknown; // JSON type
+  description?: string | null;
+  certifications?: unknown | null; // JSON type
+  created_at?: string | null;
+  user_id?: string | null;
+}
 
 export default function PekerjaPage() {
-  const searchParams = useSearchParams()
-  const query = searchParams.get("q") || ""
-  const experience = searchParams.get("experience") || "all"
-  const location = searchParams.get("location") || "all"
+  const searchParams = useSearchParams();
+  const [workers, setWorkers] = useState<WorkerItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredWorkers = allWorkers.filter((worker) => {
-    const matchesQuery =
-      worker.skills.toLowerCase().includes(query.toLowerCase()) ||
-      worker.name.toLowerCase().includes(query.toLowerCase())
-    const matchesExperience = experience === "all" || worker.experience.includes(experience)
-    const matchesLocation = location === "all" || worker.location.toLowerCase().includes(location.toLowerCase())
-    return matchesQuery && matchesExperience && matchesLocation
-  })
+  const query = searchParams.get("q") || "";
+  const experience = searchParams.get("experience") || "all";
+  const location = searchParams.get("location") || "all";
+
+  useEffect(() => {
+    const fetchWorkers = async () => {
+      try {
+        setLoading(true);
+
+        const params = new URLSearchParams();
+        if (query) params.append('q', query);
+        if (experience && experience !== 'all') params.append('experience', experience);
+        if (location && location !== 'all') params.append('location', location);
+
+        const response = await fetch(`/api/workers?${params.toString()}`);
+        if (response.ok) {
+          const data: WorkerItem[] = await response.json();
+          setWorkers(data);
+        } else {
+          console.error('Failed to fetch workers:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching workers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkers();
+  }, [query, experience, location]);
+
+  // Handle skills properly since they're JSON type
+  const formatSkillsForDisplay = (skills: unknown): string => {
+    if (typeof skills === 'string') {
+      return skills;
+    }
+
+    if (Array.isArray(skills)) {
+      return Array.isArray(skills[0]) ? skills[0].join(', ') : skills.join(', ');
+    }
+
+    if (typeof skills === 'object' && skills !== null) {
+      // If it's an object with a "skills" property
+      const skillsObj = skills as Record<string, unknown>;
+      if (skillsObj.skills && Array.isArray(skillsObj.skills)) {
+        return (skillsObj.skills as string[]).join(', ');
+      }
+      // If it's an object with other properties
+      const values = Object.values(skillsObj);
+      if (values.length > 0) {
+        return Array.isArray(values[0]) ? (values[0] as string[]).join(', ') : String(values[0]);
+      }
+    }
+
+    return 'Skills not specified';
+  };
 
   return (
     <>
@@ -95,7 +104,7 @@ export default function PekerjaPage() {
             </Link>
             <h1 className="text-4xl font-bold mb-4">Database Pekerja</h1>
             <p className="text-lg text-purple-100">
-              Ditemukan {filteredWorkers.length} pekerja {query && `untuk "${query}"`}
+              Ditemukan {workers.length} pekerja {query && `untuk "${query}"`}
             </p>
           </div>
         </section>
@@ -103,27 +112,51 @@ export default function PekerjaPage() {
         {/* Results */}
         <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
-            {filteredWorkers.length > 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-pulse">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-purple-600">
+                        <div className="h-48 bg-gray-200"></div>
+                        <div className="p-6">
+                          <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+                          <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
+                          <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                          <div className="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
+                          <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : workers.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredWorkers.map((worker) => (
+                {workers.map((worker) => (
                   <Link
                     key={worker.id}
                     href={`/kerja-berkah/pekerja/${worker.id}`}
                     className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden border-t-4 border-purple-600 group"
                   >
-                    <div className="relative overflow-hidden h-48">
-                      <img
-                        src={worker.image || "/placeholder.svg"}
-                        alt={worker.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
+                    <div className="relative overflow-hidden h-48 bg-gray-200 flex items-center justify-center">
+                      <div className="bg-gray-300 border-2 border-dashed rounded-xl w-full h-full flex items-center justify-center">
+                        <Briefcase className="text-gray-500" size={40} />
+                      </div>
                     </div>
                     <div className="p-6">
                       <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
                         {worker.name}
                       </h3>
-                      <p className="text-purple-600 font-semibold mb-3">{worker.skills}</p>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{worker.brief}</p>
+                      <p className="text-purple-600 font-semibold mb-3">{worker.skill || formatSkillsForDisplay(worker.skills)}</p>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {worker.description
+                          ? worker.description.replace(/<[^>]*>/g, '').substring(0, 100) + '...'
+                          : 'Pekerja dengan pengalaman dan keterampilan.'}
+                      </p>
                       <div className="space-y-2 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <Award size={14} className="text-purple-600" />
@@ -131,7 +164,7 @@ export default function PekerjaPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           <MapPin size={14} className="text-blue-600" />
-                          {worker.location}
+                          {worker.city}
                         </div>
                       </div>
                     </div>

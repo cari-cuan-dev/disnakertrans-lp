@@ -43,9 +43,15 @@ export default function InformationSection() {
         if (missionResponse.ok) {
           const missionData: AboutItem[] = await missionResponse.json();
           if (missionData.length > 0) {
-            // Split content by newlines or common separators for mission list items
-            const missionList = missionData[0].content.split(/\n|\r\n|<br\s*\/?>|-|•/).filter(item => item.trim() !== '');
-            setMissions(missionList);
+            // If content is HTML, we should not split it, but handle it as a single HTML block
+            // For list items, we'll check if it contains HTML list tags
+            if (missionData[0].content.includes('<ul>') || missionData[0].content.includes('<ol>')) {
+              setMissions([missionData[0].content]); // Treat as single HTML block
+            } else {
+              // Split content by newlines or common separators for mission list items
+              const missionList = missionData[0].content.split(/\n|\r\n|<br\s*\/?>|-|•/).filter(item => item.trim() !== '');
+              setMissions(missionList);
+            }
           }
         }
       } catch (error) {
@@ -120,11 +126,18 @@ export default function InformationSection() {
               </div>
               <div>
                 <h4 className="font-bold text-purple-600 mb-2">Misi</h4>
-                <ul className="text-gray-600 space-y-2 list-disc list-inside">
-                  {missions.map((mission, index) => (
-                    <li key={index} dangerouslySetInnerHTML={{ __html: mission }} />
-                  ))}
-                </ul>
+                {missions.length === 1 && (missions[0].includes('<ul>') || missions[0].includes('<ol>')) ? (
+                  <div
+                    className="text-gray-600 [&_ul]:list-disc [&_ul]:list-outside [&_ol]:list-decimal [&_ol]:list-outside [&_li]:ml-5 [&_li]:mb-2 [&_p]:my-0 [&_p]:inline"
+                    dangerouslySetInnerHTML={{ __html: missions[0] }}
+                  />
+                ) : (
+                  <ul className="text-gray-600 space-y-2 list-disc list-inside">
+                    {missions.map((mission, index) => (
+                      <li key={index} dangerouslySetInnerHTML={{ __html: mission }} />
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>

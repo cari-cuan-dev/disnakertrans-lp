@@ -1,94 +1,100 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
 import { Briefcase, MapPin, DollarSign, Clock, ArrowLeft, Eye } from "lucide-react"
 
-// Mock data untuk lowongan kerja
-const allJobs = [
-  {
-    id: 1,
-    title: "Web Developer",
-    company: "PT. Tech Indonesia",
-    location: "Palangka Raya",
-    salary: "Rp 5.000.000 - Rp 8.000.000",
-    type: "Full Time",
-    description: "Kami mencari Web Developer berpengalaman untuk mengembangkan aplikasi web modern.",
-    requirements: ["3+ tahun pengalaman", "Menguasai React dan Node.js", "Gelar S1 Teknik Informatika"],
-    image: "/magang-jepang-program-internasional.jpg",
-  },
-  {
-    id: 2,
-    title: "UI/UX Designer",
-    company: "PT. Design Studio",
-    location: "Palangka Raya",
-    salary: "Rp 4.000.000 - Rp 6.500.000",
-    type: "Full Time",
-    description: "Desainer UI/UX untuk merancang antarmuka aplikasi mobile dan web yang menarik.",
-    requirements: ["2+ tahun pengalaman", "Menguasai Figma dan Adobe XD", "Portfolio yang kuat"],
-    image: "/pelatihan-keterampilan-kerja.jpg",
-  },
-  {
-    id: 3,
-    title: "Data Analyst",
-    company: "PT. Analytics Pro",
-    location: "Sampit",
-    salary: "Rp 4.500.000 - Rp 7.000.000",
-    type: "Full Time",
-    description: "Analis data untuk menganalisis tren bisnis dan memberikan insights yang actionable.",
-    requirements: ["2+ tahun pengalaman", "SQL dan Python", "Mengerti Business Intelligence"],
-    image: "/sertifikasi-bnsp-profesional.jpg",
-  },
-  {
-    id: 4,
-    title: "Project Manager",
-    company: "PT. Management Consultant",
-    location: "Palangka Raya",
-    salary: "Rp 6.000.000 - Rp 9.000.000",
-    type: "Full Time",
-    description: "Mengelola proyek besar dengan tim multidisiplin untuk memastikan delivery tepat waktu.",
-    requirements: ["5+ tahun pengalaman", "Sertifikasi PMP atau PRINCE2", "Kepemimpinan kuat"],
-    image: "/kerja-berkah-program-sosial.jpg",
-  },
-  {
-    id: 5,
-    title: "Marketing Specialist",
-    company: "PT. Digital Marketing",
-    location: "Palangka Raya",
-    salary: "Rp 3.500.000 - Rp 5.500.000",
-    type: "Full Time",
-    description: "Spesialis pemasaran digital untuk mengelola kampanye di berbagai platform media sosial.",
-    requirements: ["2+ tahun pengalaman", "Familiar dengan Google Ads dan Facebook Ads", "Data-driven mindset"],
-    image: "/magang-jepang-program-internasional.jpg",
-  },
-  {
-    id: 6,
-    title: "Java Developer",
-    company: "PT. Software Solution",
-    location: "Sukamara",
-    salary: "Rp 5.500.000 - Rp 8.500.000",
-    type: "Full Time",
-    description: "Developer Java untuk mengembangkan aplikasi enterprise yang scalable dan reliable.",
-    requirements: ["3+ tahun pengalaman", "Spring Framework", "Microservices Architecture"],
-    image: "/pelatihan-keterampilan-kerja.jpg",
-  },
-]
+interface VacancyItem {
+  id: string;
+  title: string;
+  salary_start: string;
+  salary_end?: string | null;
+  type: unknown;  // JSON type
+  description?: string | null;
+  benefits?: unknown | null; // JSON type
+  created_at?: string | null;
+
+  // Company data
+  company_name?: string | null;
+  company_location?: string | null;
+}
+
+// Format salary range for display
+function formatSalaryRange(start: string, end?: string | null): string {
+  const startNum = parseInt(start);
+  const endNum = end ? parseInt(end) : null;
+
+  if (endNum) {
+    return `Rp ${startNum.toLocaleString('id-ID')} - Rp ${endNum.toLocaleString('id-ID')}`;
+  }
+  return `Rp ${startNum.toLocaleString('id-ID')}+`;
+}
+
+// Get job type for display
+function getJobType(type: unknown): string {
+  if (typeof type === 'string') {
+    return type;
+  }
+
+  // If it's an object, try to extract the type
+  if (type && typeof type === 'object') {
+    const typeObj = type as Record<string, unknown>;
+    if (typeObj.type) {
+      return String(typeObj.type);
+    }
+    if (typeObj.name) {
+      return String(typeObj.name);
+    }
+    // If it's an array, return the first element type
+    if (Array.isArray(type)) {
+      if (type.length > 0) {
+        return String(type[0]);
+      }
+      return 'Full Time';
+    }
+  }
+
+  return 'Full Time'; // Default fallback
+}
 
 export default function LowonganPage() {
-  const searchParams = useSearchParams()
-  const query = searchParams.get("q") || ""
-  const location = searchParams.get("location") || "all"
-  const type = searchParams.get("type") || "all"
+  const searchParams = useSearchParams();
+  const [vacancies, setVacancies] = useState<VacancyItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredJobs = allJobs.filter((job) => {
-    const matchesQuery =
-      job.title.toLowerCase().includes(query.toLowerCase()) || job.company.toLowerCase().includes(query.toLowerCase())
-    const matchesLocation = location === "all" || job.location.toLowerCase().includes(location.toLowerCase())
-    const matchesType = type === "all" || job.type.toLowerCase() === type.toLowerCase()
-    return matchesQuery && matchesLocation && matchesType
-  })
+  const query = searchParams.get("q") || "";
+  const location = searchParams.get("location") || "all";
+  const type = searchParams.get("type") || "all";
+
+  useEffect(() => {
+    const fetchVacancies = async () => {
+      try {
+        setLoading(true);
+
+        const params = new URLSearchParams();
+        if (query) params.append('q', query);
+        if (location && location !== 'all') params.append('location', location);
+        if (type && type !== 'all') params.append('type', type);
+
+        const response = await fetch(`/api/vacancies?${params.toString()}`);
+        if (response.ok) {
+          const data: VacancyItem[] = await response.json();
+          setVacancies(data);
+        } else {
+          console.error('Failed to fetch vacancies:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching vacancies:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVacancies();
+  }, [query, location, type]);
 
   return (
     <>
@@ -106,7 +112,7 @@ export default function LowonganPage() {
             </Link>
             <h1 className="text-4xl font-bold mb-4">Lowongan Kerja</h1>
             <p className="text-lg text-purple-100">
-              Ditemukan {filteredJobs.length} lowongan kerja {query && `untuk "${query}"`}
+              Ditemukan {vacancies.length} lowongan kerja {query && `untuk "${query}"`}
             </p>
           </div>
         </section>
@@ -114,43 +120,79 @@ export default function LowonganPage() {
         {/* Results */}
         <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
-            {filteredJobs.length > 0 ? (
-              <div className="grid gap-6">
-                {filteredJobs.map((job) => (
-                  <Link
-                    key={job.id}
-                    href={`/kerja-berkah/lowongan/${job.id}`}
-                    className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-purple-600 p-6 flex gap-6 items-start"
-                  >
-                    <img
-                      src={job.image || "/placeholder.svg"}
-                      alt={job.title}
-                      className="w-32 h-32 rounded-lg object-cover flex-shrink-0"
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
-                        {job.title}
-                      </h3>
-                      <p className="text-gray-700 font-semibold mb-3">{job.company}</p>
-                      <p className="text-gray-600 mb-4 line-clamp-2">{job.description}</p>
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <MapPin size={16} className="text-purple-600" />
-                          {job.location}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <DollarSign size={16} className="text-blue-600" />
-                          {job.salary}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock size={16} className="text-purple-600" />
-                          {job.type}
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-pulse">
+                  <div className="space-y-6">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="bg-white rounded-lg shadow-md p-6 flex gap-6 items-start">
+                        <div className="w-32 h-32 rounded-lg bg-gray-200"></div>
+                        <div className="flex-1">
+                          <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+                          <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
+                          <div className="space-y-2 mb-4">
+                            <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+                            <div className="h-4 bg-gray-300 rounded w-4/6"></div>
+                          </div>
+                          <div className="flex gap-4">
+                            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <Eye className="text-gray-400 flex-shrink-0" size={20} />
-                  </Link>
-                ))}
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : vacancies.length > 0 ? (
+              <div className="grid gap-6">
+                {vacancies.map((vacancy) => {
+                  // Format salary using the helper function
+                  const salary = formatSalaryRange(vacancy.salary_start, vacancy.salary_end);
+
+                  // Get job type
+                  const jobType = getJobType(vacancy.type);
+
+                  return (
+                    <Link
+                      key={vacancy.id}
+                      href={`/kerja-berkah/lowongan/${vacancy.id}`}
+                      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-purple-600 p-6 flex gap-6 items-start"
+                    >
+                      <div className="w-32 h-32 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
+                        <Briefcase className="text-gray-500" size={40} />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
+                          {vacancy.title}
+                        </h3>
+                        <p className="text-gray-700 font-semibold mb-3">{vacancy.company_name}</p>
+                        <div
+                          className="text-gray-600 mb-4 line-clamp-2"
+                          dangerouslySetInnerHTML={{
+                            __html: vacancy.description ? vacancy.description.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : 'Deskripsi lowongan tidak tersedia.'
+                          }}
+                        />
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                          <div className="flex items-center gap-2">
+                            <MapPin size={16} className="text-purple-600" />
+                            {vacancy.company_location || 'Indonesia'}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <DollarSign size={16} className="text-blue-600" />
+                            {salary}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock size={16} className="text-purple-600" />
+                            {jobType}
+                          </div>
+                        </div>
+                      </div>
+                      <Eye className="text-gray-400 flex-shrink-0" size={20} />
+                    </Link>
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12 bg-white rounded-lg">

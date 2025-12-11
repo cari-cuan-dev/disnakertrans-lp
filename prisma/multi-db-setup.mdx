@@ -1,0 +1,59 @@
+// prisma/multi-db-setup.mdx - Documentation file explaining the approach
+
+/*
+## Setup Multiple Database Connection
+
+### Step 1: Create separate Prisma schema for kerjaberkah database
+
+1. Create a new directory `prisma/kerjaberkah/`
+2. Create a new schema file `prisma/kerjaberkah/schema.prisma`:
+
+```
+generator client {
+  provider = "prisma-client"
+  output   = "../../lib/generated/kerjaberkah-prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_KERJABERKAH")
+}
+
+// The models will be generated based on your kerjaberkah database schema
+```
+
+### Step 2: Pull schema from kerjaberkah database
+
+```bash
+cd prisma/kerjaberkah/
+npx prisma db pull
+```
+
+### Step 3: Generate Prisma client for kerjaberkah database
+
+```bash
+npx prisma generate
+```
+
+### Step 4: Use both clients in your application
+
+You can now use both Prisma clients in your application:
+
+```typescript
+import { PrismaClient } from '@prisma/client' // Main database
+import { PrismaClient as KerjaBerkahPrismaClient } from '../lib/generated/kerjaberkah-prisma/client' // KerjaBerkah database
+
+const mainDb = new PrismaClient()
+const kerjaBerkahDb = new KerjaBerkahPrismaClient()
+```
+
+### Alternative Approach: Use Prisma with Raw Queries
+
+If setting up multiple Prisma clients becomes complex, you can also use Prisma's $queryRaw for database-specific queries:
+
+```typescript
+// Example of using raw query for the second database
+const result = await prisma.$queryRaw`SELECT * FROM some_table WHERE some_condition = ${value}`;
+```
+
+*/

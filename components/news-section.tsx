@@ -55,7 +55,7 @@ export default function NewsSection() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-balance">Berita Terkini</h2>
             <p className="text-gray-600 mt-2">Informasi terbaru dan terpenting dari Disnakertrans Kalteng</p>
           </div>
-          <Link href="/blog">
+          <Link href="/blog?category=Berita">
             <Button className="hidden md:flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700">
               Lihat Semua Berita <ChevronRight size={20} />
             </Button>
@@ -108,7 +108,7 @@ export default function NewsSection() {
         </div>
 
         <div className="mt-8 md:hidden">
-          <Link href="/blog">
+          <Link href="/blog?category=Berita">
             <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
               Lihat Semua Berita
             </Button>

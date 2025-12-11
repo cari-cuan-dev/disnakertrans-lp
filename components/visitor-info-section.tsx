@@ -117,7 +117,12 @@ export default function VisitorInfoSection() {
                 <IconoirLoader iconName={item.icon} size={24} className="text-white" />
               </div>
               <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-600 whitespace-pre-line">{item.subtitle}</p>
+              <div
+                className="text-sm text-gray-600"
+                dangerouslySetInnerHTML={{
+                  __html: item.subtitle
+                }}
+              />
             </div>
           ))}
         </div>

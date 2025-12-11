@@ -131,13 +131,12 @@ export default function BlogDetailPage() {
                 <h1 className="text-4xl font-bold text-gray-900 mb-6 text-balance">{article.title}</h1>
 
                 {/* Content */}
-                <div className="prose prose-lg max-w-none mb-8">
-                  {article.content.split("\n\n").map((paragraph, idx) => (
-                    <p key={idx} className="text-gray-700 mb-4 leading-relaxed whitespace-pre-wrap">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+                <div
+                  className="prose prose-lg max-w-none mb-8 [&_p]:text-gray-700 [&_p]:mb-4 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:text-lg [&_h3]:font-medium [&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6 [&_li]:mb-1 [&_strong]:font-bold [&_em]:italic [&_a]:text-purple-600 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-purple-500 [&_blockquote]:pl-4 [&_blockquote]:italic"
+                  dangerouslySetInnerHTML={{
+                    __html: article.content
+                  }}
+                />
 
                 {/* Tags */}
                 <div className="mb-8 pb-8 border-b border-gray-200">
@@ -189,22 +188,22 @@ function BlogArticleActions({ article }: { article: BlogItem }) {
       </button>
 
       {/* Download PDF Button */}
-      <button
+      {/* <button
         onClick={() => {
           alert("Download PDF sedang dalam proses. Fitur akan tersedia segera.")
         }}
         className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium text-sm"
       >
         Download PDF
-      </button>
+      </button> */}
 
       {/* Print Button */}
-      <button
+      {/* <button
         onClick={() => window.print()}
         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
       >
         Cetak
-      </button>
+      </button> */}
     </div>
   )
 }
@@ -246,10 +245,10 @@ function BlogComments({ articleId }: { articleId: string }) {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Komentar ({comments.length})</h2>
+      {/* <h2 className="text-2xl font-bold text-gray-900 mb-8">Komentar ({comments.length})</h2> */}
 
       {/* Comment Form */}
-      <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+      {/* <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Tambahkan Komentar</h3>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -285,10 +284,10 @@ function BlogComments({ articleId }: { articleId: string }) {
             Kirim Komentar
           </button>
         </div>
-      </form>
+      </form> */}
 
       {/* Comments List */}
-      <div className="space-y-6">
+      {/* <div className="space-y-6">
         {comments.map((comment, idx) => (
           <div key={idx} className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-start justify-between mb-2">
@@ -300,7 +299,7 @@ function BlogComments({ articleId }: { articleId: string }) {
             <p className="text-gray-700 leading-relaxed">{comment.text}</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }

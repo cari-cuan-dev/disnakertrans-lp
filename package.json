@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "prisma generate && next build",
-    "dev": "prisma generate && next dev",
+    "build": "prisma generate && prisma generate --schema=./prisma/kerjaberkah/schema.prisma && next build",
+    "dev": "prisma generate && prisma generate --schema=./prisma/kerjaberkah/schema.prisma && next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "db:pull:main": "prisma db pull",
+    "db:pull:kerjaberkah": "prisma db pull --schema=./prisma/kerjaberkah/schema.prisma",
+    "db:generate:main": "prisma generate",
+    "db:generate:kerjaberkah": "prisma generate --schema=./prisma/kerjaberkah/schema.prisma",
+    "db:push:main": "prisma db push",
+    "db:push:kerjaberkah": "prisma db push --schema=./prisma/kerjaberkah/schema.prisma"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

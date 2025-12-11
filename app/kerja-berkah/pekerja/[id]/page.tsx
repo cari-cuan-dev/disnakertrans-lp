@@ -1,236 +1,105 @@
+"use client"
+
+import { useState, useEffect, use } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
 import { ArrowLeft, MapPin, Award, Briefcase, Mail, Phone, Share2, Download } from "lucide-react"
 
-// Mock data untuk pekerja detail
-const allWorkers = [
-  {
-    id: 1,
-    name: "Budi Santoso",
-    title: "Web Developer",
-    experience: "3-5 Tahun",
-    location: "Palangka Raya",
-    image: "/magang-jepang-program-internasional.jpg",
-    brief: "Web Developer berpengalaman dengan keahlian React dan Node.js",
-    email: "budi.santoso@email.com",
-    phone: "081234567890",
-    description: `Saya adalah seorang Web Developer yang passionate dalam mengembangkan aplikasi web modern. Dengan pengalaman 4 tahun di industri teknologi, saya telah mengerjakan berbagai proyek dari startup hingga perusahaan besar.
+interface WorkerItem {
+  id: string;
+  name: string;
+  skills: unknown; // JSON type
+  skill: string; // Main skill
+  email: string;
+  phone: string;
+  birth_date: string;
+  experience: string;
+  city: string;
+  address: string;
+  education: string;
+  languages: unknown; // JSON type
+  description?: string | null;
+  certifications?: unknown | null; // JSON type
+  created_at?: string | null;
+  user_id?: string | null;
+}
 
-Pengalaman Kerja:
-- PT. Tech Indonesia (2021-Sekarang): Senior Web Developer
-- PT. Digital Solutions (2019-2021): Web Developer
-- PT. Creative Tech (2018-2019): Junior Web Developer
+export default function WorkerDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const [worker, setWorker] = useState<WorkerItem | null>(null);
+  const [loading, setLoading] = useState(true);
 
-Keahlian:
-- Frontend: React, Vue.js, HTML5, CSS3, JavaScript (ES6+), Tailwind CSS
-- Backend: Node.js, Express, MongoDB, PostgreSQL
-- Tools: Git, Docker, VS Code
-- Metodologi: Agile, RESTful API
+  useEffect(() => {
+    const fetchWorker = async () => {
+      try {
+        setLoading(true);
 
-Saya selalu belajar teknologi terbaru dan berkontribusi aktif dalam komunitas developer. Saya mencari peluang untuk bekerja di proyek-proyek yang challenging dan meaningful.`,
-    skills: ["React", "Node.js", "JavaScript", "MongoDB", "PostgreSQL", "Docker", "Git", "Tailwind CSS"],
-    certifications: ["React Advanced Course", "Node.js Certification", "AWS Certified Associate"],
-    languages: ["Indonesian", "English"],
-  },
-  {
-    id: 2,
-    name: "Siti Nurhaliza",
-    title: "UI/UX Designer",
-    experience: "2-3 Tahun",
-    location: "Palangka Raya",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-    brief: "Designer UI/UX kreatif dengan portfolio yang impressive",
-    email: "siti.nurhaliza@email.com",
-    phone: "081234567891",
-    description: `Sebagai UI/UX Designer berpengalaman, saya menciptakan antarmuka yang indah, fungsional, dan user-centered. Saya memiliki passion dalam memahami user behavior dan menciptakan solusi desain yang innovative.
+        const response = await fetch(`/api/workers/${id}`);
+        if (response.ok) {
+          const workerData: WorkerItem = await response.json();
+          setWorker(workerData);
+        } else if (response.status === 404) {
+          setWorker(null);
+        } else {
+          console.error('Failed to fetch worker:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching worker:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-Pengalaman Kerja:
-- PT. Design Studio (2022-Sekarang): Senior UI/UX Designer
-- PT. Creative Agency (2020-2022): UI/UX Designer
-- Freelance (2019-2020): UI/UX Designer
+    if (id) {
+      fetchWorker();
+    }
+  }, [id]);
 
-Keahlian:
-- Tools: Figma, Adobe XD, Sketch, InVision
-- User Research & Testing
-- Wireframing & Prototyping
-- Design Systems
-- Motion Design
-
-Portfolio saya mencakup proyek-proyek di berbagai industri termasuk fintech, e-commerce, dan SaaS. Saya berkomitmen untuk menghadirkan pengalaman pengguna yang exceptional.`,
-    skills: [
-      "Figma",
-      "Adobe XD",
-      "User Research",
-      "Wireframing",
-      "Prototyping",
-      "Design Systems",
-      "Motion Design",
-      "UI Design",
-    ],
-    certifications: ["Google UX Design Certificate", "Interaction Design Foundation Course", "Advanced Figma"],
-    languages: ["Indonesian", "English"],
-  },
-  {
-    id: 3,
-    name: "Ahmad Ridho",
-    title: "Data Analyst",
-    experience: "2 Tahun",
-    location: "Sampit",
-    image: "/sertifikasi-bnsp-profesional.jpg",
-    brief: "Data Analyst detail-oriented dengan keahlian SQL dan Python",
-    email: "ahmad.ridho@email.com",
-    phone: "081234567892",
-    description: `Saya adalah Data Analyst yang passionate dalam menggali insights dari data. Dengan keahlian dalam SQL, Python, dan BI tools, saya membantu bisnis membuat keputusan yang data-driven.
-
-Pengalaman Kerja:
-- PT. Analytics Pro (2023-Sekarang): Data Analyst
-- PT. Business Intelligence (2022-2023): Junior Data Analyst
-- Internship (2021-2022): Data Analyst Intern
-
-Keahlian:
-- SQL, Python, Pandas, NumPy
-- Tableau, Power BI, Google Analytics
-- Excel Advanced
-- Statistical Analysis
-
-Saya telah menyelesaikan berbagai proyek analisis yang menghasilkan actionable insights dan significant cost savings. Saya terus belajar teknik analytics dan machine learning yang baru.`,
-    skills: [
-      "SQL",
-      "Python",
-      "Tableau",
-      "Power BI",
-      "Excel",
-      "Google Analytics",
-      "Statistical Analysis",
-      "Data Visualization",
-    ],
-    certifications: ["Google Data Analytics Certificate", "SQL Advanced", "Python for Data Analysis"],
-    languages: ["Indonesian", "English"],
-  },
-  {
-    id: 4,
-    name: "Nur Azizah",
-    title: "Project Manager",
-    experience: "5+ Tahun",
-    location: "Palangka Raya",
-    image: "/kerja-berkah-program-sosial.jpg",
-    brief: "Project Manager berpengalaman dengan sertifikasi PMP",
-    email: "nur.azizah@email.com",
-    phone: "081234567893",
-    description: `Saya adalah Project Manager bersertifikat PMP dengan 6 tahun pengalaman mengelola proyek-proyek strategis. Saya berpengalaman dalam memimpin tim multidisiplin dan delivering projects on time dan within budget.
-
-Pengalaman Kerja:
-- PT. Management Consultant (2020-Sekarang): Senior Project Manager
-- PT. Construction Company (2017-2020): Project Manager
-- PT. IT Services (2015-2017): Junior Project Manager
-
-Keahlian:
-- PMP Certified, PRINCE2 Practitioner
-- Agile, Scrum, Waterfall
-- Stakeholder Management
-- Risk Management
-- Budget Control
-
-Saya telah sukses mengelola proyek senilai ratusan juta dengan tingkat kepuasan klien yang tinggi. Leadership dan komunikasi yang kuat adalah kunci kesuksesan saya.`,
-    skills: [
-      "Project Planning",
-      "Budget Control",
-      "Team Leadership",
-      "Agile",
-      "Scrum",
-      "Risk Management",
-      "Stakeholder Management",
-      "PRINCE2",
-    ],
-    certifications: ["PMP Certification", "PRINCE2 Practitioner", "Certified Scrum Master"],
-    languages: ["Indonesian", "English"],
-  },
-  {
-    id: 5,
-    name: "Reza Pratama",
-    title: "Digital Marketing Specialist",
-    experience: "2-3 Tahun",
-    location: "Palangka Raya",
-    image: "/magang-jepang-program-internasional.jpg",
-    brief: "Marketing specialist dengan expertise di social media dan Google Ads",
-    email: "reza.pratama@email.com",
-    phone: "081234567894",
-    description: `Saya adalah Digital Marketing Specialist yang passionate dalam menciptakan campaign yang impactful dan ROI-driven. Dengan expertise dalam Google Ads, Facebook Ads, dan social media marketing, saya telah membantu berbagai brand mencapai target mereka.
-
-Pengalaman Kerja:
-- PT. Digital Marketing (2022-Sekarang): Digital Marketing Specialist
-- PT. E-Commerce (2021-2022): Marketing Executive
-- Agency (2020-2021): Junior Digital Marketer
-
-Keahlian:
-- Google Ads, Facebook Ads, Instagram Ads
-- Social Media Management
-- Content Marketing
-- Email Marketing
-- Analytics & Reporting
-
-Saya telah menjalankan campaign dengan total spend miliaran rupiah dan menghasilkan ROI yang signifikan. Data-driven approach adalah filosofi kerja saya.`,
-    skills: [
-      "Google Ads",
-      "Facebook Ads",
-      "Social Media Marketing",
-      "Content Marketing",
-      "Email Marketing",
-      "Analytics",
-      "Copywriting",
-      "SEO",
-    ],
-    certifications: ["Google Ads Certification", "Facebook Blueprint Certified", "HubSpot Content Marketing"],
-    languages: ["Indonesian", "English"],
-  },
-  {
-    id: 6,
-    name: "Dewi Lestari",
-    title: "Java Developer",
-    experience: "3-5 Tahun",
-    location: "Sukamara",
-    image: "/pelatihan-keterampilan-kerja.jpg",
-    brief: "Java Developer berpengalaman dengan Spring Framework expertise",
-    email: "dewi.lestari@email.com",
-    phone: "081234567895",
-    description: `Saya adalah Java Developer dengan 4 tahun pengalaman mengembangkan aplikasi enterprise yang scalable dan robust. Saya memiliki expertise dalam Spring Framework dan Microservices Architecture.
-
-Pengalaman Kerja:
-- PT. Software Solution (2021-Sekarang): Senior Java Developer
-- PT. Enterprise Systems (2019-2021): Java Developer
-- Startup Tech (2017-2019): Junior Developer
-
-Keahlian:
-- Java, Spring Framework, Spring Boot
-- Microservices, REST API
-- PostgreSQL, MongoDB
-- Docker, Kubernetes
-- Git, Jenkins CI/CD
-
-Saya telah mengembangkan sistem yang melayani jutaan transaksi per hari. Passion saya adalah clean code dan scalable architecture.`,
-    skills: [
-      "Java",
-      "Spring Framework",
-      "Spring Boot",
-      "Microservices",
-      "REST API",
-      "PostgreSQL",
-      "Docker",
-      "Kubernetes",
-    ],
-    certifications: [
-      "Oracle Java Associate Certification",
-      "Spring Professional Certification",
-      "Docker & Kubernetes Course",
-    ],
-    languages: ["Indonesian", "English"],
-  },
-]
-
-export default async function WorkerDetailPage({ params }: { params: { id: string } }) {
-  const { id } = await params;
-  const worker = allWorkers.find((w) => w.id === Number.parseInt(id))
+  if (loading) {
+    return (
+      <>
+        <Navigation />
+        <main className="min-h-screen bg-white">
+          <section className="py-12 px-4">
+            <div className="max-w-6xl mx-auto text-center">
+              <div className="animate-pulse">
+                <div className="space-y-6">
+                  <div className="bg-gray-200 rounded-lg w-3/4 h-8 mx-auto"></div>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="md:col-span-1">
+                      <div className="bg-gray-200 rounded-lg w-full h-64 mb-4"></div>
+                      <div className="p-6 space-y-4">
+                        <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-full"></div>
+                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                        <div className="h-10 bg-gray-200 rounded"></div>
+                        <div className="h-10 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                    <div className="md:col-span-2">
+                      <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-4/6 mb-4"></div>
+                      <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
+                      <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   if (!worker) {
     return (
@@ -253,6 +122,88 @@ export default async function WorkerDetailPage({ params }: { params: { id: strin
       </>
     )
   }
+
+  // Format skills from JSON type
+  const formatSkills = (skills: unknown): string[] => {
+    if (Array.isArray(skills)) {
+      return Array.isArray(skills[0]) ? skills[0] as string[] : skills as string[];
+    }
+
+    if (typeof skills === 'object' && skills !== null) {
+      // If it's an object with a "skills" property
+      const skillsObj = skills as Record<string, unknown>;
+      if (skillsObj.skills && Array.isArray(skillsObj.skills)) {
+        return skillsObj.skills as string[];
+      }
+      // If it's an object with other properties
+      const values = Object.values(skillsObj);
+      if (values.length > 0 && Array.isArray(values[0])) {
+        return values[0] as string[];
+      }
+    }
+
+    if (typeof skills === 'string') {
+      return skills.split(',').map(s => s.trim());
+    }
+
+    return [];
+  };
+
+  // Format certifications from JSON type
+  const formatCertifications = (certifications: unknown): string[] => {
+    if (Array.isArray(certifications)) {
+      return Array.isArray(certifications[0]) ? certifications[0] as string[] : certifications as string[];
+    }
+
+    if (typeof certifications === 'object' && certifications !== null) {
+      // If it's an object with a "certifications" property
+      const certsObj = certifications as Record<string, unknown>;
+      if (certsObj.certifications && Array.isArray(certsObj.certifications)) {
+        return certsObj.certifications as string[];
+      }
+      // If it's an object with other properties
+      const values = Object.values(certsObj);
+      if (values.length > 0 && Array.isArray(values[0])) {
+        return values[0] as string[];
+      }
+    }
+
+    if (typeof certifications === 'string') {
+      return certifications.split(',').map(c => c.trim());
+    }
+
+    return [];
+  };
+
+  // Format languages from JSON type
+  const formatLanguages = (languages: unknown): string[] => {
+    if (Array.isArray(languages)) {
+      return Array.isArray(languages[0]) ? languages[0] as string[] : languages as string[];
+    }
+
+    if (typeof languages === 'object' && languages !== null) {
+      // If it's an object with a "languages" property
+      const langsObj = languages as Record<string, unknown>;
+      if (langsObj.languages && Array.isArray(langsObj.languages)) {
+        return langsObj.languages as string[];
+      }
+      // If it's an object with other properties
+      const values = Object.values(langsObj);
+      if (values.length > 0 && Array.isArray(values[0])) {
+        return values[0] as string[];
+      }
+    }
+
+    if (typeof languages === 'string') {
+      return languages.split(',').map(l => l.trim());
+    }
+
+    return ['Indonesian']; // Default fallback
+  };
+
+  const skills = formatSkills(worker.skills);
+  const certifications = formatCertifications(worker.certifications);
+  const languages = formatLanguages(worker.languages);
 
   return (
     <>
@@ -278,14 +229,12 @@ export default async function WorkerDetailPage({ params }: { params: { id: strin
               {/* Sidebar */}
               <div className="md:col-span-1">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden sticky top-4">
-                  <img
-                    src={worker.image || "/placeholder.svg"}
-                    alt={worker.name}
-                    className="w-full h-64 object-cover"
-                  />
+                  <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                    <Briefcase className="text-gray-500" size={60} />
+                  </div>
                   <div className="p-6">
                     <h1 className="text-2xl font-bold text-gray-900 mb-1">{worker.name}</h1>
-                    <p className="text-purple-600 font-semibold mb-4">{worker.title}</p>
+                    <p className="text-purple-600 font-semibold mb-4">{worker.skill}</p>
 
                     {/* Contact */}
                     <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
@@ -319,14 +268,14 @@ export default async function WorkerDetailPage({ params }: { params: { id: strin
                         <MapPin className="text-blue-600 flex-shrink-0" size={18} />
                         <div>
                           <p className="text-xs text-gray-600">Lokasi</p>
-                          <p className="font-semibold text-gray-900">{worker.location}</p>
+                          <p className="font-semibold text-gray-900">{worker.city}</p>
                         </div>
                       </div>
                       <div className="flex gap-2">
                         <Briefcase className="text-purple-600 flex-shrink-0" size={18} />
                         <div>
                           <p className="text-xs text-gray-600">Bahasa</p>
-                          <p className="font-semibold text-gray-900">{worker.languages.join(", ")}</p>
+                          <p className="font-semibold text-gray-900">{languages.join(", ")}</p>
                         </div>
                       </div>
                     </div>
@@ -350,14 +299,19 @@ export default async function WorkerDetailPage({ params }: { params: { id: strin
                 {/* Description */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Tentang</h2>
-                  <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{worker.description}</p>
+                  <div
+                    className="text-gray-700 leading-relaxed"
+                    dangerouslySetInnerHTML={{
+                      __html: worker.description || 'Profil pekerja tidak memiliki deskripsi.'
+                    }}
+                  />
                 </div>
 
                 {/* Skills */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Keahlian</h2>
                   <div className="flex flex-wrap gap-3">
-                    {worker.skills.map((skill, idx) => (
+                    {skills.map((skill, idx) => (
                       <span
                         key={idx}
                         className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium"
@@ -372,7 +326,7 @@ export default async function WorkerDetailPage({ params }: { params: { id: strin
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Sertifikasi</h2>
                   <ul className="space-y-3">
-                    {worker.certifications.map((cert, idx) => (
+                    {certifications.map((cert, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <div className="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
                         <span className="text-gray-700">{cert}</span>
