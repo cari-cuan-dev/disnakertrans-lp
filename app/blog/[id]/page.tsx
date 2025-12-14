@@ -108,9 +108,14 @@ export default function BlogDetailPage() {
               {/* Featured Image */}
               <div className="w-full h-96 overflow-hidden bg-gray-200">
                 <img
-                  src={article.img_cover_path || "/placeholder.svg"}
+                  src={article.img_cover_path || "/placeholder-blog.jpg"}
                   alt={article.title}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null; // prevents looping
+                    target.src = "/placeholder-blog.jpg";
+                  }}
                 />
               </div>
 

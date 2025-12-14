@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, MapPin, Award, Briefcase, Mail, Phone, Share2, Download } from "lucide-react"
+import { ArrowLeft, MapPin, Award, Briefcase, Mail, Phone, Share2, Download, Printer } from "lucide-react"
 
 interface WorkerItem {
   id: string;
@@ -280,14 +280,351 @@ export default function WorkerDetailPage({ params }: { params: Promise<{ id: str
                       </div>
                     </div>
 
-                    {/* CTA */}
+                    {/* Contact & Actions */}
                     <div className="space-y-2">
-                      <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-2 rounded-lg transition-all">
-                        Hubungi
+                      <button
+                        onClick={() => {
+                          // Create a new window with formatted content for printing
+                          const printWindow = window.open('', '_blank');
+                          if (!printWindow) {
+                            alert('Mohon izinkan pop-up untuk membuka halaman cetak.');
+                            return;
+                          }
+
+                          const htmlContent = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${worker.name} - Profil Pekerja</title>
+  <style>
+    @page {
+      margin: 20mm;
+      size: A4;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background: white !important;
+      }
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      max-width: 210mm; /* A4 width */
+      margin: 0 auto;
+      background-color: white;
+    }
+    .header {
+      background: linear-gradient(90deg, #6d28d9, #3b82f6);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .info-label {
+      font-size: 0.8em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-weight: bold;
+    }
+    h2 { color: #1e40af; }
+    h3 { color: #374151; }
+    ul {
+      padding-left: 20px;
+    }
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .skill-tag {
+      background-color: #e0e7ff;
+      color: #4f46e5;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>${worker.name}</h1>
+    <p style="font-size: 1.2em; margin: 5px 0;">${worker.skill || 'Pekerja'}</p>
+  </div>
+
+    <div class="section">
+    <h2>Informasi Pribadi</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Email</span>
+        <span class="info-value">${worker.email}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Telepon</span>
+        <span class="info-value">${worker.phone}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Lokasi</span>
+        <span class="info-value">${worker.city}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Pengalaman</span>
+        <span class="info-value">${worker.experience}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Alamat</span>
+        <span class="info-value">${worker.address || 'N/A'}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Tanggal Lahir</span>
+        <span class="info-value">${worker.birth_date || 'N/A'}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Pendidikan</span>
+        <span class="info-value">${worker.education || 'N/A'}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Bahasa</span>
+        <span class="info-value">${languages.join(", ") || 'N/A'}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Sertifikasi</h2>
+    ${certifications.length > 0 ?
+                              '<ul>' + certifications.map(cert => `<li>${cert}</li>`).join(' ') + '</ul>' :
+                              '<p>Belum ada sertifikasi yang terdaftar.</p>'
+                            }
+  </div>
+
+  <div class="section">
+    <h2>Keahlian</h2>
+    <div class="skills-container">
+      ${(skills.length > 0 ? skills.map(skill => `<span class="skill-tag">${skill}</span>`).join(' ') : 'Belum ada keahlian yang terdaftar.')}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Tentang</h2>
+    <div>${worker.description || 'Deskripsi profil tidak tersedia.'}</div>
+  </div>
+
+  <div style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9em;">
+    Dicetak dari website Disnakertrans Kalteng pada ${new Date().toLocaleString('id-ID')}
+  </div>
+</body>
+</html>`;
+
+                          printWindow.document.write(htmlContent);
+                          printWindow.document.close();
+
+                          // Print after content is loaded
+                          printWindow.onload = () => {
+                            printWindow.focus();
+                            setTimeout(() => {
+                              printWindow.print();
+                            }, 500);
+                          };
+                        }}
+                        className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Printer size={18} />
+                        Cetak
                       </button>
-                      <button className="w-full bg-purple-100 hover:bg-purple-200 text-purple-600 font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-2">
-                        <Download size={16} />
-                        CV
+                      <button
+                        onClick={() => {
+                          const htmlContent = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${worker.name} - Profil Pekerja</title>
+  <style>
+    @page {
+      margin: 20mm;
+      size: A4;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background: white !important;
+      }
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      max-width: 210mm; /* A4 width */
+      margin: 0 auto;
+      background-color: white;
+    }
+    .header {
+      background: linear-gradient(90deg, #6d28d9, #3b82f6);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .info-label {
+      font-size: 0.8em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-weight: bold;
+    }
+    h2 { color: #1e40af; }
+    h3 { color: #374151; }
+    ul {
+      padding-left: 20px;
+    }
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .skill-tag {
+      background-color: #e0e7ff;
+      color: #4f46e5;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>${worker.name}</h1>
+    <p style="font-size: 1.2em; margin: 5px 0;">${worker.skill || 'Pekerja'}</p>
+  </div>
+
+    <div class="section">
+    <h2>Informasi Pribadi</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Email</span>
+        <span class="info-value">${worker.email}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Telepon</span>
+        <span class="info-value">${worker.phone}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Lokasi</span>
+        <span class="info-value">${worker.city}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Pengalaman</span>
+        <span class="info-value">${worker.experience}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Alamat</span>
+        <span class="info-value">${worker.address || 'N/A'}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Tanggal Lahir</span>
+        <span class="info-value">${worker.birth_date || 'N/A'}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Pendidikan</span>
+        <span class="info-value">${worker.education || 'N/A'}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Bahasa</span>
+        <span class="info-value">${languages.join(", ") || 'N/A'}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Sertifikasi</h2>
+    ${certifications.length > 0 ?
+                              '<ul>' + certifications.map(cert => `<li>${cert}</li>`).join(' ') + '</ul>' :
+                              '<p>Belum ada sertifikasi yang terdaftar.</p>'
+                            }
+  </div>
+
+  <div class="section">
+    <h2>Keahlian</h2>
+    <div class="skills-container">
+      ${(skills.length > 0 ? skills.map(skill => `<span class="skill-tag">${skill}</span>`).join(' ') : 'Belum ada keahlian yang terdaftar.')}
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Tentang</h2>
+    <div>${worker.description || 'Deskripsi profil tidak tersedia.'}</div>
+  </div>
+
+  <div style="text-align: center; margin-top: 30px; color: #6b7280; font-size: 0.9em;">
+    Dicetak dari website Disnakertrans Kalteng pada ${new Date().toLocaleString('id-ID')}
+  </div>
+</body>
+</html>`;
+
+                          const blob = new Blob([htmlContent], { type: 'text/html' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `${worker.name.replace(/\s+/g, '_')}_Detail_Lowongan.html`;
+                          document.body.appendChild(a);
+                          a.click();
+                          document.body.removeChild(a);
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Download size={18} />
+                        Unduh
                       </button>
                     </div>
                   </div>
@@ -336,7 +673,26 @@ export default function WorkerDetailPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 {/* Share */}
-                <button className="w-full bg-purple-100 hover:bg-purple-200 text-purple-600 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <button
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: `${worker.name} - Profil Pekerja`,
+                        text: `Lihat profil pekerja ${worker.name} dengan keahlian ${worker.skill} di Kerja Berkah.`,
+                        url: window.location.href,
+                      }).catch(console.error);
+                    } else {
+                      // Fallback: copy URL to clipboard
+                      navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link profil berhasil disalin!');
+                      }).catch(() => {
+                        // If clipboard API also fails, fallback to a prompt
+                        prompt('Salin link profil ini:', window.location.href);
+                      });
+                    }
+                  }}
+                  className="w-full bg-purple-100 hover:bg-purple-200 text-purple-600 font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
                   <Share2 size={18} />
                   Bagikan Profil
                 </button>

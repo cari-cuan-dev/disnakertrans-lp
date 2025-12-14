@@ -3,6 +3,8 @@ import Footer from "@/components/footer"
 import KerjaBerkahCarousel from "@/components/kerja-berkah-carousel"
 import KerjaBerkahStats from "@/components/kerja-berkah-stats"
 import KerjaBerkahSearch from "@/components/kerja-berkah-search"
+import ProtectedSearchSection from "@/components/protected-search-section"
+import ScrollToHash from "@/components/scroll-to-hash"
 import { ArrowRight, CheckCircle, Users, Briefcase, Heart, MapPin, Phone, Mail } from "lucide-react"
 import Link from "next/link"
 
@@ -10,6 +12,7 @@ export default function KerjaBerkahPage() {
   return (
     <>
       <Navigation />
+      <ScrollToHash />
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 text-white py-20 px-4">
@@ -21,11 +24,11 @@ export default function KerjaBerkahPage() {
                   Program pemberdayaan ekonomi dari Pemerintah Provinsi Kalimantan Tengah untuk memberikan kesempatan
                   kerja kepada masyarakat yang membutuhkan.
                 </p>
-                <Link href="/kerja-berkah/daftar" className="inline-block">
+                {/* <Link href="/kerja-berkah/daftar" className="inline-block">
                   <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center gap-2">
                     Daftar Sekarang <ArrowRight size={20} />
                   </button>
-                </Link>
+                </Link> */}
               </div>
               <div className="hidden md:block">
                 <img
@@ -133,12 +136,8 @@ export default function KerjaBerkahPage() {
           </div>
         </section>
 
-        {/* Search Features Section */}
-        <section className="py-16 px-4 bg-gray-50">
-          <div className="max-w-6xl mx-auto">
-            <KerjaBerkahSearch />
-          </div>
-        </section>
+        {/* Search Features Section - Only show if user is authenticated */}
+        <ProtectedSearchSection />
 
         {/* How to Apply */}
         <section className="py-16 px-4">
@@ -182,7 +181,7 @@ export default function KerjaBerkahPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-4 bg-purple-50">
+        {/* <section className="py-16 px-4 bg-purple-50">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold text-gray-900 mb-6">Siap Mengubah Hidup Anda?</h2>
             <p className="text-xl text-gray-600 mb-8">
@@ -203,7 +202,7 @@ export default function KerjaBerkahPage() {
               </Link>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Contact Section */}
         <section className="py-16 px-4">

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
+import ProtectedRoute from "@/lib/protected-route";
 import { Briefcase, MapPin, DollarSign, Clock, ArrowLeft, Eye } from "lucide-react"
 
 interface VacancyItem {
@@ -60,7 +61,7 @@ function getJobType(type: unknown): string {
   return 'Full Time'; // Default fallback
 }
 
-export default function LowonganPage() {
+function LowonganPageContent() {
   const searchParams = useSearchParams();
   const [vacancies, setVacancies] = useState<VacancyItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -213,4 +214,12 @@ export default function LowonganPage() {
       <Footer />
     </>
   )
+}
+
+export default function ProtectedLowonganPage() {
+  return (
+    <ProtectedRoute>
+      <LowonganPageContent />
+    </ProtectedRoute>
+  );
 }

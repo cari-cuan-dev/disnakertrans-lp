@@ -1,6 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { uploadBlogCoverToS3, deleteBlogCoverFromS3 } from '@/lib/s3-blog-utils';
 
 // Helper function to serialize BigInt values
 function serializeBigInt(obj: any): any {
@@ -141,6 +141,150 @@ export async function GET(
 
     return NextResponse.json(
       { message: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params;
+    if (!id) {
+      return NextResponse.json(
+        { message: 'Blog ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Parse the form data
+    const formData = await request.formData();
+
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const categoryId = formData.get('category_id') as string;
+    const tags = formData.get('tags') as string;
+    const status = formData.get('status') as string;
+    const sort = formData.get('sort') as string;
+    const coverImage = formData.get('cover_image') as File | null;
+
+    // Get the current blog to check if there's an existing image to delete
+    const currentBlog = await prisma.blogs.findUnique({
+      where: { id: BigInt(id) }
+    });
+
+    if (!currentBlog) {
+      return NextResponse.json(
+        { message: 'Blog not found' },
+        { status: 404 }
+      );
+    }
+
+    // Process the cover image if provided
+    let coverImagePath = currentBlog.img_cover_path; // Use existing path as default
+
+    if (coverImage) {
+      // If there's an existing image in S3, delete it
+      if (currentBlog.img_cover_path && currentBlog.img_cover_path.startsWith('http')) {
+        await deleteBlogCoverFromS3(currentBlog.img_cover_path);
+      }
+
+      // Convert image to buffer
+      const buffer = Buffer.from(await coverImage.arrayBuffer());
+
+      // Upload to S3
+      const newImagePath = await uploadBlogCoverToS3(
+        buffer,
+        coverImage.name,
+        coverImage.type
+      );
+
+      // If upload to S3 fails, return error
+      if (!newImagePath) {
+        return NextResponse.json(
+          { message: 'Failed to upload new image to S3' },
+          { status: 500 }
+        );
+      }
+
+      // Set the new image path
+      coverImagePath = newImagePath;
+    }
+
+    // Parse tags JSON if provided
+    let parsedTags: any = currentBlog.tags || []; // Use existing tags as default
+    if (tags) {
+      try {
+        parsedTags = JSON.parse(tags);
+      } catch (e) {
+        console.error('Invalid tags JSON:', e);
+        parsedTags = currentBlog.tags || [];
+      }
+    }
+
+    // Update the blog post
+    const updatedBlog = await prisma.blogs.update({
+      where: { id: BigInt(id) },
+      data: {
+        title: title || currentBlog.title,
+        content: content || currentBlog.content,
+        category_id: categoryId ? BigInt(categoryId) : currentBlog.category_id,
+        img_cover_path: coverImagePath || currentBlog.img_cover_path, // Preserve existing if no new image
+        tags: parsedTags,
+        status: status !== undefined ? status === 'true' : currentBlog.status,
+        sort: sort ? parseInt(sort) : currentBlog.sort,
+        updated_at: new Date(),
+      },
+    });
+
+    // Serialize and return the result
+    const serializedData = serializeBigInt(updatedBlog);
+    return NextResponse.json(serializedData);
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    return NextResponse.json(
+      { message: 'Failed to update blog' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params;
+    if (!id) {
+      return NextResponse.json(
+        { message: 'Blog ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get the blog to check if there's an image to delete from S3
+    const blog = await prisma.blogs.findUnique({
+      where: { id: BigInt(id) }
+    });
+
+    if (!blog) {
+      return NextResponse.json(
+        { message: 'Blog not found' },
+        { status: 404 }
+      );
+    }
+
+    // If there's an image in S3, delete it
+    if (blog.img_cover_path && blog.img_cover_path.startsWith('http')) {
+      await deleteBlogCoverFromS3(blog.img_cover_path);
+    }
+
+    // Delete the blog post
+    await prisma.blogs.delete({
+      where: { id: BigInt(id) },
+    });
+
+    return NextResponse.json({ message: 'Blog deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting blog:', error);
+    return NextResponse.json(
+      { message: 'Failed to delete blog' },
       { status: 500 }
     );
   }

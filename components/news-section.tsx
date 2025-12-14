@@ -81,9 +81,14 @@ export default function NewsSection() {
                 <article className="group cursor-pointer bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
                   <div className="relative h-40 md:h-48 overflow-hidden bg-gray-100">
                     <img
-                      src={item.img_cover_path || "/placeholder.svg"}
+                      src={item.img_cover_path || "/placeholder-blog.jpg"}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null; // prevents looping
+                        target.src = "/placeholder-blog.jpg";
+                      }}
                     />
                   </div>
                   <div className="p-4">

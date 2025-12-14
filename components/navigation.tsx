@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Menu, X, Search, Facebook, Twitter, Instagram, Linkedin, Youtube, ChevronDown } from "lucide-react"
+import { Menu, X, Search, Facebook, Twitter, Instagram, Linkedin, Youtube, ChevronDown, User } from "lucide-react"
 import SearchModal from "./search-modal"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { getAccessToken, isAuthenticated } from "@/lib/auth"
 
 interface SocialMediaItem {
   id: string;  // bigint is serialized as string in JSON
@@ -52,6 +53,13 @@ export interface MenuSubHeader {
   } | null;
 }
 
+interface UserInfo {
+  id: string;
+  email: string;
+  name?: string;  // Optional name field
+  [key: string]: any;  // Allow other fields
+}
+
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -60,9 +68,40 @@ export default function Navigation() {
   const [socialMediaLoading, setSocialMediaLoading] = useState(true);
   const [menuHeaders, setMenuHeaders] = useState<MenuHeader[]>([]);
   const [menuHeadersLoading, setMenuHeadersLoading] = useState(true);
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [userLoading, setUserLoading] = useState(true);
   const searchParams = useSearchParams()
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      // Check if user is authenticated first
+      const authenticated = await isAuthenticated();
+      if (authenticated) {
+        const token = getAccessToken();
+        if (token) {
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              const userData: UserInfo = await response.json();
+              setUser(userData);
+            } else {
+              console.error('Failed to fetch user data:', response.status);
+            }
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        }
+      }
+      setUserLoading(false);
+    };
+
     const fetchData = async () => {
       // Fetch social media
       try {
@@ -97,6 +136,7 @@ export default function Navigation() {
     };
 
     fetchData();
+    fetchUserData();  // Fetch user data on mount
   }, []);
 
   useEffect(() => {
@@ -264,14 +304,14 @@ export default function Navigation() {
                 )}
               </div>
 
-              <button
+              {/* <button
                 onClick={() => setSearchOpen(true)}
                 className="hidden sm:flex p-2 hover:bg-purple-50 rounded-lg transition-colors items-center gap-2 text-gray-600 text-xs font-medium"
                 title="Cari berita (Ctrl+K)"
               >
                 <Search size={20} className="text-gray-700" />
                 <span className="hidden lg:inline">Ctrl+K</span>
-              </button>
+              </button> */}
               <button
                 onClick={() => setSearchOpen(true)}
                 className="sm:hidden p-2 hover:bg-purple-50 rounded-lg transition-colors"
@@ -279,12 +319,76 @@ export default function Navigation() {
                 <Search size={20} className="text-gray-700" />
               </button>
 
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-2 hover:bg-purple-50 rounded-lg transition-colors"
-              >
-                {isOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
+              {userLoading ? (
+                <div className="h-8 w-24 bg-gray-200 rounded animate-pulse" />
+              ) : user ? (
+                // User is logged in - show user profile and search shortcut
+                <div className="flex items-center gap-3">
+                  {/* Search shortcut for logged-in users */}
+                  <Link
+                    href="/kerja-berkah#search-section"
+                    onClick={(e) => {
+                      // If we're already on the kerja-berkah page, prevent default and scroll
+                      if (window.location.pathname === '/kerja-berkah') {
+                        e.preventDefault();
+
+                        // Small delay to ensure page is loaded
+                        setTimeout(() => {
+                          const element = document.getElementById('search-section');
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                            // Also update the URL hash
+                            window.location.hash = 'search-section';
+                          }
+                        }, 100);
+                      }
+                      // If navigating from another page, let the URL hash handle scrolling after navigation
+                    }}
+                    className="hidden md:flex items-center gap-1 px-3 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
+                  >
+                    <Search size={18} className="text-purple-600" />
+                    <span className="hidden lg:inline">Cari</span>
+                  </Link>
+
+                  <div className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <User size={18} className="text-purple-600" />
+                    <span className="max-w-[120px] truncate" title={user.name || user.email}>
+                      {user.name || user.email}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('access_token');
+                      window.location.href = '/login';
+                    }}
+                    className="hidden md:block px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+                  >
+                    Logout
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="md:hidden p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                  >
+                    {isOpen ? <X size={20} /> : <Menu size={20} />}
+                  </button>
+                </div>
+              ) : (
+                // User is not logged in - show login link
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/login"
+                    className="hidden md:block px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
+                  >
+                    Portal
+                  </Link>
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="md:hidden p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                  >
+                    {isOpen ? <X size={20} /> : <Menu size={20} />}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -366,9 +470,56 @@ export default function Navigation() {
                   <div className="h-4 bg-gray-200 rounded w-4/6 animate-pulse"></div>
                 </div>
               )}
-              <Link href="/login" className="block py-2 text-gray-700 hover:text-purple-600 transition-colors">
-                Portal
-              </Link>
+
+              {user ? (
+                // User is logged in - show user profile, search shortcut and logout
+                <div className="pt-4 border-t border-purple-100">
+                  <Link
+                    href="/kerja-berkah#search-section"
+                    onClick={(e) => {
+                      // If we're already on the kerja-berkah page, prevent default and scroll
+                      if (window.location.pathname === '/kerja-berkah') {
+                        e.preventDefault();
+                        // Add the search-section to URL hash
+                        window.location.hash = 'search-section';
+
+                        // Small delay to ensure page is loaded
+                        setTimeout(() => {
+                          const element = document.getElementById('search-section');
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                          }
+                        }, 100);
+                      }
+                    }}
+                    className="block py-2 text-gray-700 hover:text-purple-600 transition-colors flex items-center gap-2"
+                  >
+                    <Search size={18} className="text-purple-600" />
+                    <span>Temukan Apa yang Anda Cari</span>
+                  </Link>
+                  <div className="py-2 text-gray-700 font-medium">
+                    <div className="flex items-center gap-2">
+                      <User size={18} className="text-purple-600" />
+                      <span>{user.name || user.email}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('access_token');
+                      window.location.href = '/login';
+                    }}
+                    className="block w-full py-2 text-left text-gray-700 hover:text-purple-600 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                // User is not logged in - show login link
+                <Link href="/login" className="block py-2 text-gray-700 hover:text-purple-600 transition-colors">
+                  Portal
+                </Link>
+              )}
+
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-purple-100">
                 {!socialMediaLoading && socialMedia.length > 0 ? (
                   socialMedia.map((social) => {

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
+import ProtectedRoute from "@/lib/protected-route";
 import { MapPin, Briefcase, Award, ArrowLeft } from "lucide-react"
 
 interface WorkerItem {
@@ -26,7 +27,7 @@ interface WorkerItem {
   user_id?: string | null;
 }
 
-export default function PekerjaPage() {
+function PekerjaPageContent() {
   const searchParams = useSearchParams();
   const [workers, setWorkers] = useState<WorkerItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -190,4 +191,12 @@ export default function PekerjaPage() {
       <Footer />
     </>
   )
+}
+
+export default function ProtectedPekerjaPage() {
+  return (
+    <ProtectedRoute>
+      <PekerjaPageContent />
+    </ProtectedRoute>
+  );
 }

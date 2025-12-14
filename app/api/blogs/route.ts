@@ -122,3 +122,87 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    // Parse the form data
+    const formData = await request.formData();
+
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const categoryId = formData.get('category_id') as string;
+    const tags = formData.get('tags') as string;
+    const status = formData.get('status') as string;
+    const sort = formData.get('sort') as string;
+    const coverImage = formData.get('cover_image') as File | null;
+
+    // Validate required fields
+    if (!title || !content || !categoryId) {
+      return NextResponse.json(
+        { message: 'Title, content, and category_id are required' },
+        { status: 400 }
+      );
+    }
+
+    // Process the cover image if provided
+    let coverImagePath: string | null = null;
+
+    if (coverImage) {
+      // Convert image to buffer
+      const buffer = Buffer.from(await coverImage.arrayBuffer());
+
+      // Import S3 utility function
+      const { uploadBlogCoverToS3 } = await import('@/lib/s3-blog-utils');
+
+      // Upload to S3
+      coverImagePath = await uploadBlogCoverToS3(
+        buffer,
+        coverImage.name,
+        coverImage.type
+      );
+
+      // If upload to S3 fails, return error
+      if (!coverImagePath) {
+        return NextResponse.json(
+          { message: 'Failed to upload image to S3' },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Parse tags JSON if provided
+    let parsedTags: any = [];
+    if (tags) {
+      try {
+        parsedTags = JSON.parse(tags);
+      } catch (e) {
+        console.error('Invalid tags JSON:', e);
+        parsedTags = [];
+      }
+    }
+
+    // Create the blog post
+    const newBlog = await prisma.blogs.create({
+      data: {
+        title,
+        content,
+        category_id: BigInt(categoryId),
+        img_cover_path: coverImagePath || '',
+        tags: parsedTags,
+        status: status === 'true',
+        sort: sort ? parseInt(sort) : null,
+        created_at: new Date(),
+      },
+    });
+
+    // Serialize and return the result
+    const serializedData = serializeBigInt(newBlog);
+    return NextResponse.json(serializedData);
+  } catch (error) {
+    console.error('Error creating blog:', error);
+    return NextResponse.json(
+      { message: 'Failed to create blog' },
+      { status: 500 }
+    );
+  }
+}

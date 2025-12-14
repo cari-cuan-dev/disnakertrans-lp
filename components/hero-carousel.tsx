@@ -4,38 +4,90 @@ import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const slides = [
-  {
-    id: 1,
-    title: "Memberdayakan Tenaga Kerja Indonesia",
-    subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
-    image: "/indonesian-workers-training-program.jpg",
-  },
-  {
-    id: 2,
-    title: "Dukungan Kerja Berkah untuk Kalteng",
-    subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
-    image: "/employment-program-sustainable-jobs.jpg",
-  },
-  {
-    id: 3,
-    title: "Transparansi dan Pelayanan Terbaik",
-    subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
-    image: "/government-service-transparency.jpg",
-  },
-]
+interface SliderItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  image_path: string;
+  status: boolean;
+}
 
 export default function HeroCarousel() {
-  const [current, setCurrent] = useState(0)
-  const [autoPlay, setAutoPlay] = useState(true)
+  const [slides, setSlides] = useState<SliderItem[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!autoPlay) return
+    // Fetch slides from API
+    const fetchSlides = async () => {
+      try {
+        const response = await fetch('/api/sliders');
+        if (response.ok) {
+          const data: SliderItem[] = await response.json();
+          setSlides(data);
+        } else {
+          console.error('Failed to fetch sliders:', response.statusText);
+          // Fallback to static slides if API fails
+          setSlides([
+            {
+              id: "1",
+              title: "Memberdayakan Tenaga Kerja Indonesia",
+              subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
+              image_path: "/indonesian-workers-training-program.jpg",
+            },
+            {
+              id: "2",
+              title: "Dukungan Kerja Berkah untuk Kalteng",
+              subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
+              image_path: "/employment-program-sustainable-jobs.jpg",
+            },
+            {
+              id: "3",
+              title: "Transparansi dan Pelayanan Terbaik",
+              subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
+              image_path: "/government-service-transparency.jpg",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching slides:', error);
+        // Fallback to static slides if API fails
+        setSlides([
+          {
+            id: "1",
+            title: "Memberdayakan Tenaga Kerja Indonesia",
+            subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
+            image_path: "/indonesian-workers-training-program.jpg",
+          },
+          {
+            id: "2",
+            title: "Dukungan Kerja Berkah untuk Kalteng",
+            subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
+            image_path: "/employment-program-sustainable-jobs.jpg",
+          },
+          {
+            id: "3",
+            title: "Transparansi dan Pelayanan Terbaik",
+            subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
+            image_path: "/government-service-transparency.jpg",
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlides();
+  }, []);
+
+  useEffect(() => {
+    if (!autoPlay || loading || slides.length === 0) return;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [autoPlay])
+  }, [autoPlay, loading, slides.length])
 
   const prev = () => {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length)
@@ -45,6 +97,17 @@ export default function HeroCarousel() {
   const next = () => {
     setCurrent((prev) => (prev + 1) % slides.length)
     setAutoPlay(false)
+  }
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-96 md:h-[600px] overflow-hidden bg-gradient-to-r from-purple-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-purple-700 font-medium">Memuat konten...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -57,7 +120,16 @@ export default function HeroCarousel() {
             index === current ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img src={slide.image || "/placeholder.svg"} alt={slide.title} className="w-full h-full object-cover" />
+          <img 
+            src={slide.image_path || "/placeholder-blog.jpg"} 
+            alt={slide.title} 
+            className="w-full h-full object-cover" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null; // prevents looping
+              target.src = "/placeholder-blog.jpg"; // fallback to placeholder
+            }}
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent flex items-center">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
               <h2 className="text-3xl md:text-5xl font-bold mb-4 text-pretty">{slide.title}</h2>
@@ -70,7 +142,7 @@ export default function HeroCarousel() {
         </div>
       ))}
 
-      {/* Navigation Buttons */}
+      {/* Navigation Arrows */}
       <button
         onClick={prev}
         onMouseEnter={() => setAutoPlay(false)}
@@ -94,13 +166,15 @@ export default function HeroCarousel() {
           <button
             key={index}
             onClick={() => {
-              setCurrent(index)
-              setAutoPlay(false)
+              setCurrent(index);
+              setAutoPlay(false);
             }}
-            className={`w-2 h-2 rounded-full transition-all ${index === current ? "bg-white w-8" : "bg-white/60"}`}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === current ? "bg-white w-8" : "bg-white/60"
+            }`}
           />
         ))}
       </div>
     </div>
-  )
+  );
 }

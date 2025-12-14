@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { Search, Briefcase } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { isAuthenticated } from "@/lib/auth"
 
 export default function KerjaBerkahSearch() {
   const [searchJobsQuery, setSearchJobsQuery] = useState("")
@@ -12,6 +14,17 @@ export default function KerjaBerkahSearch() {
   const [jobType, setJobType] = useState("all")
   const [experience, setExperience] = useState("all")
   const [workerLocation, setWorkerLocation] = useState("all")
+
+  const checkAuthAndRedirect = async (href: string) => {
+    const authenticated = await isAuthenticated();
+    if (!authenticated) {
+      // Redirect to login
+      window.location.href = '/login';
+    } else {
+      // If authenticated, allow navigation to the search page
+      window.location.href = href;
+    }
+  };
 
   return (
     <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 text-white py-12 px-4 rounded-lg">
@@ -81,13 +94,13 @@ export default function KerjaBerkahSearch() {
               </select>
             </div>
           </div>
-          <Link
-            href={`/kerja-berkah/lowongan?q=${encodeURIComponent(searchJobsQuery)}&location=${location}&type=${jobType}`}
+          <button
+            onClick={() => checkAuthAndRedirect(`/kerja-berkah/lowongan?q=${encodeURIComponent(searchJobsQuery)}&location=${location}&type=${jobType}`)}
             className="w-full bg-white text-blue-700 font-bold py-3 rounded-lg hover:bg-yellow-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
           >
             <Search size={20} />
             Cari Lowongan
-          </Link>
+          </button>
         </div>
       )}
 
@@ -134,13 +147,13 @@ export default function KerjaBerkahSearch() {
               </select>
             </div>
           </div>
-          <Link
-            href={`/kerja-berkah/pekerja?q=${encodeURIComponent(searchWorkersQuery)}&experience=${experience}&location=${workerLocation}`}
+          <button
+            onClick={() => checkAuthAndRedirect(`/kerja-berkah/pekerja?q=${encodeURIComponent(searchWorkersQuery)}&experience=${experience}&location=${workerLocation}`)}
             className="w-full bg-white text-blue-700 font-bold py-3 rounded-lg hover:bg-yellow-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
           >
             <Search size={20} />
             Cari Pekerja
-          </Link>
+          </button>
         </div>
       )}
     </div>

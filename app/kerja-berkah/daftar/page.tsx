@@ -51,9 +51,9 @@ export default function DaftarPage() {
                       <span className="text-gray-700">Hubungi perusahaan secara langsung</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-purple-600 font-semibold group-hover:gap-3 transition-all">
+                  {/* <div className="flex items-center gap-2 text-purple-600 font-semibold group-hover:gap-3 transition-all">
                     Daftar Sekarang <ArrowRight size={20} />
-                  </div>
+                  </div> */}
                 </div>
               </Link>
 
@@ -86,9 +86,9 @@ export default function DaftarPage() {
                       <span className="text-gray-700">Analitik dan laporan rekrutmen</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-blue-600 font-semibold group-hover:gap-3 transition-all">
+                  {/* <div className="flex items-center gap-2 text-blue-600 font-semibold group-hover:gap-3 transition-all">
                     Daftar Sekarang <ArrowRight size={20} />
-                  </div>
+                  </div> */}
                 </div>
               </Link>
             </div>

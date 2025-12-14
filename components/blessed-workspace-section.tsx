@@ -32,9 +32,9 @@ export default function BlessedWorkspaceSection() {
               ))}
             </div>
 
-            <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+            {/* <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
               Daftar Sekarang
-            </Button>
+            </Button> */}
           </div>
 
           {/* Right Image */}

@@ -15,6 +15,7 @@
     "db:push:kerjaberkah": "prisma db push --schema=./prisma/kerjaberkah/schema.prisma"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.948.0",
     "@hookform/resolvers": "^3.10.0",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",

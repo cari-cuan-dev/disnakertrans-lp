@@ -228,14 +228,14 @@ export default function DaftarPekerjaPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="border-t pt-6">
+            {/* <div className="border-t pt-6">
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all"
               >
                 Daftar Sekarang
               </button>
-            </div>
+            </div> */}
           </form>
         </div>
       </main>

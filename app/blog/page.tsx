@@ -208,9 +208,14 @@ export default function BlogPage() {
                     >
                       <div className="h-48 overflow-hidden bg-gray-200">
                         <img
-                          src={item.img_cover_path || "/placeholder.svg"}
+                          src={item.img_cover_path || "/placeholder-blog.jpg"}
                           alt={item.title}
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null; // prevents looping
+                            target.src = "/placeholder-blog.jpg";
+                          }}
                         />
                       </div>
                       <div className="p-6">
@@ -252,9 +257,14 @@ export default function BlogPage() {
               <article className="bg-white rounded-lg overflow-hidden shadow-lg">
                 <div className="w-full h-96 overflow-hidden bg-gray-200">
                   <img
-                    src={article.img_cover_path || "/placeholder.svg"}
+                    src={article.img_cover_path || "/placeholder-blog.jpg"}
                     alt={article.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null; // prevents looping
+                      target.src = "/placeholder-blog.jpg";
+                    }}
                   />
                 </div>
 
