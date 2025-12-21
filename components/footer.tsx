@@ -289,6 +289,31 @@ export default function Footer() {
                 <p>Tidak ada informasi kontak</p>
               )}
             </div>
+            {/* Map Section */}
+            <div className="mt-4">
+              <h3 className="font-bold text-white mb-2">Lokasi Kami</h3>
+              <div className="w-full h-48 rounded overflow-hidden">
+                {footerContactsLoading ? (
+                  <div className="w-full h-full bg-gray-700 rounded animate-pulse"></div>
+                ) : (
+                  <iframe
+                    src={
+                      footerContacts.find(contact =>
+                        ['map', 'alamat', 'location'].includes(contact.type.toLowerCase()) && contact.url
+                      )?.url ||
+                      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.867826842174!2d113.9171556748449!3d-2.200641936837961!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de3add80b2e1bcb%3A0xb300cbbec03fb38b!2sJl.%20Ahmad%20Yani%2C%20Palangkaraya%2C%20Kalimantan%20Tengah!5e0!3m2!1sen!2sid!4v1702567890123!5m2!1sen!2sid"
+                    }
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen={true}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Lokasi Kantor Disnakertrans"
+                  ></iframe>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
