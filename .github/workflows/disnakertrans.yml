@@ -16,4 +16,5 @@ jobs:
             cd /home/disnakertrans
             git pull 
             docker build -t disnakertrans:latest --file server/Dockerfile .
-            docker run --name disnakertrans -p 80:3000 443:3000 -d disnakertrans:latest
+            docker rm -f disnakertrans
+            docker run --name disnakertrans -p 80:3000 -p 443:3000 -d disnakertrans:latest
