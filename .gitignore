@@ -2,3 +2,5 @@
 /.next
 /lib/generated/prisma
 /.env
+note.md
+.DS_Store

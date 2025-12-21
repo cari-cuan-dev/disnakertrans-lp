@@ -9,12 +9,14 @@ import QuickAccessSection from "@/components/quick-access-section"
 import InformationSection from "@/components/information-section"
 import Footer from "@/components/footer"
 import Navigation from "@/components/navigation"
+import GreetingCard from "@/components/greeting-card"
 
 export default function Home() {
   return (
     <main className="w-full min-h-screen">
       <Navigation />
       <HeroCarousel />
+      <GreetingCard />
       <NewsSection />
       <StatsSection />
       <VisitorInfoSection />

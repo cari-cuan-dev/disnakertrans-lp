@@ -199,8 +199,8 @@ export default function Navigation() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">D</span>
+              <div className="w-10 h-10">
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="hidden sm:inline font-bold text-gray-900">Disnakertrans Kalteng</span>
             </Link>
@@ -379,7 +379,7 @@ export default function Navigation() {
                     href="/login"
                     className="hidden md:block px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
                   >
-                    Portal
+                    Login
                   </Link>
                   <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -516,7 +516,7 @@ export default function Navigation() {
               ) : (
                 // User is not logged in - show login link
                 <Link href="/login" className="block py-2 text-gray-700 hover:text-purple-600 transition-colors">
-                  Portal
+                  Login
                 </Link>
               )}
 

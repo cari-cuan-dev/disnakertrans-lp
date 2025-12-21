@@ -1,0 +1,19 @@
+name: Remote SSH Disnakertrans
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute remote SSH commands using password
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/disnakertrans
+            git pull 
+            docker build -t disnakertrans:latest --file server/Dockerfile .
+            docker run --name disnakertrans -p 80:3000 443:3000 -d disnakertrans:latest
