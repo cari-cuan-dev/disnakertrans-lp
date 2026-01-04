@@ -63,7 +63,7 @@ interface UserInfo {
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [layananOpen, setLayananOpen] = useState(false)
+  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
   const [socialMedia, setSocialMedia] = useState<SocialMediaItem[]>([]);
   const [socialMediaLoading, setSocialMediaLoading] = useState(true);
   const [menuHeaders, setMenuHeaders] = useState<MenuHeader[]>([]);
@@ -149,6 +149,13 @@ export default function Navigation() {
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [])
+
+  // Clear all dropdowns when mobile menu is closed
+  useEffect(() => {
+    if (!isOpen) {
+      setOpenDropdowns({});
+    }
+  }, [isOpen])
 
 
   // Map social media names to Lucide icons
@@ -401,23 +408,24 @@ export default function Navigation() {
 
                   // Check if this menu item has sub-headers
                   if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
-                    const isCurrentLayananOpen = header.name === 'Layanan' ? layananOpen : false;
-                    const toggleLayanan = () => {
-                      if (header.name === 'Layanan') {
-                        setLayananOpen(!layananOpen);
-                      }
+                    const isDropdownOpen = openDropdowns[header.id] || false;
+                    const toggleDropdown = () => {
+                      setOpenDropdowns(prev => ({
+                        ...prev,
+                        [header.id]: !prev[header.id]
+                      }));
                     };
 
                     return (
                       <div key={header.id}>
                         <button
-                          onClick={toggleLayanan}
+                          onClick={toggleDropdown}
                           className="w-full text-left py-2 text-gray-700 hover:text-purple-600 transition-colors flex items-center justify-between"
                         >
                           {header.name}
-                          <ChevronDown size={16} className={`transition-transform ${isCurrentLayananOpen ? "rotate-180" : ""}`} />
+                          <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
                         </button>
-                        {isCurrentLayananOpen && (
+                        {isDropdownOpen && (
                           <div className="bg-purple-50 rounded-lg mt-2 py-2">
                             {header.menu_sub_headers.map((subHeader) => {
                               if (!subHeader.status) return null;
