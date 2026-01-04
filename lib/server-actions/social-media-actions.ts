@@ -18,9 +18,10 @@ export async function getActiveSocialMedia(): Promise<SocialMediaItem[]> {
     const socialMedia = await prisma.social_media.findMany({
       where: {
         status: true,
+        deleted_at: null, // Only get non-deleted records
       },
       orderBy: {
-        created_at: 'desc',
+        sort: 'asc', // Sort by the sort column in ascending order
       },
       select: {
         id: true,

@@ -92,6 +92,7 @@ model documentations {
   created_by                             BigInt?
   updated_by                             BigInt?
   deleted_by                             BigInt?
+  sort                                   Int?
   users_documentations_created_byTousers users?    @relation("documentations_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "documentations_created_by_foreign")
   users_documentations_deleted_byTousers users?    @relation("documentations_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "documentations_deleted_by_foreign")
   users_documentations_updated_byTousers users?    @relation("documentations_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "documentations_updated_by_foreign")
@@ -119,6 +120,7 @@ model footer_contacts {
   created_by                              BigInt?
   updated_by                              BigInt?
   deleted_by                              BigInt?
+  sort                                    Int?
   users_footer_contacts_created_byTousers users?    @relation("footer_contacts_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "footer_contacts_created_by_foreign")
   users_footer_contacts_deleted_byTousers users?    @relation("footer_contacts_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "footer_contacts_deleted_by_foreign")
   users_footer_contacts_updated_byTousers users?    @relation("footer_contacts_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "footer_contacts_updated_by_foreign")
@@ -138,6 +140,7 @@ model footer_services {
   created_by                              BigInt?
   updated_by                              BigInt?
   deleted_by                              BigInt?
+  sort                                    Int?
   categories                              categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "footer_services_category_id_foreign")
   users_footer_services_created_byTousers users?      @relation("footer_services_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "footer_services_created_by_foreign")
   users_footer_services_deleted_byTousers users?      @relation("footer_services_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "footer_services_deleted_by_foreign")
@@ -255,6 +258,7 @@ model note_visitors {
   created_by                            BigInt?
   updated_by                            BigInt?
   deleted_by                            BigInt?
+  sort                                  Int?
   users_note_visitors_created_byTousers users?    @relation("note_visitors_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "note_visitors_created_by_foreign")
   users_note_visitors_deleted_byTousers users?    @relation("note_visitors_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "note_visitors_deleted_by_foreign")
   users_note_visitors_updated_byTousers users?    @relation("note_visitors_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "note_visitors_updated_by_foreign")
@@ -283,6 +287,7 @@ model quick_accesses {
   created_by                             BigInt?
   updated_by                             BigInt?
   deleted_by                             BigInt?
+  sort                                   Int?
   blogs                                  blogs?      @relation(fields: [blog_id], references: [id], onUpdate: NoAction, map: "quick_accesses_blog_id_foreign")
   categories                             categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "quick_accesses_category_id_foreign")
   users_quick_accesses_created_byTousers users?      @relation("quick_accesses_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "quick_accesses_created_by_foreign")
@@ -315,6 +320,7 @@ model sliders {
   created_by                      BigInt?
   updated_by                      BigInt?
   deleted_by                      BigInt?
+  sort                            Int?
   blogs                           blogs?    @relation(fields: [blog_id], references: [id], onUpdate: NoAction, map: "sliders_blog_id_foreign")
   users_sliders_created_byTousers users?    @relation("sliders_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "sliders_created_by_foreign")
   users_sliders_deleted_byTousers users?    @relation("sliders_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "sliders_deleted_by_foreign")
