@@ -1,0 +1,7 @@
+disnakertrans.kalteng.go.id {
+    # Mengaktifkan kompresi agar loading lebih cepat
+    encode zstd gzip
+
+    # Meneruskan traffic ke container bernama 'nextjs' pada port 3000
+    reverse_proxy nextjs:3000
+}
