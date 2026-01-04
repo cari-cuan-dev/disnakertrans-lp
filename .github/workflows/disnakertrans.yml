@@ -15,4 +15,5 @@ jobs:
           script: |
             cd /home/disnakertrans
             git pull 
+            docker compose -f server/docker-compose.yml down
             docker compose -f server/docker-compose.yml up -d --build
