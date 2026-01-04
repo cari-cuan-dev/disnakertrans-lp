@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     const socialMedia = await prisma.social_media.findMany({
       where: {
         status: true,
+        deleted_at: null, // Only get non-deleted records
       },
       orderBy: {
         sort: 'asc', // Order by sort column ascending

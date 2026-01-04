@@ -36,7 +36,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const statusParam = searchParams.get('status');
 
-    const whereClause: any = {};
+    const whereClause: any = {
+      deleted_at: null, // Only get non-deleted records
+    };
     if (statusParam) {
       whereClause.status = statusParam === 'true';
     } else {
@@ -46,16 +48,25 @@ export async function GET(request: NextRequest) {
     const quickAccessItems = await prisma.quick_accesses.findMany({
       where: whereClause,
       orderBy: {
-        created_at: 'desc', // Order by created date or we can add a sort column later
+        sort: 'asc', // Sort by the sort column in ascending order
       },
       include: {
         blogs: {
+          where: {
+            deleted_at: null, // Only include non-deleted blogs
+          },
+          // orderBy: {
+          //   sort: 'asc', // Sort blogs by sort column in ascending order
+          // },
           select: {
             id: true,
             title: true,
           }
         },
         categories: {
+          where: {
+            deleted_at: null, // Only include non-deleted categories
+          },
           select: {
             id: true,
             name: true,

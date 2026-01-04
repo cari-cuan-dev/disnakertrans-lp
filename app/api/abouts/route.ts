@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
     const statusParam = searchParams.get('status');
 
     const whereClause: any = {
+      deleted_at: null, // Only get non-deleted records
       // status: statusParam ? statusParam === 'true' : true, // Only get active items by default
     };
 

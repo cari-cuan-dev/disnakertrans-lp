@@ -8,9 +8,13 @@ export async function GET(request: NextRequest) {
     const categories = await prisma.blogs.findMany({
       where: {
         status: true, // Only get published blog posts
+        deleted_at: null, // Only get non-deleted records
       },
       select: {
         categories: {
+          where: {
+            deleted_at: null, // Only include non-deleted categories
+          },
           select: {
             name: true,
           }

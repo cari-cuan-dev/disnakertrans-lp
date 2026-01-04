@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     // Build where clause based on filters
     const whereClause: any = {
       status: true, // Only get published blog posts
+      deleted_at: null, // Only get non-deleted records
     };
 
     // Handle category_id filter
@@ -44,18 +45,30 @@ export async function GET(request: NextRequest) {
       whereClause.category_id = BigInt(categoryId);
     }
 
+    // Ensure we only get blogs with non-deleted categories by default
+    if (whereClause.categories) {
+      // If there's already a categories condition, ensure deleted_at: null is included
+      if (typeof whereClause.categories === 'object' && whereClause.categories !== null) {
+        whereClause.categories.deleted_at = null;
+      }
+    } else {
+      // If no categories condition exists, add default condition for non-deleted categories
+      whereClause.categories = {
+        deleted_at: null,
+      };
+    }
+
     // Handle category name filter
     if (category && !categoryId) { // Only apply category name filter if category_id is not present
-      whereClause.categories = {
-        name: category
-      };
+      whereClause.categories.name = category;
     }
 
     if (service) {
       const serviceConditions = [
         {
           categories: {
-            name: service
+            name: service,
+            deleted_at: null, // Only match non-deleted categories
           }
         },
         {
@@ -112,7 +125,7 @@ export async function GET(request: NextRequest) {
 
     // Serialize BigInt values to strings
     const serializedData = serializeBigInt(blogs);
-    
+
     return NextResponse.json(serializedData);
   } catch (error) {
     console.error('Error fetching blogs:', error);

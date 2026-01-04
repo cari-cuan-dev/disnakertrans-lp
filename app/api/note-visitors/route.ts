@@ -28,10 +28,14 @@ export async function GET(request: NextRequest) {
     //   status: statusParam ? statusParam === 'true' : true, // Only get active items by default
     // };
 
+    const whereClause: any = {
+      deleted_at: null, // Only get non-deleted records
+    };
+
     const noteVisitors = await prisma.note_visitors.findMany({
-      // where: whereClause,
+      where: whereClause,
       orderBy: {
-        created_at: 'desc',
+        sort: 'asc', // Sort by the sort column in ascending order
       },
       select: {
         id: true,
@@ -40,7 +44,6 @@ export async function GET(request: NextRequest) {
         subtitle: true,
         created_at: true,
         updated_at: true,
-        deleted_at: true,
         // status: true,
       }
     });

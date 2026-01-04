@@ -107,9 +107,13 @@ export async function GET(
       where: {
         id: bigIntId,
         status: true,
+        deleted_at: null, // Only get non-deleted records
       },
       include: {
         categories: {
+          where: {
+            deleted_at: null, // Only include non-deleted categories
+          },
           select: {
             id: true,
             name: true,
@@ -169,7 +173,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     // Get the current blog to check if there's an existing image to delete
     const currentBlog = await prisma.blogs.findUnique({
-      where: { id: BigInt(id) }
+      where: {
+        id: BigInt(id),
+        deleted_at: null // Only get non-deleted records
+      }
     });
 
     if (!currentBlog) {
@@ -260,7 +267,10 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     // Get the blog to check if there's an image to delete from S3
     const blog = await prisma.blogs.findUnique({
-      where: { id: BigInt(id) }
+      where: {
+        id: BigInt(id),
+        deleted_at: null // Only get non-deleted records
+      }
     });
 
     if (!blog) {

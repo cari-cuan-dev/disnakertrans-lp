@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
     const menuHeaders = await prisma.menu_headers.findMany({
       where: {
         status: true,
+        deleted_at: null, // Only get non-deleted records
       },
       orderBy: {
         sort: 'asc', // Order by sort column ascending
@@ -63,6 +64,7 @@ export async function GET(request: NextRequest) {
         menu_sub_headers: {
           where: {
             status: true,
+            deleted_at: null, // Only get non-deleted sub-headers
           },
           orderBy: {
             sort: 'asc', // Order by sort column ascending

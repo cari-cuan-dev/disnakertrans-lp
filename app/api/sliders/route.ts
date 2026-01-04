@@ -25,9 +25,10 @@ export async function GET(request: NextRequest) {
     const sliders = await prisma.sliders.findMany({
       where: {
         status: true,  // Only fetch active sliders
+        deleted_at: null, // Only get non-deleted records
       },
       orderBy: {
-        id: 'asc',  // Order by ID ascending
+        sort: 'asc',  // Order by sort column ascending
       },
       select: {
         id: true,

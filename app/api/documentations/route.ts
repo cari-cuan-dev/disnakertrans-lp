@@ -28,12 +28,13 @@ export async function GET(request: NextRequest) {
 
     const whereClause: any = {
       status: statusParam ? statusParam === 'true' : true, // Only get active items by default
+      deleted_at: null, // Only get non-deleted records
     };
 
     const documentations = await prisma.documentations.findMany({
       where: whereClause,
       orderBy: {
-        created_at: 'desc',
+        sort: 'asc', // Sort by the sort column in ascending order
       },
       select: {
         id: true,

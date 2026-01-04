@@ -24,14 +24,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const statusParam = searchParams.get('status');
 
-    // const whereClause: any = {
-    //   status: statusParam ? statusParam === 'true' : true, // Only get active items by default
-    // };
+    const whereClause: any = {
+      deleted_at: null, // Only get non-deleted records
+    };
 
     const footerContacts = await prisma.footer_contacts.findMany({
-      // where: whereClause,
+      where: whereClause,
       orderBy: {
-        created_at: 'asc',
+        sort: 'asc', // Sort by the sort column in ascending order
       },
       select: {
         id: true,
