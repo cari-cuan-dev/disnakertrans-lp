@@ -48,10 +48,8 @@ async function getCountryFromIP(ip: string): Promise<string | null> {
 
 export async function POST(request: NextRequest) {
   try {
-    const { page_url, ip_address } = await request.json();
-
-    // Jika IP tidak diterima dari client, ambil dari header server
-    const clientIP = (ip_address || request.headers.get('x-forwarded-for')?.split(',')[0]) ?? 'unknown';
+    const { page_url } = await request.json();
+    const clientIP = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
     const country = await getCountryFromIP(clientIP);
 
     // Simpan data kunjungan ke database
@@ -87,20 +85,16 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
+    const year = searchParams.get('year');
     const pageUrl = searchParams.get('pageUrl');
 
     let whereClause: any = {};
 
-    if (startDate || endDate) {
-      whereClause.created_at = {};
-      if (startDate) {
-        whereClause.created_at.gte = new Date(startDate);
-      }
-      if (endDate) {
-        whereClause.created_at.lte = new Date(endDate);
-      }
+    if (year) {
+      whereClause.created_at = {
+        gte: new Date(`${year}-01-01`),
+        lt: new Date(`${Number(year) + 1}-01-01`),
+      };
     }
 
     if (pageUrl) {
@@ -113,10 +107,12 @@ export async function GET(request: NextRequest) {
     });
 
     // Dapatkan pengunjung unik
-    const uniqueVisitors = await prisma.analytic_visitors.findMany({
+    const uniqueVisitorsTmp = await prisma.analytic_visitors.findMany({
       where: whereClause,
-      distinct: ['ip'],
+      distinct: 'ip',
     });
+    
+    const uniqueVisitors = uniqueVisitorsTmp.length;
 
     // Dapatkan kunjungan per negara
     const visitsByCountry = await prisma.analytic_visitors.groupBy({
@@ -132,11 +128,9 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    let uv = uniqueVisitors.length;
-
     return NextResponse.json({
       totalVisits,
-      uv,
+      uniqueVisitors,
       visitsByCountry,
     });
   } catch (error) {
@@ -145,5 +139,77 @@ export async function GET(request: NextRequest) {
       { message: 'Failed to fetch analytics data' },
       { status: 500 }
     );
+  }
+}
+
+// Handler tambahan untuk endpoint statistik pengunjung
+export async function getVisitorStats(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const year = parseInt(searchParams.get('year') || new Date().getFullYear().toString());
+
+    // Tahun sebelumnya
+    const previousYear = year - 1;
+
+    // Menghitung total pengunjung unik di tahun berjalan
+    const totalVisitorsThisYearTmp = await prisma.analytic_visitors.findMany({
+      distinct: 'ip',
+      where: {
+        created_at: {
+          gte: new Date(`${year}-01-01`),
+          lt: new Date(`${year + 1}-01-01`),
+        }
+      }
+    });
+    const totalVisitorsThisYear = totalVisitorsThisYearTmp.length;
+
+    // Menghitung total kunjungan di tahun berjalan
+    const totalVisitsThisYear = await prisma.analytic_visitors.count({
+      where: {
+        created_at: {
+          gte: new Date(`${year}-01-01`),
+          lt: new Date(`${year + 1}-01-01`),
+        }
+      }
+    });
+
+    // Menghitung total kunjungan di tahun sebelumnya untuk pertumbuhan
+    const totalVisitsPreviousYear = await prisma.analytic_visitors.count({
+      where: {
+        created_at: {
+          gte: new Date(`${previousYear}-01-01`),
+          lt: new Date(`${previousYear + 1}-01-01`),
+        }
+      }
+    });
+
+    // Hitung persentase pertumbuhan
+    let growthRate = 0;
+    if (totalVisitsPreviousYear > 0) {
+      growthRate = ((totalVisitsThisYear - totalVisitsPreviousYear) / totalVisitsPreviousYear) * 100;
+    }
+
+    return NextResponse.json({
+      totalVisitors: totalVisitorsThisYear,
+      totalVisits: totalVisitsThisYear,
+      growthRate: parseFloat(growthRate.toFixed(2))
+    });
+  } catch (error) {
+    console.error('Error fetching visitor stats:', error);
+    return NextResponse.json(
+      { message: 'Failed to fetch visitor stats' },
+      { status: 500 }
+    );
+  }
+}
+
+// Gabungkan handler untuk rute stats
+export async function GET_STATS(request: NextRequest) {
+  // Cek apakah ini permintaan untuk stats
+  const url = new URL(request.url);
+  if (url.pathname.includes('/stats')) {
+    return getVisitorStats(request);
+  } else {
+    return GET(request);
   }
 }

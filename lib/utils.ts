@@ -234,10 +234,14 @@ export async function convertCoverToPresignedUrl<T extends Record<string, any>>(
 
   if (convertedObj.img_cover_path) {
     try {
-      // Jika size tidak ada atau 0, ambil dari S3 menggunakan path asli
+      // Generate presigned URL
+      const signedUrl = await getUrlPreSign(convertedObj.img_cover_path);
+      convertedObj.img_cover_path = signedUrl;
+
+      // Jika size tidak ada atau 0, ambil dari S3
       if (!convertedObj.size || convertedObj.size === '0 KB' || convertedObj.size === '0 B') {
         try {
-          const metadata = await getFileMetadata(convertedObj.img_cover_path); // gunakan path asli sebelum diubah
+          const metadata = await getFileMetadata(convertedObj.img_cover_path);
           convertedObj.size = formatFileSize(metadata.size);
         } catch (metaError) {
           console.error(`Failed to get file size for ${convertedObj.img_cover_path}:`, metaError);
@@ -247,11 +251,6 @@ export async function convertCoverToPresignedUrl<T extends Record<string, any>>(
           }
         }
       }
-
-      // Generate presigned URL
-      const signedUrl = await getUrlPreSign(convertedObj.img_cover_path);
-      convertedObj.img_cover_path = signedUrl;
-
     } catch (error) {
       console.error(`Failed to generate presigned URL for img_cover_path: ${convertedObj.img_cover_path}`, error);
     }
@@ -270,10 +269,14 @@ export async function convertImageToPresignedUrl<T extends Record<string, any>>(
 
   if (convertedObj.image_path) {
     try {
-      // Jika size tidak ada atau 0, ambil dari S3 menggunakan path asli
+      // Generate presigned URL
+      const signedUrl = await getUrlPreSign(convertedObj.image_path);
+      convertedObj.image_path = signedUrl;
+
+      // Jika size tidak ada atau 0, ambil dari S3
       if (!convertedObj.size || convertedObj.size === '0 KB' || convertedObj.size === '0 B') {
         try {
-          const metadata = await getFileMetadata(convertedObj.image_path); // gunakan path asli sebelum diubah
+          const metadata = await getFileMetadata(convertedObj.image_path);
           convertedObj.size = formatFileSize(metadata.size);
         } catch (metaError) {
           console.error(`Failed to get file size for ${convertedObj.image_path}:`, metaError);
@@ -283,11 +286,6 @@ export async function convertImageToPresignedUrl<T extends Record<string, any>>(
           }
         }
       }
-
-      // Generate presigned URL
-      const signedUrl = await getUrlPreSign(convertedObj.image_path);
-      convertedObj.image_path = signedUrl;
-
     } catch (error) {
       console.error(`Failed to generate presigned URL for image_path: ${convertedObj.image_path}`, error);
     }
