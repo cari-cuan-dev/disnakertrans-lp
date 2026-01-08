@@ -38,7 +38,7 @@ export default function StatsSection() {
     {
       label: "Total Pengunjung",
       value: stats.totalVisitors.toLocaleString(),
-      subvalue: `${Math.floor(Math.random() * 30) + 1} sedang online`, // Placeholder - Anda bisa menggantinya dengan data real
+      // subvalue: `${Math.floor(Math.random() * 30) + 1} sedang online`, // Placeholder - Anda bisa menggantinya dengan data real
       icon: Users,
     },
     {
