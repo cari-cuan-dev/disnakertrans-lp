@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { convertCoversToPresignedUrls } from '@/lib/utils';
 
 export interface BlogItem {
   id: string;
@@ -126,7 +127,10 @@ export async function GET(request: NextRequest) {
     // Serialize BigInt values to strings
     const serializedData = serializeBigInt(blogs);
 
-    return NextResponse.json(serializedData);
+    // Convert img_cover_path to presigned URLs
+    const blogsWithPresignedUrls = await convertCoversToPresignedUrls(serializedData);
+
+    return NextResponse.json(blogsWithPresignedUrls);
   } catch (error) {
     console.error('Error fetching blogs:', error);
     return NextResponse.json(

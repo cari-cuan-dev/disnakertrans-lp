@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { convertFilesToPresignedUrls } from '@/lib/utils';
 
 export interface DocumentationItem {
   id: string;
@@ -51,8 +52,11 @@ export async function GET(request: NextRequest) {
 
     // Serialize BigInt values to strings
     const serializedData = serializeBigInt(documentations);
-    
-    return NextResponse.json(serializedData);
+
+    // Convert file_path to presigned URLs
+    const documentationWithPresignedUrls = await convertFilesToPresignedUrls(serializedData);
+
+    return NextResponse.json(documentationWithPresignedUrls);
   } catch (error) {
     console.error('Error fetching documentation:', error);
     return NextResponse.json(

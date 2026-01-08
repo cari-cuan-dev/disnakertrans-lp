@@ -111,9 +111,9 @@ export async function GET(
       },
       include: {
         categories: {
-          where: {
-            deleted_at: null, // Only include non-deleted categories
-          },
+          // where: {
+          //   deleted_at: null, // Only include non-deleted categories
+          // },
           select: {
             id: true,
             name: true,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { convertImagesToPresignedUrls } from '@/lib/utils';
 
 interface SliderItem {
   id: string;
@@ -41,7 +42,10 @@ export async function GET(request: NextRequest) {
     // Serialize BigInt values to strings
     const serializedSliders = serializeBigInt(sliders);
 
-    return NextResponse.json(serializedSliders);
+    // Generate presigned URLs for all slider images
+    const slidersWithPresignedUrls = await convertImagesToPresignedUrls(serializedSliders);
+
+    return NextResponse.json(slidersWithPresignedUrls);
   } catch (error) {
     console.error('Error fetching sliders:', error);
     return NextResponse.json(

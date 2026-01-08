@@ -168,7 +168,8 @@ model hexa_roles {
   guard           String           @default("web") @db.VarChar(255)
   created_at      DateTime?        @db.Timestamp(0)
   updated_at      DateTime?        @db.Timestamp(0)
-  hexa_role_user  hexa_role_user[] @ignore
+  // hexa_role_user  hexa_role_user[]
+  hexaRoleUsers   hexa_role_user[] @ignore
 }
 
 model job_batches {
@@ -311,7 +312,7 @@ model sliders {
   id                              BigInt    @id @default(autoincrement())
   title                           String    @db.VarChar(255)
   subtitle                        String    @db.VarChar(255)
-  image_path                      String    @db.VarChar(255)
+  image_path                      String?   @db.VarChar(255)
   blog_id                         BigInt?
   status                          Boolean   @default(true)
   created_at                      DateTime? @db.Timestamp(0)
@@ -382,6 +383,9 @@ model users {
   note_visitors_note_visitors_created_byTousers       note_visitors[]    @relation("note_visitors_created_byTousers")
   note_visitors_note_visitors_deleted_byTousers       note_visitors[]    @relation("note_visitors_deleted_byTousers")
   note_visitors_note_visitors_updated_byTousers       note_visitors[]    @relation("note_visitors_updated_byTousers")
+  opening_speeches_opening_speeches_created_byTousers opening_speeches[] @relation("opening_speeches_created_byTousers")
+  opening_speeches_opening_speeches_deleted_byTousers opening_speeches[] @relation("opening_speeches_deleted_byTousers")
+  opening_speeches_opening_speeches_updated_byTousers opening_speeches[] @relation("opening_speeches_updated_byTousers")
   quick_accesses_quick_accesses_created_byTousers     quick_accesses[]   @relation("quick_accesses_created_byTousers")
   quick_accesses_quick_accesses_deleted_byTousers     quick_accesses[]   @relation("quick_accesses_deleted_byTousers")
   quick_accesses_quick_accesses_updated_byTousers     quick_accesses[]   @relation("quick_accesses_updated_byTousers")
@@ -391,4 +395,23 @@ model users {
   social_media_social_media_created_byTousers         social_media[]     @relation("social_media_created_byTousers")
   social_media_social_media_deleted_byTousers         social_media[]     @relation("social_media_deleted_byTousers")
   social_media_social_media_updated_byTousers         social_media[]     @relation("social_media_updated_byTousers")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model opening_speeches {
+  id                                       BigInt    @id @default(autoincrement())
+  type                                     String    @db.VarChar(255)
+  role                                     String    @db.VarChar(255)
+  name                                     String    @db.VarChar(255)
+  image_path                               String    @db.VarChar(255)
+  speech                                   String?
+  created_at                               DateTime? @db.Timestamp(0)
+  updated_at                               DateTime? @db.Timestamp(0)
+  deleted_at                               DateTime? @db.Timestamp(0)
+  created_by                               BigInt?
+  updated_by                               BigInt?
+  deleted_by                               BigInt?
+  users_opening_speeches_created_byTousers users?    @relation("opening_speeches_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "opening_speeches_created_by_foreign")
+  users_opening_speeches_deleted_byTousers users?    @relation("opening_speeches_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "opening_speeches_deleted_by_foreign")
+  users_opening_speeches_updated_byTousers users?    @relation("opening_speeches_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "opening_speeches_updated_by_foreign")
 }

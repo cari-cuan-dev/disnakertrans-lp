@@ -89,28 +89,34 @@ export default function DocumentationSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">  {/* Changed grid to show 4 columns */}
           {displayedDocuments.map((item) => (
-            <div
+            <a
               key={item.id}
-              className="group bg-white rounded-xl p-6 border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all cursor-pointer"
+              href={item.file_path}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FileText size={24} className="text-purple-600" />
+              <div
+                className="group bg-white rounded-xl p-6 border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all cursor-pointer"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <FileText size={24} className="text-purple-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {item.type} • {item.size || '0 KB'}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-2">
-                    {item.type} • {item.size || '0 KB'}
-                  </p>
+                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-xs font-medium text-gray-600">Unduh</span>
+                  <Download size={16} className="text-purple-600 group-hover:translate-y-1 transition-transform" />
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-600">Unduh</span>
-                <Download size={16} className="text-purple-600 group-hover:translate-y-1 transition-transform" />
-              </div>
-            </div>
+            </a>
           ))}
         </div>
 

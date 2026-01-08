@@ -64,9 +64,9 @@ export async function GET(request: NextRequest) {
           }
         },
         categories: {
-          where: {
-            deleted_at: null, // Only include non-deleted categories
-          },
+          // where: {
+          //   deleted_at: null, // Only include non-deleted categories
+          // },
           select: {
             id: true,
             name: true,

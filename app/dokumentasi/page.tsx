@@ -110,8 +110,8 @@ const DocumentationPage = () => {
   const getReadableSize = (size: string | null) => {
     if (size) return size;
 
-    // If no size in database, return a placeholder
-    return '0 KB';
+    // If no size in response, return a placeholder
+    return 'Ukuran tidak diketahui';
   }
 
   if (loading) {
@@ -214,12 +214,11 @@ const DocumentationPage = () => {
             {filteredDocs.length > 0 ? (
               filteredDocs.map((doc) => {
                 // Determine type from file extension if not directly specified
-                const fileType = '';
-                const readableSize = '';
-                if (doc.type) {
-                  const fileType = doc.type.toLowerCase() || getFileExtension(doc.file_path);
-                  const readableSize = getReadableSize(doc.size);
-                }
+                const fileType = doc.type?.toLowerCase() || getFileExtension(doc.file_path);
+                const readableSize = getReadableSize(doc.size);
+
+                // Check if the file_path is a valid URL (presigned URL)
+                const isValidUrl = doc.file_path && doc.file_path.startsWith('http');
 
                 return (
                   <div
@@ -229,9 +228,14 @@ const DocumentationPage = () => {
                     {/* Thumbnail */}
                     <div className="relative h-48 bg-gray-200 overflow-hidden">
                       <img
-                        src={doc.file_path || "/placeholder.svg"}
+                        src={isValidUrl ? doc.file_path : "/placeholder.svg"}
                         alt={doc.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null; // prevents looping
+                          target.src = "/placeholder.svg"; // fallback to placeholder
+                        }}
                       />
                       {/* Document Type Badge */}
                       <div className="absolute top-3 right-3 bg-white rounded-lg p-2 shadow-lg">
@@ -261,10 +265,20 @@ const DocumentationPage = () => {
                       </div>
 
                       {/* Download Button */}
-                      <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                        <Download size={16} className="mr-2" />
-                        {fileType.includes('video') || fileType.includes('mp4') ? "Tonton" : "Unduh"}
-                      </Button>
+                      <a
+                        href={isValidUrl ? doc.file_path : undefined}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={isValidUrl ? undefined : (e) => e.preventDefault()}
+                      >
+                        <Button
+                          className={`w-full ${isValidUrl ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-400 cursor-not-allowed'} text-white`}
+                          disabled={!isValidUrl}
+                        >
+                          <Download size={16} className="mr-2" />
+                          {fileType.includes('video') || fileType.includes('mp4') ? "Tonton" : "Unduh"}
+                        </Button>
+                      </a>
                     </div>
                   </div>
                 );

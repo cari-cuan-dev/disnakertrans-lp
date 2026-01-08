@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
       },
       select: {
         categories: {
-          where: {
-            deleted_at: null, // Only include non-deleted categories
-          },
+          // where: {
+          //   deleted_at: null, // Only include non-deleted categories
+          // },
           select: {
             name: true,
           }
