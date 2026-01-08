@@ -168,7 +168,6 @@ model hexa_roles {
   guard           String           @default("web") @db.VarChar(255)
   created_at      DateTime?        @db.Timestamp(0)
   updated_at      DateTime?        @db.Timestamp(0)
-  // hexa_role_user  hexa_role_user[]
   hexaRoleUsers   hexa_role_user[] @ignore
 }
 
@@ -414,4 +413,16 @@ model opening_speeches {
   users_opening_speeches_created_byTousers users?    @relation("opening_speeches_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "opening_speeches_created_by_foreign")
   users_opening_speeches_deleted_byTousers users?    @relation("opening_speeches_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "opening_speeches_deleted_by_foreign")
   users_opening_speeches_updated_byTousers users?    @relation("opening_speeches_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "opening_speeches_updated_by_foreign")
+}
+
+model analytic_visitors {
+  id         BigInt   @id @default(autoincrement())
+  ip         String   @db.Inet
+  page_url   String   @db.Text
+  country    String?  @db.VarChar(100)
+  created_at DateTime @default(now()) @db.Timestamp(3)
+
+  @@index([created_at])
+  @@index([ip])
+  @@index([country])
 }
