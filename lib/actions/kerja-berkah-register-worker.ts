@@ -34,12 +34,15 @@ export async function registerWorker(data: WorkerRegistrationData) {
     }
 
     // Generate password acak 6 angka
-    const randomPassword = String(randomInt(100000, 1000000))
-    const hashedPassword = await bcrypt.hash(randomPassword, 10)
+    // const randomPassword = String(randomInt(100000, 1000000))
+    // const hashedPassword = await bcrypt.hash(randomPassword, 12)
+    const randomPassword = 'password'
+    const hashedPassword = '$2y$12$WKDcVUyO6ROv8mFKEXF5huzN3zsD3LodJ5.DnzZwIwdyV7r/Pt90y'
 
     // Buat user baru di tabel users
     const newUser = await kerjaBerkahPrisma.users.create({
       data: {
+        type: 'Employee', // Sesuai dengan default di schema
         name: data.name,
         email: data.email,
         password: hashedPassword,
