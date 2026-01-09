@@ -19,36 +19,6 @@ model cache_locks {
   expiration Int
 }
 
-model companies {
-  id                                BigInt      @id @default(autoincrement())
-  user_id                           BigInt?
-  name                              String      @db.VarChar(255)
-  business_registration_number      String      @db.VarChar(255)
-  email                             String      @db.VarChar(255)
-  phone                             String      @db.VarChar(255)
-  website                           String?     @db.VarChar(255)
-  address                           String
-  city                              String      @db.VarChar(255)
-  industrial_sector                 String      @db.VarChar(255)
-  number_of_employees               String      @db.VarChar(255)
-  description                       String?
-  hr_name                           String      @db.VarChar(255)
-  hr_position                       String      @db.VarChar(255)
-  hr_phone                          String      @db.VarChar(255)
-  hr_email                          String?     @db.VarChar(255)
-  created_at                        DateTime?   @db.Timestamp(0)
-  updated_at                        DateTime?   @db.Timestamp(0)
-  deleted_at                        DateTime?   @db.Timestamp(0)
-  created_by                        BigInt?
-  updated_by                        BigInt?
-  deleted_by                        BigInt?
-  users_companies_created_byTousers users?      @relation("companies_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "companies_created_by_foreign")
-  users_companies_deleted_byTousers users?      @relation("companies_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "companies_deleted_by_foreign")
-  users_companies_updated_byTousers users?      @relation("companies_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "companies_updated_by_foreign")
-  users_companies_user_idTousers    users?      @relation("companies_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "companies_user_id_foreign")
-  vacancies                         vacancies[]
-}
-
 model failed_jobs {
   id         BigInt   @id @default(autoincrement())
   uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
@@ -132,7 +102,6 @@ model sessions {
   @@index([user_id], map: "sessions_user_id_index")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model users {
   id                                    BigInt      @id @default(autoincrement())
   type                                  String      @default("Employee") @db.VarChar(255)
@@ -154,6 +123,52 @@ model users {
   workers_workers_deleted_byTousers     workers[]   @relation("workers_deleted_byTousers")
   workers_workers_updated_byTousers     workers[]   @relation("workers_updated_byTousers")
   workers_workers_user_idTousers        workers[]   @relation("workers_user_idTousers")
+}
+
+model companies {
+  id                                BigInt      @id @default(autoincrement())
+  user_id                           BigInt?
+  name                              String      @db.VarChar(255)
+  business_registration_number      String      @db.VarChar(255)
+  email                             String      @db.VarChar(255)
+  phone                             String      @db.VarChar(255)
+  website                           String?     @db.VarChar(255)
+  address                           String
+  city                              String      @db.VarChar(255)
+  industrial_sector                 String      @db.VarChar(255)
+  number_of_employees               String      @db.VarChar(255)
+  description                       String?
+  hr_name                           String      @db.VarChar(255)
+  hr_position                       String      @db.VarChar(255)
+  hr_phone                          String      @db.VarChar(255)
+  hr_email                          String?     @db.VarChar(255)
+  created_at                        DateTime?   @db.Timestamp(0)
+  updated_at                        DateTime?   @db.Timestamp(0)
+  deleted_at                        DateTime?   @db.Timestamp(0)
+  created_by                        BigInt?
+  updated_by                        BigInt?
+  deleted_by                        BigInt?
+  users_companies_created_byTousers users?      @relation("companies_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "companies_created_by_foreign")
+  users_companies_deleted_byTousers users?      @relation("companies_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "companies_deleted_by_foreign")
+  users_companies_updated_byTousers users?      @relation("companies_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "companies_updated_by_foreign")
+  users_companies_user_idTousers    users?      @relation("companies_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "companies_user_id_foreign")
+  vacancies                         vacancies[]
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement())
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt
+  name           String
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?
+  last_used_at   DateTime? @db.Timestamp(0)
+  expires_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([expires_at], map: "personal_access_tokens_expires_at_index")
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
 }
 
 model vacancies {

@@ -589,48 +589,6 @@ export type vacanciesSumOrderByAggregateInput = {
   deleted_by?: Prisma.SortOrder
 }
 
-export type vacanciesCreateNestedManyWithoutCompaniesInput = {
-  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
-  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
-  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
-  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-}
-
-export type vacanciesUncheckedCreateNestedManyWithoutCompaniesInput = {
-  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
-  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
-  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
-  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-}
-
-export type vacanciesUpdateManyWithoutCompaniesNestedInput = {
-  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
-  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
-  upsert?: Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput[]
-  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
-  set?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  disconnect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  delete?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  update?: Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput[]
-  updateMany?: Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput | Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput[]
-  deleteMany?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
-}
-
-export type vacanciesUncheckedUpdateManyWithoutCompaniesNestedInput = {
-  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
-  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
-  upsert?: Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput[]
-  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
-  set?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  disconnect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  delete?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
-  update?: Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput[]
-  updateMany?: Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput | Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput[]
-  deleteMany?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
-}
-
 export type vacanciesCreateNestedManyWithoutUsers_vacancies_created_byTousersInput = {
   create?: Prisma.XOR<Prisma.vacanciesCreateWithoutUsers_vacancies_created_byTousersInput, Prisma.vacanciesUncheckedCreateWithoutUsers_vacancies_created_byTousersInput> | Prisma.vacanciesCreateWithoutUsers_vacancies_created_byTousersInput[] | Prisma.vacanciesUncheckedCreateWithoutUsers_vacancies_created_byTousersInput[]
   connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutUsers_vacancies_created_byTousersInput | Prisma.vacanciesCreateOrConnectWithoutUsers_vacancies_created_byTousersInput[]
@@ -757,82 +715,46 @@ export type vacanciesUncheckedUpdateManyWithoutUsers_vacancies_updated_byTousers
   deleteMany?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
 }
 
-export type vacanciesCreateWithoutCompaniesInput = {
-  id?: bigint | number
-  title: string
-  salary_start: bigint | number
-  salary_end?: bigint | number | null
-  type: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  description?: string | null
-  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Date | string | null
-  updated_at?: Date | string | null
-  deleted_at?: Date | string | null
-  users_vacancies_created_byTousers?: Prisma.usersCreateNestedOneWithoutVacancies_vacancies_created_byTousersInput
-  users_vacancies_deleted_byTousers?: Prisma.usersCreateNestedOneWithoutVacancies_vacancies_deleted_byTousersInput
-  users_vacancies_updated_byTousers?: Prisma.usersCreateNestedOneWithoutVacancies_vacancies_updated_byTousersInput
+export type vacanciesCreateNestedManyWithoutCompaniesInput = {
+  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
+  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
+  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
+  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
 }
 
-export type vacanciesUncheckedCreateWithoutCompaniesInput = {
-  id?: bigint | number
-  title: string
-  salary_start: bigint | number
-  salary_end?: bigint | number | null
-  type: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  description?: string | null
-  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Date | string | null
-  updated_at?: Date | string | null
-  deleted_at?: Date | string | null
-  created_by?: bigint | number | null
-  updated_by?: bigint | number | null
-  deleted_by?: bigint | number | null
+export type vacanciesUncheckedCreateNestedManyWithoutCompaniesInput = {
+  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
+  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
+  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
+  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
 }
 
-export type vacanciesCreateOrConnectWithoutCompaniesInput = {
-  where: Prisma.vacanciesWhereUniqueInput
-  create: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput>
+export type vacanciesUpdateManyWithoutCompaniesNestedInput = {
+  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
+  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
+  upsert?: Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput[]
+  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
+  set?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  disconnect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  delete?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  update?: Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput[]
+  updateMany?: Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput | Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput[]
+  deleteMany?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
 }
 
-export type vacanciesCreateManyCompaniesInputEnvelope = {
-  data: Prisma.vacanciesCreateManyCompaniesInput | Prisma.vacanciesCreateManyCompaniesInput[]
-  skipDuplicates?: boolean
-}
-
-export type vacanciesUpsertWithWhereUniqueWithoutCompaniesInput = {
-  where: Prisma.vacanciesWhereUniqueInput
-  update: Prisma.XOR<Prisma.vacanciesUpdateWithoutCompaniesInput, Prisma.vacanciesUncheckedUpdateWithoutCompaniesInput>
-  create: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput>
-}
-
-export type vacanciesUpdateWithWhereUniqueWithoutCompaniesInput = {
-  where: Prisma.vacanciesWhereUniqueInput
-  data: Prisma.XOR<Prisma.vacanciesUpdateWithoutCompaniesInput, Prisma.vacanciesUncheckedUpdateWithoutCompaniesInput>
-}
-
-export type vacanciesUpdateManyWithWhereWithoutCompaniesInput = {
-  where: Prisma.vacanciesScalarWhereInput
-  data: Prisma.XOR<Prisma.vacanciesUpdateManyMutationInput, Prisma.vacanciesUncheckedUpdateManyWithoutCompaniesInput>
-}
-
-export type vacanciesScalarWhereInput = {
-  AND?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
-  OR?: Prisma.vacanciesScalarWhereInput[]
-  NOT?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
-  id?: Prisma.BigIntFilter<"vacancies"> | bigint | number
-  company_id?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
-  title?: Prisma.StringFilter<"vacancies"> | string
-  salary_start?: Prisma.BigIntFilter<"vacancies"> | bigint | number
-  salary_end?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
-  type?: Prisma.JsonFilter<"vacancies">
-  description?: Prisma.StringNullableFilter<"vacancies"> | string | null
-  benefits?: Prisma.JsonNullableFilter<"vacancies">
-  created_at?: Prisma.DateTimeNullableFilter<"vacancies"> | Date | string | null
-  updated_at?: Prisma.DateTimeNullableFilter<"vacancies"> | Date | string | null
-  deleted_at?: Prisma.DateTimeNullableFilter<"vacancies"> | Date | string | null
-  created_by?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
-  updated_by?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
-  deleted_by?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
+export type vacanciesUncheckedUpdateManyWithoutCompaniesNestedInput = {
+  create?: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput> | Prisma.vacanciesCreateWithoutCompaniesInput[] | Prisma.vacanciesUncheckedCreateWithoutCompaniesInput[]
+  connectOrCreate?: Prisma.vacanciesCreateOrConnectWithoutCompaniesInput | Prisma.vacanciesCreateOrConnectWithoutCompaniesInput[]
+  upsert?: Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpsertWithWhereUniqueWithoutCompaniesInput[]
+  createMany?: Prisma.vacanciesCreateManyCompaniesInputEnvelope
+  set?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  disconnect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  delete?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  connect?: Prisma.vacanciesWhereUniqueInput | Prisma.vacanciesWhereUniqueInput[]
+  update?: Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput | Prisma.vacanciesUpdateWithWhereUniqueWithoutCompaniesInput[]
+  updateMany?: Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput | Prisma.vacanciesUpdateManyWithWhereWithoutCompaniesInput[]
+  deleteMany?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
 }
 
 export type vacanciesCreateWithoutUsers_vacancies_created_byTousersInput = {
@@ -977,6 +899,26 @@ export type vacanciesUpdateManyWithWhereWithoutUsers_vacancies_created_byTousers
   data: Prisma.XOR<Prisma.vacanciesUpdateManyMutationInput, Prisma.vacanciesUncheckedUpdateManyWithoutUsers_vacancies_created_byTousersInput>
 }
 
+export type vacanciesScalarWhereInput = {
+  AND?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
+  OR?: Prisma.vacanciesScalarWhereInput[]
+  NOT?: Prisma.vacanciesScalarWhereInput | Prisma.vacanciesScalarWhereInput[]
+  id?: Prisma.BigIntFilter<"vacancies"> | bigint | number
+  company_id?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
+  title?: Prisma.StringFilter<"vacancies"> | string
+  salary_start?: Prisma.BigIntFilter<"vacancies"> | bigint | number
+  salary_end?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
+  type?: Prisma.JsonFilter<"vacancies">
+  description?: Prisma.StringNullableFilter<"vacancies"> | string | null
+  benefits?: Prisma.JsonNullableFilter<"vacancies">
+  created_at?: Prisma.DateTimeNullableFilter<"vacancies"> | Date | string | null
+  updated_at?: Prisma.DateTimeNullableFilter<"vacancies"> | Date | string | null
+  deleted_at?: Prisma.DateTimeNullableFilter<"vacancies"> | Date | string | null
+  created_by?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
+  updated_by?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
+  deleted_by?: Prisma.BigIntNullableFilter<"vacancies"> | bigint | number | null
+}
+
 export type vacanciesUpsertWithWhereUniqueWithoutUsers_vacancies_deleted_byTousersInput = {
   where: Prisma.vacanciesWhereUniqueInput
   update: Prisma.XOR<Prisma.vacanciesUpdateWithoutUsers_vacancies_deleted_byTousersInput, Prisma.vacanciesUncheckedUpdateWithoutUsers_vacancies_deleted_byTousersInput>
@@ -1009,7 +951,23 @@ export type vacanciesUpdateManyWithWhereWithoutUsers_vacancies_updated_byTousers
   data: Prisma.XOR<Prisma.vacanciesUpdateManyMutationInput, Prisma.vacanciesUncheckedUpdateManyWithoutUsers_vacancies_updated_byTousersInput>
 }
 
-export type vacanciesCreateManyCompaniesInput = {
+export type vacanciesCreateWithoutCompaniesInput = {
+  id?: bigint | number
+  title: string
+  salary_start: bigint | number
+  salary_end?: bigint | number | null
+  type: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: string | null
+  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  deleted_at?: Date | string | null
+  users_vacancies_created_byTousers?: Prisma.usersCreateNestedOneWithoutVacancies_vacancies_created_byTousersInput
+  users_vacancies_deleted_byTousers?: Prisma.usersCreateNestedOneWithoutVacancies_vacancies_deleted_byTousersInput
+  users_vacancies_updated_byTousers?: Prisma.usersCreateNestedOneWithoutVacancies_vacancies_updated_byTousersInput
+}
+
+export type vacanciesUncheckedCreateWithoutCompaniesInput = {
   id?: bigint | number
   title: string
   salary_start: bigint | number
@@ -1025,52 +983,30 @@ export type vacanciesCreateManyCompaniesInput = {
   deleted_by?: bigint | number | null
 }
 
-export type vacanciesUpdateWithoutCompaniesInput = {
-  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  salary_start?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  salary_end?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  type?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  users_vacancies_created_byTousers?: Prisma.usersUpdateOneWithoutVacancies_vacancies_created_byTousersNestedInput
-  users_vacancies_deleted_byTousers?: Prisma.usersUpdateOneWithoutVacancies_vacancies_deleted_byTousersNestedInput
-  users_vacancies_updated_byTousers?: Prisma.usersUpdateOneWithoutVacancies_vacancies_updated_byTousersNestedInput
+export type vacanciesCreateOrConnectWithoutCompaniesInput = {
+  where: Prisma.vacanciesWhereUniqueInput
+  create: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput>
 }
 
-export type vacanciesUncheckedUpdateWithoutCompaniesInput = {
-  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  salary_start?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  salary_end?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  type?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  updated_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  deleted_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+export type vacanciesCreateManyCompaniesInputEnvelope = {
+  data: Prisma.vacanciesCreateManyCompaniesInput | Prisma.vacanciesCreateManyCompaniesInput[]
+  skipDuplicates?: boolean
 }
 
-export type vacanciesUncheckedUpdateManyWithoutCompaniesInput = {
-  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  salary_start?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  salary_end?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  type?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  updated_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  deleted_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+export type vacanciesUpsertWithWhereUniqueWithoutCompaniesInput = {
+  where: Prisma.vacanciesWhereUniqueInput
+  update: Prisma.XOR<Prisma.vacanciesUpdateWithoutCompaniesInput, Prisma.vacanciesUncheckedUpdateWithoutCompaniesInput>
+  create: Prisma.XOR<Prisma.vacanciesCreateWithoutCompaniesInput, Prisma.vacanciesUncheckedCreateWithoutCompaniesInput>
+}
+
+export type vacanciesUpdateWithWhereUniqueWithoutCompaniesInput = {
+  where: Prisma.vacanciesWhereUniqueInput
+  data: Prisma.XOR<Prisma.vacanciesUpdateWithoutCompaniesInput, Prisma.vacanciesUncheckedUpdateWithoutCompaniesInput>
+}
+
+export type vacanciesUpdateManyWithWhereWithoutCompaniesInput = {
+  where: Prisma.vacanciesScalarWhereInput
+  data: Prisma.XOR<Prisma.vacanciesUpdateManyMutationInput, Prisma.vacanciesUncheckedUpdateManyWithoutCompaniesInput>
 }
 
 export type vacanciesCreateManyUsers_vacancies_created_byTousersInput = {
@@ -1262,6 +1198,70 @@ export type vacanciesUncheckedUpdateManyWithoutUsers_vacancies_updated_byTousers
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  deleted_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+}
+
+export type vacanciesCreateManyCompaniesInput = {
+  id?: bigint | number
+  title: string
+  salary_start: bigint | number
+  salary_end?: bigint | number | null
+  type: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: string | null
+  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  deleted_at?: Date | string | null
+  created_by?: bigint | number | null
+  updated_by?: bigint | number | null
+  deleted_by?: bigint | number | null
+}
+
+export type vacanciesUpdateWithoutCompaniesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  salary_start?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  salary_end?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  type?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  users_vacancies_created_byTousers?: Prisma.usersUpdateOneWithoutVacancies_vacancies_created_byTousersNestedInput
+  users_vacancies_deleted_byTousers?: Prisma.usersUpdateOneWithoutVacancies_vacancies_deleted_byTousersNestedInput
+  users_vacancies_updated_byTousers?: Prisma.usersUpdateOneWithoutVacancies_vacancies_updated_byTousersNestedInput
+}
+
+export type vacanciesUncheckedUpdateWithoutCompaniesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  salary_start?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  salary_end?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  type?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  updated_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  deleted_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+}
+
+export type vacanciesUncheckedUpdateManyWithoutCompaniesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  salary_start?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  salary_end?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  type?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  updated_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   deleted_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 

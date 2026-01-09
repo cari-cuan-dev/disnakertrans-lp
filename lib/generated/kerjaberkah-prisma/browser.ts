@@ -28,11 +28,6 @@ export type cache = Prisma.cacheModel
  */
 export type cache_locks = Prisma.cache_locksModel
 /**
- * Model companies
- * 
- */
-export type companies = Prisma.companiesModel
-/**
  * Model failed_jobs
  * 
  */
@@ -69,9 +64,19 @@ export type password_reset_tokens = Prisma.password_reset_tokensModel
 export type sessions = Prisma.sessionsModel
 /**
  * Model users
- * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * 
  */
 export type users = Prisma.usersModel
+/**
+ * Model companies
+ * 
+ */
+export type companies = Prisma.companiesModel
+/**
+ * Model personal_access_tokens
+ * 
+ */
+export type personal_access_tokens = Prisma.personal_access_tokensModel
 /**
  * Model vacancies
  * 

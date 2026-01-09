@@ -386,7 +386,6 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   cache: 'cache',
   cache_locks: 'cache_locks',
-  companies: 'companies',
   failed_jobs: 'failed_jobs',
   hexa_roles: 'hexa_roles',
   job_batches: 'job_batches',
@@ -395,6 +394,8 @@ export const ModelName = {
   password_reset_tokens: 'password_reset_tokens',
   sessions: 'sessions',
   users: 'users',
+  companies: 'companies',
+  personal_access_tokens: 'personal_access_tokens',
   vacancies: 'vacancies',
   workers: 'workers'
 } as const
@@ -412,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cache" | "cache_locks" | "companies" | "failed_jobs" | "hexa_roles" | "job_batches" | "jobs" | "migrations" | "password_reset_tokens" | "sessions" | "users" | "vacancies" | "workers"
+    modelProps: "cache" | "cache_locks" | "failed_jobs" | "hexa_roles" | "job_batches" | "jobs" | "migrations" | "password_reset_tokens" | "sessions" | "users" | "companies" | "personal_access_tokens" | "vacancies" | "workers"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -561,80 +562,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.cache_locksCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.Cache_locksCountAggregateOutputType> | number
-        }
-      }
-    }
-    companies: {
-      payload: Prisma.$companiesPayload<ExtArgs>
-      fields: Prisma.companiesFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.companiesFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.companiesFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
-        }
-        findFirst: {
-          args: Prisma.companiesFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.companiesFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
-        }
-        findMany: {
-          args: Prisma.companiesFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>[]
-        }
-        create: {
-          args: Prisma.companiesCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
-        }
-        createMany: {
-          args: Prisma.companiesCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.companiesCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>[]
-        }
-        delete: {
-          args: Prisma.companiesDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
-        }
-        update: {
-          args: Prisma.companiesUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
-        }
-        deleteMany: {
-          args: Prisma.companiesDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.companiesUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.companiesUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>[]
-        }
-        upsert: {
-          args: Prisma.companiesUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
-        }
-        aggregate: {
-          args: Prisma.CompaniesAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanies>
-        }
-        groupBy: {
-          args: Prisma.companiesGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.CompaniesGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.companiesCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.CompaniesCountAggregateOutputType> | number
         }
       }
     }
@@ -1230,6 +1157,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    companies: {
+      payload: Prisma.$companiesPayload<ExtArgs>
+      fields: Prisma.companiesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.companiesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.companiesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
+        }
+        findFirst: {
+          args: Prisma.companiesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.companiesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
+        }
+        findMany: {
+          args: Prisma.companiesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>[]
+        }
+        create: {
+          args: Prisma.companiesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
+        }
+        createMany: {
+          args: Prisma.companiesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.companiesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>[]
+        }
+        delete: {
+          args: Prisma.companiesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
+        }
+        update: {
+          args: Prisma.companiesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
+        }
+        deleteMany: {
+          args: Prisma.companiesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.companiesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.companiesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>[]
+        }
+        upsert: {
+          args: Prisma.companiesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$companiesPayload>
+        }
+        aggregate: {
+          args: Prisma.CompaniesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanies>
+        }
+        groupBy: {
+          args: Prisma.companiesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompaniesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.companiesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompaniesCountAggregateOutputType> | number
+        }
+      }
+    }
+    personal_access_tokens: {
+      payload: Prisma.$personal_access_tokensPayload<ExtArgs>
+      fields: Prisma.personal_access_tokensFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.personal_access_tokensFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.personal_access_tokensFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>
+        }
+        findFirst: {
+          args: Prisma.personal_access_tokensFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.personal_access_tokensFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>
+        }
+        findMany: {
+          args: Prisma.personal_access_tokensFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>[]
+        }
+        create: {
+          args: Prisma.personal_access_tokensCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>
+        }
+        createMany: {
+          args: Prisma.personal_access_tokensCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.personal_access_tokensCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>[]
+        }
+        delete: {
+          args: Prisma.personal_access_tokensDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>
+        }
+        update: {
+          args: Prisma.personal_access_tokensUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>
+        }
+        deleteMany: {
+          args: Prisma.personal_access_tokensDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.personal_access_tokensUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.personal_access_tokensUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>[]
+        }
+        upsert: {
+          args: Prisma.personal_access_tokensUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$personal_access_tokensPayload>
+        }
+        aggregate: {
+          args: Prisma.Personal_access_tokensAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePersonal_access_tokens>
+        }
+        groupBy: {
+          args: Prisma.personal_access_tokensGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Personal_access_tokensGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.personal_access_tokensCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Personal_access_tokensCountAggregateOutputType> | number
+        }
+      }
+    }
     vacancies: {
       payload: Prisma.$vacanciesPayload<ExtArgs>
       fields: Prisma.vacanciesFieldRefs
@@ -1435,34 +1510,6 @@ export const Cache_locksScalarFieldEnum = {
 export type Cache_locksScalarFieldEnum = (typeof Cache_locksScalarFieldEnum)[keyof typeof Cache_locksScalarFieldEnum]
 
 
-export const CompaniesScalarFieldEnum = {
-  id: 'id',
-  user_id: 'user_id',
-  name: 'name',
-  business_registration_number: 'business_registration_number',
-  email: 'email',
-  phone: 'phone',
-  website: 'website',
-  address: 'address',
-  city: 'city',
-  industrial_sector: 'industrial_sector',
-  number_of_employees: 'number_of_employees',
-  description: 'description',
-  hr_name: 'hr_name',
-  hr_position: 'hr_position',
-  hr_phone: 'hr_phone',
-  hr_email: 'hr_email',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  deleted_at: 'deleted_at',
-  created_by: 'created_by',
-  updated_by: 'updated_by',
-  deleted_by: 'deleted_by'
-} as const
-
-export type CompaniesScalarFieldEnum = (typeof CompaniesScalarFieldEnum)[keyof typeof CompaniesScalarFieldEnum]
-
-
 export const Failed_jobsScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -1567,6 +1614,50 @@ export const UsersScalarFieldEnum = {
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
 
 
+export const CompaniesScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  name: 'name',
+  business_registration_number: 'business_registration_number',
+  email: 'email',
+  phone: 'phone',
+  website: 'website',
+  address: 'address',
+  city: 'city',
+  industrial_sector: 'industrial_sector',
+  number_of_employees: 'number_of_employees',
+  description: 'description',
+  hr_name: 'hr_name',
+  hr_position: 'hr_position',
+  hr_phone: 'hr_phone',
+  hr_email: 'hr_email',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at',
+  created_by: 'created_by',
+  updated_by: 'updated_by',
+  deleted_by: 'deleted_by'
+} as const
+
+export type CompaniesScalarFieldEnum = (typeof CompaniesScalarFieldEnum)[keyof typeof CompaniesScalarFieldEnum]
+
+
+export const Personal_access_tokensScalarFieldEnum = {
+  id: 'id',
+  tokenable_type: 'tokenable_type',
+  tokenable_id: 'tokenable_id',
+  name: 'name',
+  token: 'token',
+  abilities: 'abilities',
+  last_used_at: 'last_used_at',
+  expires_at: 'expires_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Personal_access_tokensScalarFieldEnum = (typeof Personal_access_tokensScalarFieldEnum)[keyof typeof Personal_access_tokensScalarFieldEnum]
+
+
 export const VacanciesScalarFieldEnum = {
   id: 'id',
   company_id: 'company_id',
@@ -1645,14 +1736,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -1660,6 +1743,14 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -1848,7 +1939,6 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   cache?: Prisma.cacheOmit
   cache_locks?: Prisma.cache_locksOmit
-  companies?: Prisma.companiesOmit
   failed_jobs?: Prisma.failed_jobsOmit
   hexa_roles?: Prisma.hexa_rolesOmit
   job_batches?: Prisma.job_batchesOmit
@@ -1857,6 +1947,8 @@ export type GlobalOmitConfig = {
   password_reset_tokens?: Prisma.password_reset_tokensOmit
   sessions?: Prisma.sessionsOmit
   users?: Prisma.usersOmit
+  companies?: Prisma.companiesOmit
+  personal_access_tokens?: Prisma.personal_access_tokensOmit
   vacancies?: Prisma.vacanciesOmit
   workers?: Prisma.workersOmit
 }

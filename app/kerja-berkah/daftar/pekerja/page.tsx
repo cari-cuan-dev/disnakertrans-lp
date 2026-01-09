@@ -30,10 +30,55 @@ export default function DaftarPekerjaPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
-    alert("Terima kasih telah mendaftar! Tim kami akan menghubungi Anda segera.")
+
+    try {
+      // Parsing skills, languages, dan certifications ke format JSON
+      let parsedSkills = []
+      let parsedLanguages = []
+      let parsedCertifications = []
+
+      // Parsing skills (dipisahkan koma)
+      if (formData.skills.trim()) {
+        parsedSkills = formData.skills.split(',').map(skill => skill.trim()).filter(skill => skill)
+      }
+
+      // Parsing languages (dipisahkan koma)
+      if (formData.languages.trim()) {
+        parsedLanguages = formData.languages.split(',').map(lang => lang.trim()).filter(lang => lang)
+      }
+
+      // Parsing certifications (dipisahkan koma)
+      if (formData.certifications.trim()) {
+        parsedCertifications = formData.certifications.split(',').map(cert => cert.trim()).filter(cert => cert)
+      }
+
+      // Kirim data ke API endpoint
+      const response = await fetch('/api/register-worker', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          skills: JSON.stringify(parsedSkills),
+          languages: JSON.stringify(parsedLanguages),
+          certifications: JSON.stringify(parsedCertifications),
+        }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        alert(`Pendaftaran berhasil! Silakan gunakan email dan password sementara berikut untuk login:\n\nEmail: ${formData.email}\nPassword: ${result.temporaryPassword}`)
+      } else {
+        alert(`Error: ${result.message}`)
+      }
+    } catch (error: any) {
+      console.error("Submission error:", error)
+      alert(`Terjadi kesalahan: ${error.message || 'Tidak dapat mengirim formulir'}`)
+    }
   }
 
   return (

@@ -671,6 +671,16 @@ export type companiesUncheckedUpdateManyInput = {
   deleted_by?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
 }
 
+export type CompaniesListRelationFilter = {
+  every?: Prisma.companiesWhereInput
+  some?: Prisma.companiesWhereInput
+  none?: Prisma.companiesWhereInput
+}
+
+export type companiesOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type companiesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
@@ -762,43 +772,9 @@ export type companiesSumOrderByAggregateInput = {
   deleted_by?: Prisma.SortOrder
 }
 
-export type CompaniesListRelationFilter = {
-  every?: Prisma.companiesWhereInput
-  some?: Prisma.companiesWhereInput
-  none?: Prisma.companiesWhereInput
-}
-
-export type companiesOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type CompaniesNullableScalarRelationFilter = {
   is?: Prisma.companiesWhereInput | null
   isNot?: Prisma.companiesWhereInput | null
-}
-
-export type BigIntFieldUpdateOperationsInput = {
-  set?: bigint | number
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
-export type NullableBigIntFieldUpdateOperationsInput = {
-  set?: bigint | number | null
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
 }
 
 export type companiesCreateNestedManyWithoutUsers_companies_created_byTousersInput = {

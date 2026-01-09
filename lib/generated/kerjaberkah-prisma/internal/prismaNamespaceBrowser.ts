@@ -53,7 +53,6 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   cache: 'cache',
   cache_locks: 'cache_locks',
-  companies: 'companies',
   failed_jobs: 'failed_jobs',
   hexa_roles: 'hexa_roles',
   job_batches: 'job_batches',
@@ -62,6 +61,8 @@ export const ModelName = {
   password_reset_tokens: 'password_reset_tokens',
   sessions: 'sessions',
   users: 'users',
+  companies: 'companies',
+  personal_access_tokens: 'personal_access_tokens',
   vacancies: 'vacancies',
   workers: 'workers'
 } as const
@@ -98,34 +99,6 @@ export const Cache_locksScalarFieldEnum = {
 } as const
 
 export type Cache_locksScalarFieldEnum = (typeof Cache_locksScalarFieldEnum)[keyof typeof Cache_locksScalarFieldEnum]
-
-
-export const CompaniesScalarFieldEnum = {
-  id: 'id',
-  user_id: 'user_id',
-  name: 'name',
-  business_registration_number: 'business_registration_number',
-  email: 'email',
-  phone: 'phone',
-  website: 'website',
-  address: 'address',
-  city: 'city',
-  industrial_sector: 'industrial_sector',
-  number_of_employees: 'number_of_employees',
-  description: 'description',
-  hr_name: 'hr_name',
-  hr_position: 'hr_position',
-  hr_phone: 'hr_phone',
-  hr_email: 'hr_email',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  deleted_at: 'deleted_at',
-  created_by: 'created_by',
-  updated_by: 'updated_by',
-  deleted_by: 'deleted_by'
-} as const
-
-export type CompaniesScalarFieldEnum = (typeof CompaniesScalarFieldEnum)[keyof typeof CompaniesScalarFieldEnum]
 
 
 export const Failed_jobsScalarFieldEnum = {
@@ -232,6 +205,50 @@ export const UsersScalarFieldEnum = {
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
 
 
+export const CompaniesScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  name: 'name',
+  business_registration_number: 'business_registration_number',
+  email: 'email',
+  phone: 'phone',
+  website: 'website',
+  address: 'address',
+  city: 'city',
+  industrial_sector: 'industrial_sector',
+  number_of_employees: 'number_of_employees',
+  description: 'description',
+  hr_name: 'hr_name',
+  hr_position: 'hr_position',
+  hr_phone: 'hr_phone',
+  hr_email: 'hr_email',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at',
+  created_by: 'created_by',
+  updated_by: 'updated_by',
+  deleted_by: 'deleted_by'
+} as const
+
+export type CompaniesScalarFieldEnum = (typeof CompaniesScalarFieldEnum)[keyof typeof CompaniesScalarFieldEnum]
+
+
+export const Personal_access_tokensScalarFieldEnum = {
+  id: 'id',
+  tokenable_type: 'tokenable_type',
+  tokenable_id: 'tokenable_id',
+  name: 'name',
+  token: 'token',
+  abilities: 'abilities',
+  last_used_at: 'last_used_at',
+  expires_at: 'expires_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Personal_access_tokensScalarFieldEnum = (typeof Personal_access_tokensScalarFieldEnum)[keyof typeof Personal_access_tokensScalarFieldEnum]
+
+
 export const VacanciesScalarFieldEnum = {
   id: 'id',
   company_id: 'company_id',
@@ -310,14 +327,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: 'DbNull',
   JsonNull: 'JsonNull',
@@ -325,4 +334,12 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
