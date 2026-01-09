@@ -8,7 +8,7 @@ export interface MenuHeader {
   type: string;
   url: string | null;
   category_id: string | null;
-  status: boolean;
+  status: string;  // Changed from boolean to string
   sort: number;
   created_at?: string | null;
   updated_at?: string | null;
@@ -22,7 +22,7 @@ export interface MenuSubHeader {
   type: string;
   url: string | null;
   category_id: string | null;
-  status: boolean;
+  status: string;  // Changed from boolean to string
   sort: number;
   created_at?: string | null;
   updated_at?: string | null;
@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
   try {
     const menuHeaders = await prisma.menu_headers.findMany({
       where: {
-        status: true,
         deleted_at: null, // Only get non-deleted records
       },
       orderBy: {
@@ -50,7 +49,7 @@ export async function GET(request: NextRequest) {
         name: true,
         type: true,
         url: true,
-        status: true,
+        status: true, // This will now return the string value like "Show", "Show Login", etc
         sort: true,
         created_at: true,
         updated_at: true,
@@ -63,7 +62,6 @@ export async function GET(request: NextRequest) {
         },
         menu_sub_headers: {
           where: {
-            status: true,
             deleted_at: null, // Only get non-deleted sub-headers
           },
           orderBy: {
@@ -75,7 +73,7 @@ export async function GET(request: NextRequest) {
             name: true,
             type: true,
             url: true,
-            status: true,
+            status: true, // This will now return the string value
             sort: true,
             created_at: true,
             updated_at: true,

@@ -24,7 +24,7 @@ export interface MenuHeader {
   name: string;
   type: string;
   url: string | null;
-  status: boolean;
+  status: string;  // Changed from boolean to string
   sort: number;
   created_at?: string | null;
   updated_at?: string | null;
@@ -42,7 +42,7 @@ export interface MenuSubHeader {
   name: string;
   type: string;
   url: string | null;
-  status: boolean;
+  status: string;  // Changed from boolean to string
   sort: number;
   created_at?: string | null;
   updated_at?: string | null;
@@ -71,6 +71,22 @@ export default function Navigation() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [userLoading, setUserLoading] = useState(true);
   const searchParams = useSearchParams()
+
+  // Function to determine if menu item should be displayed based on status and login state
+  const shouldDisplayHeader = (status: string, currentUser: UserInfo | null) => {
+    switch(status) {
+      case 'Show':
+        return true;
+      case 'Show Login':
+        return !!currentUser; // Only show when user is logged in
+      case 'Show Logout':
+        return !currentUser; // Only show when user is not logged in
+      case 'Hide':
+        return false;
+      default:
+        return false;
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -216,7 +232,7 @@ export default function Navigation() {
             <div className="hidden md:flex items-center gap-8">
               {!menuHeadersLoading ? (
                 menuHeaders.map((header) => {
-                  if (!header.status) return null;
+                  if (!shouldDisplayHeader(header.status, user)) return null;
 
                   // Check if this menu item has sub-headers
                   if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
@@ -228,7 +244,8 @@ export default function Navigation() {
                         </button>
                         <div className="absolute left-0 mt-0 w-48 bg-white border border-purple-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
                           {header.menu_sub_headers.map((subHeader) => {
-                            if (!subHeader.status) return null;
+                            // Check if sub-header should be displayed
+                            if (!shouldDisplayHeader(subHeader.status, user)) return null;
 
                             // If type is 'category' and category exists, link to /blog?category=NAME
                             let subLinkUrl = subHeader.url || '#';
@@ -404,7 +421,7 @@ export default function Navigation() {
             <div className="md:hidden pb-4 border-t border-purple-100">
               {!menuHeadersLoading ? (
                 menuHeaders.map((header) => {
-                  if (!header.status) return null;
+                  if (!shouldDisplayHeader(header.status, user)) return null;
 
                   // Check if this menu item has sub-headers
                   if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
@@ -428,7 +445,8 @@ export default function Navigation() {
                         {isDropdownOpen && (
                           <div className="bg-purple-50 rounded-lg mt-2 py-2">
                             {header.menu_sub_headers.map((subHeader) => {
-                              if (!subHeader.status) return null;
+                              // Check if sub-header should be displayed
+                              if (!shouldDisplayHeader(subHeader.status, user)) return null;
 
                               // If type is 'category' and category exists, link to /blog?category=NAME
                               let subLinkUrl = subHeader.url || '#';

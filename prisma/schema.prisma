@@ -203,7 +203,6 @@ model menu_headers {
   type                                 String             @db.VarChar(255)
   url                                  String?            @db.VarChar(255)
   category_id                          BigInt?
-  status                               Boolean            @default(true)
   created_at                           DateTime?          @db.Timestamp(0)
   updated_at                           DateTime?          @db.Timestamp(0)
   deleted_at                           DateTime?          @db.Timestamp(0)
@@ -211,6 +210,7 @@ model menu_headers {
   updated_by                           BigInt?
   deleted_by                           BigInt?
   sort                                 Int?
+  status                               String             @default("Show") @db.VarChar(255)
   categories                           categories?        @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "menu_headers_category_id_foreign")
   users_menu_headers_created_byTousers users?             @relation("menu_headers_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "menu_headers_created_by_foreign")
   users_menu_headers_deleted_byTousers users?             @relation("menu_headers_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "menu_headers_deleted_by_foreign")
@@ -226,7 +226,6 @@ model menu_sub_headers {
   type                                     String       @db.VarChar(255)
   url                                      String?      @db.VarChar(255)
   category_id                              BigInt?
-  status                                   Boolean      @default(true)
   created_at                               DateTime?    @db.Timestamp(0)
   updated_at                               DateTime?    @db.Timestamp(0)
   deleted_at                               DateTime?    @db.Timestamp(0)
@@ -234,6 +233,7 @@ model menu_sub_headers {
   updated_by                               BigInt?
   deleted_by                               BigInt?
   sort                                     Int?
+  status                                   String       @default("Show") @db.VarChar(255)
   categories                               categories?  @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "menu_sub_headers_category_id_foreign")
   users_menu_sub_headers_created_byTousers users?       @relation("menu_sub_headers_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "menu_sub_headers_created_by_foreign")
   users_menu_sub_headers_deleted_byTousers users?       @relation("menu_sub_headers_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "menu_sub_headers_deleted_by_foreign")
@@ -421,8 +421,4 @@ model analytic_visitors {
   page_url   String   @db.Text
   country    String?  @db.VarChar(100)
   created_at DateTime @default(now()) @db.Timestamp(3)
-
-  @@index([created_at])
-  @@index([ip])
-  @@index([country])
 }

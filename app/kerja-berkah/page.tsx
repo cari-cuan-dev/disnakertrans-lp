@@ -24,11 +24,11 @@ export default function KerjaBerkahPage() {
                   Program pemberdayaan ekonomi dari Pemerintah Provinsi Kalimantan Tengah untuk memberikan kesempatan
                   kerja kepada masyarakat yang membutuhkan.
                 </p>
-                {/* <Link href="/kerja-berkah/daftar" className="inline-block">
+                <Link href="/kerja-berkah/daftar" className="inline-block">
                   <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center gap-2">
                     Daftar Sekarang <ArrowRight size={20} />
                   </button>
-                </Link> */}
+                </Link>
               </div>
               <div className="hidden md:block">
                 <img

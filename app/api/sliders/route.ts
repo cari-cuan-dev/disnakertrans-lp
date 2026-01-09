@@ -9,6 +9,8 @@ interface SliderItem {
   image_path: string;
   status: boolean;
   created_at?: string | null;
+  blog_id?: string | null; // Tambahkan field blog_id
+  sort?: number | null; // Tambahkan field sort
 }
 
 // Helper function to serialize BigInt values
@@ -36,6 +38,11 @@ export async function GET(request: NextRequest) {
         title: true,
         subtitle: true,
         image_path: true,
+        blog_id: true, // Tambahkan field blog_id
+        status: true,
+        created_at: true,
+        sort: true,
+        // Jika diperlukan field lainnya, tambahkan di sini
       }
     });
 

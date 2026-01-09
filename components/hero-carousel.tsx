@@ -10,6 +10,7 @@ interface SliderItem {
   subtitle: string;
   image_path: string;
   status: boolean;
+  blog_id?: string; // Tambahkan field blog_id
 }
 
 export default function HeroCarousel() {
@@ -35,18 +36,21 @@ export default function HeroCarousel() {
               title: "Memberdayakan Tenaga Kerja Indonesia",
               subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
               image_path: "/indonesian-workers-training-program.jpg",
+              blog_id: "1", // Tambahkan blog_id untuk fallback
             },
             {
               id: "2",
               title: "Dukungan Kerja Berkah untuk Kalteng",
               subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
               image_path: "/employment-program-sustainable-jobs.jpg",
+              blog_id: "2", // Tambahkan blog_id untuk fallback
             },
             {
               id: "3",
               title: "Transparansi dan Pelayanan Terbaik",
               subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
               image_path: "/government-service-transparency.jpg",
+              blog_id: "3", // Tambahkan blog_id untuk fallback
             },
           ]);
         }
@@ -59,18 +63,21 @@ export default function HeroCarousel() {
             title: "Memberdayakan Tenaga Kerja Indonesia",
             subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
             image_path: "/indonesian-workers-training-program.jpg",
+            blog_id: "1", // Tambahkan blog_id untuk fallback
           },
           {
             id: "2",
             title: "Dukungan Kerja Berkah untuk Kalteng",
             subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
             image_path: "/employment-program-sustainable-jobs.jpg",
+            blog_id: "2", // Tambahkan blog_id untuk fallback
           },
           {
             id: "3",
             title: "Transparansi dan Pelayanan Terbaik",
             subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
             image_path: "/government-service-transparency.jpg",
+            blog_id: "3", // Tambahkan blog_id untuk fallback
           },
         ]);
       } finally {
@@ -117,7 +124,7 @@ export default function HeroCarousel() {
         <div
           key={slide.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === current ? "opacity-100" : "opacity-0"
+            index === current ? "opacity-100 pointer-events-auto z-10" : "opacity-0 pointer-events-none z-0"
           }`}
         >
           <img 
@@ -134,9 +141,18 @@ export default function HeroCarousel() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
               <h2 className="text-3xl md:text-5xl font-bold mb-4 text-pretty">{slide.title}</h2>
               <p className="text-lg md:text-xl text-gray-100 mb-8 max-w-2xl">{slide.subtitle}</p>
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                Pelajari Lebih Lanjut
-              </Button>
+              <a
+                href={slide.blog_id ? `/blog/${slide.blog_id}` : '#'}
+                onClick={(e) => {
+                  if (!slide.blog_id) {
+                    e.preventDefault();
+                  }
+                }}
+              >
+                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+                  Pelajari Lebih Lanjut
+                </Button>
+              </a>
             </div>
           </div>
         </div>
