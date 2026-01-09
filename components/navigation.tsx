@@ -375,10 +375,18 @@ export default function Navigation() {
                   </Link>
 
                   <div
-                    className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:text-purple-600"
-                    onClick={() => window.location.href = '/profile'}
+                    className={`hidden md:flex items-center gap-2 text-sm font-medium ${
+                      user.type === 'Admin' ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 cursor-pointer hover:text-purple-600'
+                    }`}
+                    onClick={() => {
+                      if (user.type === 'Admin') {
+                        alert('Anda adalah admin, silahkan login ke halaman yang telah ditentukan');
+                      } else {
+                        window.location.href = '/profile';
+                      }
+                    }}
                   >
-                    <User size={18} className="text-purple-600" />
+                    <User size={18} className={user.type === 'Admin' ? 'text-gray-400' : 'text-purple-600'} />
                     <span className="max-w-[120px] truncate" title={user.name || user.email}>
                       {user.name || user.email}
                     </span>

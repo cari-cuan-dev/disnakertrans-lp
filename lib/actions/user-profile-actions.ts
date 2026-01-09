@@ -44,6 +44,7 @@ export async function getUserProfile(userId: number) {
         ...user,
         ...company,
       }
+    } else if (user.type === 'Admin') {
     } else {
       throw new Error('Tipe user tidak valid')
     }
