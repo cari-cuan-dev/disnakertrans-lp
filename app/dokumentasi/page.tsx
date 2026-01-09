@@ -1,10 +1,11 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from "react"
 import { FileText, Download, PlayCircle, ImageIcon, File, Search, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 
 export interface DocumentationItem {
   id: string;
@@ -25,6 +26,7 @@ export interface DocumentationItem {
 }
 
 const DocumentationPage = () => {
+  const searchParams = useSearchParams();
   const [documents, setDocuments] = useState<DocumentationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredDocs, setFilteredDocs] = useState<DocumentationItem[]>([]);
@@ -66,6 +68,14 @@ const DocumentationPage = () => {
           cats = cats.concat(uniqueCategoryNames);
 
           setCategories(cats)
+
+          // Set initial category from URL parameter
+          const categoryFromUrl = searchParams.get('category');
+          if (categoryFromUrl) {
+            setSelectedCategory(categoryFromUrl);
+          } else {
+            setSelectedCategory("Semua");
+          }
         } else {
           console.error('Failed to fetch documents:', response.statusText)
         }
@@ -77,7 +87,7 @@ const DocumentationPage = () => {
     }
 
     fetchDocuments()
-  }, [])
+  }, [searchParams])
 
   useEffect(() => {
     let result = documents
@@ -104,6 +114,28 @@ const DocumentationPage = () => {
 
     setFilteredDocs(result)
   }, [selectedCategory, searchTerm, documents])
+
+  // Handler untuk perubahan kategori yang juga mengupdate URL
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+
+    // Update URL parameter using Next.js router
+    const params = new URLSearchParams(window.location.search);
+    if (category === "Semua") {
+      params.delete('category');
+    } else {
+      params.set('category', category);
+    }
+
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
+
+    // Use router to update URL or window.history as fallback
+    if (typeof window !== 'undefined') {
+      window.history.replaceState({}, '', newUrl);
+    }
+  }
 
   const getDocumentIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -224,7 +256,7 @@ const DocumentationPage = () => {
               {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => handleCategoryChange(category)}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedCategory === category
                     ? "bg-purple-600 text-white shadow-lg"
                     : "bg-white border border-gray-300 text-gray-700 hover:border-purple-300"
