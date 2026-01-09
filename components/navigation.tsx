@@ -374,7 +374,10 @@ export default function Navigation() {
                     <span className="hidden lg:inline">Cari</span>
                   </Link>
 
-                  <div className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <div
+                    className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:text-purple-600"
+                    onClick={() => window.location.href = '/profile'}
+                  >
                     <User size={18} className="text-purple-600" />
                     <span className="max-w-[120px] truncate" title={user.name || user.email}>
                       {user.name || user.email}

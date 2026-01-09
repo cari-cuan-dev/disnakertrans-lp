@@ -46,6 +46,13 @@ export default function LoginPage() {
           localStorage.setItem('access_token', data.access_token)
         }
 
+        // Store user ID if available in the response
+        if (data.id) {
+          localStorage.setItem('user_id', data.id.toString())
+        } else if (data.user && data.user.id) {
+          localStorage.setItem('user_id', data.user.id.toString())
+        }
+
         alert("Berhasil masuk!")
         // Redirect to landing page or dashboard
         window.location.href = "/" // or wherever the landing page is
