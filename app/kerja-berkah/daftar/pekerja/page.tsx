@@ -10,28 +10,24 @@ import { ChevronLeft } from "lucide-react"
 
 export default function DaftarPekerjaPage() {
   const [formData, setFormData] = useState({
-    namaLengkap: "",
+    name: "",
+    skills: "",
+    skill: "",
     email: "",
-    telepon: "",
-    tanggalLahir: "",
-    alamat: "",
-    kota: "",
-    pendidikan: "sma",
-    pengalaman: "fresh",
-    keahlian: "",
-    cv: null,
-    tujuanKarir: "",
+    phone: "",
+    birth_date: "",
+    experience: "fresh",
+    city: "",
+    address: "",
+    education: "sma",
+    languages: "",
+    description: "",
+    certifications: "",
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFormData((prev) => ({ ...prev, cv: e.target.files?.[0] || null }))
-    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,8 +64,8 @@ export default function DaftarPekerjaPage() {
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Nama Lengkap *</label>
                   <input
                     type="text"
-                    name="namaLengkap"
-                    value={formData.namaLengkap}
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -93,8 +89,8 @@ export default function DaftarPekerjaPage() {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Telepon *</label>
                     <input
                       type="tel"
-                      name="telepon"
-                      value={formData.telepon}
+                      name="phone"
+                      value={formData.phone}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -107,8 +103,8 @@ export default function DaftarPekerjaPage() {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Tanggal Lahir *</label>
                     <input
                       type="date"
-                      name="tanggalLahir"
-                      value={formData.tanggalLahir}
+                      name="birth_date"
+                      value={formData.birth_date}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -118,8 +114,8 @@ export default function DaftarPekerjaPage() {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Kota *</label>
                     <input
                       type="text"
-                      name="kota"
-                      value={formData.kota}
+                      name="city"
+                      value={formData.city}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -130,8 +126,8 @@ export default function DaftarPekerjaPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Alamat *</label>
                   <textarea
-                    name="alamat"
-                    value={formData.alamat}
+                    name="address"
+                    value={formData.address}
                     onChange={handleChange}
                     required
                     rows={3}
@@ -143,15 +139,15 @@ export default function DaftarPekerjaPage() {
             </div>
 
             {/* Work Information */}
-            <div className="border-b pb-6">
+            <div className="pb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Informasi Kerja</h2>
               <div className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Pendidikan Terakhir *</label>
                     <select
-                      name="pendidikan"
-                      value={formData.pendidikan}
+                      name="education"
+                      value={formData.education}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -166,8 +162,8 @@ export default function DaftarPekerjaPage() {
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Pengalaman Kerja *</label>
                     <select
-                      name="pengalaman"
-                      value={formData.pengalaman}
+                      name="experience"
+                      value={formData.experience}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -179,63 +175,85 @@ export default function DaftarPekerjaPage() {
                     </select>
                   </div>
                 </div>
+
+                {/* Skills Section */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Keahlian/Keterampilan *</label>
                   <textarea
-                    name="keahlian"
-                    value={formData.keahlian}
+                    name="skills"
+                    value={formData.skills}
                     onChange={handleChange}
                     required
-                    rows={3}
+                    rows={2}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Contoh: Web Development, Desain Grafis, Manajemen Proyek, dll"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Pisahkan keahlian dengan koma</p>
                 </div>
+
+                {/* Additional Skill Field */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">Tujuan Karir</label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Keahlian Tambahan</label>
+                  <input
+                    type="text"
+                    name="skill"
+                    value={formData.skill}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Keahlian spesifik tambahan"
+                  />
+                </div>
+
+                {/* Languages */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Bahasa yang Dikuasai</label>
+                  <input
+                    type="text"
+                    name="languages"
+                    value={formData.languages}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Contoh: Indonesia (Native), Inggris (Fluent), dll"
+                  />
+                </div>
+
+                {/* Certifications */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Sertifikasi</label>
                   <textarea
-                    name="tujuanKarir"
-                    value={formData.tujuanKarir}
+                    name="certifications"
+                    value={formData.certifications}
+                    onChange={handleChange}
+                    rows={2}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Contoh: Sertifikasi Project Management, Sertifikasi IT, dll"
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Deskripsi Diri</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
                     onChange={handleChange}
                     rows={3}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Jelaskan tujuan karir Anda"
+                    placeholder="Jelaskan tentang diri Anda, pengalaman, dan tujuan karir Anda"
                   />
-                </div>
-              </div>
-            </div>
-
-            {/* CV Upload */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Berkas</h2>
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">Upload CV (PDF, DOC, DOCX)</label>
-                <div className="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center hover:border-purple-500 transition-colors">
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx"
-                    className="hidden"
-                    id="cv-upload"
-                  />
-                  <label htmlFor="cv-upload" className="cursor-pointer">
-                    <p className="text-gray-600">
-                      {formData.cv ? formData.cv.name : "Klik atau drag file CV Anda di sini"}
-                    </p>
-                  </label>
                 </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            {/* <div className="border-t pt-6">
+            <div className="border-t pt-6">
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all"
               >
                 Daftar Sekarang
               </button>
-            </div> */}
+            </div>
           </form>
         </div>
       </main>
