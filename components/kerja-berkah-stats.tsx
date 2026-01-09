@@ -1,44 +1,47 @@
 import { Briefcase, Users } from "lucide-react"
+import { getKerjaBerkahStats } from "@/lib/actions/kerja-berkah-stats"
 
-const stats = [
-  {
-    label: "Lowongan Kerja",
-    value: "1,250+",
-    icon: Briefcase,
-    color: "purple",
-  },
-  {
-    label: "Pencari Pekerjaan",
-    value: "5,000+",
-    icon: Users,
-    color: "blue",
-  },
-]
+export default async function KerjaBerkahStats() {
+  const { vacancies, workers, visitors } = await getKerjaBerkahStats()
 
-const visitorStats = [
-  {
-    label: "Hari Ini",
-    value: "348",
-    color: "purple",
-  },
-  {
-    label: "Bulan Ini",
-    value: "12,540",
-    color: "blue",
-  },
-  {
-    label: "Tahun Ini",
-    value: "450,200",
-    color: "purple",
-  },
-  {
-    label: "Keseluruhan",
-    value: "1,250,450",
-    color: "blue",
-  },
-]
+  const stats = [
+    {
+      label: "Lowongan Kerja",
+      value: vacancies.toLocaleString(),
+      icon: Briefcase,
+      color: "purple",
+    },
+    {
+      label: "Pencari Pekerjaan",
+      value: workers.toLocaleString(),
+      icon: Users,
+      color: "blue",
+    },
+  ]
 
-export default function KerjaBerkahStats() {
+  const visitorStats = [
+    {
+      label: "Hari Ini",
+      value: visitors.today.toLocaleString(),
+      color: "purple",
+    },
+    {
+      label: "Bulan Ini",
+      value: visitors.month.toLocaleString(),
+      color: "blue",
+    },
+    {
+      label: "Tahun Ini",
+      value: visitors.year.toLocaleString(),
+      color: "purple",
+    },
+    {
+      label: "Keseluruhan",
+      value: visitors.total.toLocaleString(),
+      color: "blue",
+    },
+  ]
+
   return (
     <div className="space-y-8">
       {/* Job Stats */}

@@ -49,6 +49,7 @@
     "@radix-ui/react-tooltip": "1.1.6",
     "@vercel/analytics": "latest",
     "autoprefixer": "^10.4.23",
+    "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
@@ -75,6 +76,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^22.19.3",
     "@types/pg": "^8.16.0",
     "@types/react": "^19.2.7",
