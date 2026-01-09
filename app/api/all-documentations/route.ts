@@ -15,10 +15,10 @@ export interface DocumentationItem {
   updated_at: string;
   category_id: string | null;
   sort: number | null;
-  // categories?: {
-  //   id: string;
-  //   name: string;
-  // } | null;
+  categories?: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 // Helper function to serialize BigInt values
@@ -66,14 +66,14 @@ export async function GET(request: NextRequest) {
       orderBy: {
         sort: 'asc', // Sort by the sort column in ascending order
       },
-      // include: {
-      //   categories: {
-      //     select: {
-      //       id: true,
-      //       name: true,
-      //     },
-      //   },
-      // },
+      include: {
+        categories: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     // Serialize BigInt values to strings

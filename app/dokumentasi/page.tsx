@@ -41,9 +41,31 @@ const DocumentationPage = () => {
           setDocuments(data)
           setFilteredDocs(data)
 
-          // Extract unique categories
-          const uniqueCategories = Array.from(new Set(data.map(doc => doc.categories?.name || 'Umum')))
-          setCategories(['Semua', ...uniqueCategories])
+          // Extract unique categories based on category name from relations
+          const categoryMap = new Map<string, string>();
+
+          // Populate the map with category IDs and their names
+          data.forEach(doc => {
+            if (doc.category_id && doc.categories?.name) {
+              // Use category ID as key to prevent duplicates
+              categoryMap.set(doc.category_id, doc.categories.name);
+            }
+          });
+
+          // Convert the map to an array of category names
+          const uniqueCategoryNames = Array.from(categoryMap.values());
+
+          // Check if there are documents with null category_id
+          const hasNullCategories = data.some(doc => !doc.category_id) // Jika category_id null
+
+          // Build categories array: ['Semua', 'Umum' (if needed), ...other categories]
+          let cats = ['Semua'];
+          if (hasNullCategories) {
+            cats.push('Umum');
+          }
+          cats = cats.concat(uniqueCategoryNames);
+
+          setCategories(cats)
         } else {
           console.error('Failed to fetch documents:', response.statusText)
         }
@@ -62,9 +84,14 @@ const DocumentationPage = () => {
 
     // Apply category filter
     if (selectedCategory !== "Semua") {
-      result = result.filter(doc =>
-        (doc.categories?.name || 'Umum') === selectedCategory
-      )
+      if (selectedCategory === 'Umum') {
+        // Filter for documents with null category_id
+        result = result.filter(doc => !doc.category_id)
+      } else {
+        // Filter for specific category based on name
+        // Find documents whose category name matches the selected category name
+        result = result.filter(doc => doc.categories?.name === selectedCategory)
+      }
     }
 
     // Apply search term
@@ -219,7 +246,6 @@ const DocumentationPage = () => {
 
                 // Check if the file_path is a valid URL (presigned URL)
                 const isValidUrl = doc.file_path && doc.file_path.startsWith('http');
-
                 return (
                   <div
                     key={doc.id}

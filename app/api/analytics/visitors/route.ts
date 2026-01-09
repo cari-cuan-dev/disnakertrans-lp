@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
         ip: clientIP,
         page_url: page_url,
         country: country,
+        created_at: new Date()
       },
     });
 

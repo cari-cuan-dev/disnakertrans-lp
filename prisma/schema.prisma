@@ -23,6 +23,14 @@ model abouts {
   users_abouts_updated_byTousers users?    @relation("abouts_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "abouts_updated_by_foreign")
 }
 
+model analytic_visitors {
+  id         BigInt   @id @default(autoincrement())
+  ip         String?  @db.VarChar(255)
+  page_url   String   @default("/") @db.VarChar(255)
+  country    String?  @db.VarChar(255)
+  created_at DateTime @db.Timestamp(0)
+}
+
 model blogs {
   id                            BigInt           @id @default(autoincrement())
   category_id                   BigInt
@@ -71,6 +79,7 @@ model categories {
   users_categories_created_byTousers users?             @relation("categories_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "categories_created_by_foreign")
   users_categories_deleted_byTousers users?             @relation("categories_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "categories_deleted_by_foreign")
   users_categories_updated_byTousers users?             @relation("categories_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "categories_updated_by_foreign")
+  documentations                     documentations[]
   footer_services                    footer_services[]
   menu_headers                       menu_headers[]
   menu_sub_headers                   menu_sub_headers[]
@@ -79,23 +88,25 @@ model categories {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model documentations {
-  id                                     BigInt    @id @default(autoincrement())
-  title                                  String    @db.VarChar(255)
-  subtitle                               String    @db.VarChar(255)
-  type                                   String?   @db.VarChar(255)
-  file_path                              String    @db.VarChar(255)
-  size                                   String?   @db.VarChar(255)
-  status                                 Boolean   @default(true)
-  created_at                             DateTime? @db.Timestamp(0)
-  updated_at                             DateTime? @db.Timestamp(0)
-  deleted_at                             DateTime? @db.Timestamp(0)
+  id                                     BigInt      @id @default(autoincrement())
+  title                                  String      @db.VarChar(255)
+  subtitle                               String      @db.VarChar(255)
+  type                                   String?     @db.VarChar(255)
+  file_path                              String      @db.VarChar(255)
+  size                                   String?     @db.VarChar(255)
+  status                                 Boolean     @default(true)
+  created_at                             DateTime?   @db.Timestamp(0)
+  updated_at                             DateTime?   @db.Timestamp(0)
+  deleted_at                             DateTime?   @db.Timestamp(0)
   created_by                             BigInt?
   updated_by                             BigInt?
   deleted_by                             BigInt?
   sort                                   Int?
-  users_documentations_created_byTousers users?    @relation("documentations_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "documentations_created_by_foreign")
-  users_documentations_deleted_byTousers users?    @relation("documentations_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "documentations_deleted_by_foreign")
-  users_documentations_updated_byTousers users?    @relation("documentations_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "documentations_updated_by_foreign")
+  category_id                            BigInt?
+  categories                             categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "documentations_category_id_foreign")
+  users_documentations_created_byTousers users?      @relation("documentations_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "documentations_created_by_foreign")
+  users_documentations_deleted_byTousers users?      @relation("documentations_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "documentations_deleted_by_foreign")
+  users_documentations_updated_byTousers users?      @relation("documentations_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "documentations_updated_by_foreign")
 }
 
 model failed_jobs {
@@ -168,7 +179,7 @@ model hexa_roles {
   guard           String           @default("web") @db.VarChar(255)
   created_at      DateTime?        @db.Timestamp(0)
   updated_at      DateTime?        @db.Timestamp(0)
-  hexaRoleUsers   hexa_role_user[] @ignore
+  hexa_role_user  hexa_role_user[] @ignore
 }
 
 model job_batches {
@@ -262,6 +273,25 @@ model note_visitors {
   users_note_visitors_created_byTousers users?    @relation("note_visitors_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "note_visitors_created_by_foreign")
   users_note_visitors_deleted_byTousers users?    @relation("note_visitors_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "note_visitors_deleted_by_foreign")
   users_note_visitors_updated_byTousers users?    @relation("note_visitors_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "note_visitors_updated_by_foreign")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model opening_speeches {
+  id                                       BigInt    @id @default(autoincrement())
+  type                                     String    @db.VarChar(255)
+  role                                     String    @db.VarChar(255)
+  name                                     String    @db.VarChar(255)
+  image_path                               String    @db.VarChar(255)
+  speech                                   String?
+  created_at                               DateTime? @db.Timestamp(0)
+  updated_at                               DateTime? @db.Timestamp(0)
+  deleted_at                               DateTime? @db.Timestamp(0)
+  created_by                               BigInt?
+  updated_by                               BigInt?
+  deleted_by                               BigInt?
+  users_opening_speeches_created_byTousers users?    @relation("opening_speeches_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "opening_speeches_created_by_foreign")
+  users_opening_speeches_deleted_byTousers users?    @relation("opening_speeches_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "opening_speeches_deleted_by_foreign")
+  users_opening_speeches_updated_byTousers users?    @relation("opening_speeches_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "opening_speeches_updated_by_foreign")
 }
 
 model password_reset_tokens {
@@ -394,31 +424,4 @@ model users {
   social_media_social_media_created_byTousers         social_media[]     @relation("social_media_created_byTousers")
   social_media_social_media_deleted_byTousers         social_media[]     @relation("social_media_deleted_byTousers")
   social_media_social_media_updated_byTousers         social_media[]     @relation("social_media_updated_byTousers")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model opening_speeches {
-  id                                       BigInt    @id @default(autoincrement())
-  type                                     String    @db.VarChar(255)
-  role                                     String    @db.VarChar(255)
-  name                                     String    @db.VarChar(255)
-  image_path                               String    @db.VarChar(255)
-  speech                                   String?
-  created_at                               DateTime? @db.Timestamp(0)
-  updated_at                               DateTime? @db.Timestamp(0)
-  deleted_at                               DateTime? @db.Timestamp(0)
-  created_by                               BigInt?
-  updated_by                               BigInt?
-  deleted_by                               BigInt?
-  users_opening_speeches_created_byTousers users?    @relation("opening_speeches_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "opening_speeches_created_by_foreign")
-  users_opening_speeches_deleted_byTousers users?    @relation("opening_speeches_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "opening_speeches_deleted_by_foreign")
-  users_opening_speeches_updated_byTousers users?    @relation("opening_speeches_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "opening_speeches_updated_by_foreign")
-}
-
-model analytic_visitors {
-  id         BigInt   @id @default(autoincrement())
-  ip         String   @db.Inet
-  page_url   String   @db.Text
-  country    String?  @db.VarChar(100)
-  created_at DateTime @default(now()) @db.Timestamp(3)
 }
