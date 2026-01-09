@@ -10,18 +10,20 @@ import { ChevronLeft } from "lucide-react"
 
 export default function DaftarPerusahaanPage() {
   const [formData, setFormData] = useState({
-    namaPerusahaan: "",
-    nomorInduk: "",
+    name: "",
+    business_registration_number: "",
     email: "",
-    telepon: "",
-    alamat: "",
-    kota: "",
-    provinsi: "",
-    bidangIndustri: "",
-    jumlahKaryawan: "",
+    phone: "",
     website: "",
-    deskripsi: "",
-    kontak: "",
+    address: "",
+    city: "",
+    industrial_sector: "",
+    number_of_employees: "",
+    description: "",
+    hr_name: "",
+    hr_position: "",
+    hr_phone: "",
+    hr_email: "",
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -63,8 +65,8 @@ export default function DaftarPerusahaanPage() {
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Nama Perusahaan *</label>
                   <input
                     type="text"
-                    name="namaPerusahaan"
-                    value={formData.namaPerusahaan}
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -76,8 +78,8 @@ export default function DaftarPerusahaanPage() {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Nomor Induk Perusahaan *</label>
                     <input
                       type="text"
-                      name="nomorInduk"
-                      value={formData.nomorInduk}
+                      name="business_registration_number"
+                      value={formData.business_registration_number}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -102,8 +104,8 @@ export default function DaftarPerusahaanPage() {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Telepon *</label>
                     <input
                       type="tel"
-                      name="telepon"
-                      value={formData.telepon}
+                      name="phone"
+                      value={formData.phone}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -125,8 +127,8 @@ export default function DaftarPerusahaanPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Alamat Kantor *</label>
                   <textarea
-                    name="alamat"
-                    value={formData.alamat}
+                    name="address"
+                    value={formData.address}
                     onChange={handleChange}
                     required
                     rows={2}
@@ -140,31 +142,17 @@ export default function DaftarPerusahaanPage() {
             {/* Location Information */}
             <div className="border-b pb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Lokasi</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">Kota *</label>
-                  <input
-                    type="text"
-                    name="kota"
-                    value={formData.kota}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Palangka Raya"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">Provinsi *</label>
-                  <input
-                    type="text"
-                    name="provinsi"
-                    value={formData.provinsi}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Kalimantan Tengah"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">Kota *</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Palangka Raya"
+                />
               </div>
             </div>
 
@@ -176,8 +164,8 @@ export default function DaftarPerusahaanPage() {
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Bidang Industri *</label>
                     <select
-                      name="bidangIndustri"
-                      value={formData.bidangIndustri}
+                      name="industrial_sector"
+                      value={formData.industrial_sector}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -195,8 +183,8 @@ export default function DaftarPerusahaanPage() {
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Jumlah Karyawan *</label>
                     <select
-                      name="jumlahKaryawan"
-                      value={formData.jumlahKaryawan}
+                      name="number_of_employees"
+                      value={formData.number_of_employees}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -212,8 +200,8 @@ export default function DaftarPerusahaanPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Deskripsi Perusahaan</label>
                   <textarea
-                    name="deskripsi"
-                    value={formData.deskripsi}
+                    name="description"
+                    value={formData.description}
                     onChange={handleChange}
                     rows={4}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -223,25 +211,67 @@ export default function DaftarPerusahaanPage() {
               </div>
             </div>
 
-            {/* Contact Person */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Kontak Orang/Departemen HR</h2>
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">Nama & Posisi *</label>
-                <textarea
-                  name="kontak"
-                  value={formData.kontak}
-                  onChange={handleChange}
-                  required
-                  rows={2}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Nama: Budi Santoso, Posisi: HR Manager, Telepon: 08123456789"
-                />
+            {/* HR Information */}
+            <div className="border-b pb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Informasi HR</h2>
+              <div className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">Nama HR *</label>
+                    <input
+                      type="text"
+                      name="hr_name"
+                      value={formData.hr_name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Contoh: Budi Santoso"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">Posisi HR *</label>
+                    <input
+                      type="text"
+                      name="hr_position"
+                      value={formData.hr_position}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Contoh: HR Manager"
+                    />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">Telepon HR *</label>
+                    <input
+                      type="tel"
+                      name="hr_phone"
+                      value={formData.hr_phone}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="08123456789"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">Email HR *</label>
+                    <input
+                      type="email"
+                      name="hr_email"
+                      value={formData.hr_email}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="hr@perusahaan.com"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div className="border-t pt-6">
+            <div className="pt-6">
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 rounded-lg transition-all"
