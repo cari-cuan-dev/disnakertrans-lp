@@ -31,10 +31,30 @@ export default function DaftarPerusahaanPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
-    alert("Terima kasih telah mendaftar! Tim kami akan segera melakukan verifikasi perusahaan Anda.")
+
+    try {
+      // Kirim data ke API endpoint
+      const response = await fetch('/api/register-company', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        alert(`Pendaftaran berhasil! Silakan gunakan email dan password sementara berikut untuk login:\n\nEmail: ${formData.email}\nPassword: ${result.temporaryPassword}`)
+      } else {
+        alert(`Error: ${result.message}`)
+      }
+    } catch (error: any) {
+      console.error("Submission error:", error)
+      alert(`Terjadi kesalahan: ${error.message || 'Tidak dapat mengirim formulir'}`)
+    }
   }
 
   return (
