@@ -3,6 +3,7 @@
 import { ArrowRight } from "lucide-react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import IconoirLoader from "@/components/iconoir-loader"
 
 export interface QuickAccessItem {
   id: string;
@@ -25,48 +26,6 @@ export interface QuickAccessItem {
     name: string;
   } | null;
 }
-
-// Dynamic Icon Loader Component for Iconoir (with fallback)
-const IconoirLoader = ({ iconName, size = 24, className = "text-white" }: { iconName: string; size?: number; className?: string }) => {
-  const [IconComponent, setIconComponent] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const loadIcon = async () => {
-      // try {
-      //   // Attempt to load @iconoir/react
-      //   const iconoirModule = await import('@iconoir/react');
-
-      //   // Look for the icon in Iconoir module using the exact name from database
-      //   if (iconoirModule[iconName]) {
-      //     setIconComponent(() => iconoirModule[iconName]);
-      //   } else {
-      //     setError(true);
-      //   }
-      // } catch (loadError) {
-      //   console.warn(`Iconoir not available or icon "${iconName}" not found in Iconoir:`, loadError);
-      //   setError(true);
-      // } finally {
-      //   setLoading(false);
-      // }
-    };
-
-    loadIcon();
-  }, [iconName]);
-
-  if (loading || error || !IconComponent) {
-    // If Iconoir is not available or icon not found, render a simple fallback
-    // You can customize this fallback or add other icon systems here
-    return (
-      <div className="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center">
-        <span className="text-xs text-white text-center leading-none">{iconName.substring(0, 2)}</span>
-      </div>
-    );
-  }
-
-  return <IconComponent size={size} className={className} />;
-};
 
 export default function QuickAccessSection() {
   const [quickAccessItems, setQuickAccessItems] = useState<QuickAccessItem[]>([]);
@@ -146,7 +105,7 @@ export default function QuickAccessSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickAccessItems.map((item) => {
             const linkUrl = getLinkUrl(item);
-            
+
             return (
               <Link
                 key={item.id}
@@ -154,7 +113,7 @@ export default function QuickAccessSection() {
                 className="group bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/40 rounded-xl p-6 cursor-pointer transition-all block"
               >
                 <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors">
-                  <IconoirLoader iconName={item.icon} size={24} className="text-white" />
+                  <IconoirLoader iconName={item.icon} size={24} className="text-white flex-shrink-0" />
                 </div>
                 <h3 className="font-bold text-white mb-2 group-hover:text-purple-100 transition-colors">
                   {item.title}

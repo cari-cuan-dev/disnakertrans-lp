@@ -2,6 +2,7 @@
 
 import { Info, MapPin, Calendar, Users } from "lucide-react";
 import { useState, useEffect } from "react";
+import IconoirLoader from "@/components/iconoir-loader"
 
 export interface NoteVisitorItem {
   id: string;
@@ -13,46 +14,6 @@ export interface NoteVisitorItem {
   status: boolean;
 }
 
-// Dynamic Icon Loader Component for Iconoir (similar to previous implementation)
-const IconoirLoader = ({ iconName, size = 24, className = "text-white" }: { iconName: string; size?: number; className?: string }) => {
-  const [IconComponent, setIconComponent] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const loadIcon = async () => {
-      // try {
-      //   // Attempt to load @iconoir/react
-      //   const iconoirModule = await import('@iconoir/react');
-
-      //   // Look for the icon in Iconoir module using the exact name from database
-      //   if (iconoirModule[iconName]) {
-      //     setIconComponent(() => iconoirModule[iconName]);
-      //   } else {
-      //     setError(true);
-      //   }
-      // } catch (loadError) {
-      //   console.warn(`Iconoir not available or icon "${iconName}" not found in Iconoir:`, loadError);
-      //   setError(true);
-      // } finally {
-      //   setLoading(false);
-      // }
-    };
-
-    loadIcon();
-  }, [iconName]);
-
-  if (loading || error || !IconComponent) {
-    // If Iconoir is not available or icon not found, render a simple fallback
-    return (
-      <div className="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center">
-        <span className="text-xs text-white text-center leading-none">{iconName.substring(0, 2)}</span>
-      </div>
-    );
-  }
-
-  return <IconComponent size={size} className={className} />;
-};
 
 export default function VisitorInfoSection() {
   const [noteVisitors, setNoteVisitors] = useState<NoteVisitorItem[]>([]);
@@ -114,7 +75,7 @@ export default function VisitorInfoSection() {
               className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-200/30 hover:border-purple-300 transition-all"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                <IconoirLoader iconName={item.icon} size={24} className="text-white" />
+                <IconoirLoader iconName={item.icon} size={24} className="text-white flex-shrink-0" />
               </div>
               <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
               <div

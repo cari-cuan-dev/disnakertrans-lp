@@ -1,7 +1,8 @@
 "use client"
 
-import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone, Mail as MailIcon, MapPin as MapPinIcon, Phone as PhoneIcon } from "lucide-react"
+import { Mail, MapPin, Phone, Info, Mail as MailIcon, MapPin as MapPinIcon, Phone as PhoneIcon } from "lucide-react"
 import { useState, useEffect } from "react"
+import SocialLink from "@/components/social-link"
 
 interface SocialMediaItem {
   id: string;  // bigint is serialized as string in JSON
@@ -100,42 +101,7 @@ export default function Footer() {
     fetchData();
   }, []);
 
-  // Map social media names to Lucide icons
-  const getSocialIcon = (name: string) => {
-    switch(name.toLowerCase()) {
-      case 'facebook':
-        return Facebook;
-      case 'twitter':
-      case 'x':
-        return Twitter;
-      case 'instagram':
-        return Instagram;
-      case 'linkedin':
-        return Linkedin;
-      default:
-        // Generic icon or name-based logic
-        return ({ size }: { size: number }) => (
-          <div style={{ width: size, height: size }} />
-        );
-    }
-  };
 
-  // Get appropriate hover color for the icon
-  const getSocialHoverColor = (name: string) => {
-    switch(name.toLowerCase()) {
-      case 'facebook':
-        return 'hover:text-blue-600';
-      case 'twitter':
-      case 'x':
-        return 'hover:text-blue-400';
-      case 'instagram':
-        return 'hover:text-pink-600';
-      case 'linkedin':
-        return 'hover:text-blue-700';
-      default:
-        return 'hover:text-gray-700';
-    }
-  };
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -246,30 +212,21 @@ export default function Footer() {
               ) : footerContacts.length > 0 ? (
                 footerContacts.map((contact) => {
                   // Determine icon based on contact type
+                  const contactType = contact.type.toLowerCase();
                   let iconElement;
                   let displayLinkPrefix = '';
-                  switch(contact.type.toLowerCase()) {
-                    case 'map':
-                    case 'alamat':
-                    case 'location':
-                      iconElement = <MapPin size={16} />;
-                      displayLinkPrefix = '';
-                      break;
-                    case 'telepon':
-                    case 'phone':
-                    case 'telp':
-                      iconElement = <Phone size={16} />;
-                      displayLinkPrefix = 'tel:';
-                      break;
-                    case 'email':
-                    case 'mail':
-                      iconElement = <Mail size={16} />;
-                      displayLinkPrefix = 'mailto:';
-                      break;
-                    default:
-                      // Use generic icon or return a div
-                      iconElement = <div className="w-4 h-4 bg-gray-700 rounded"></div>;
-                      displayLinkPrefix = '';
+                  if (contactType.includes('map') || contactType.includes('alamat') || contactType.includes('location') || contactType.includes('lokasi')) {
+                    iconElement = <MapPin size={18} className="flex-shrink-0" />;
+                    displayLinkPrefix = '';
+                  } else if (contactType.includes('telepon') || contactType.includes('phone') || contactType.includes('telp')) {
+                    iconElement = <Phone size={18} className="flex-shrink-0" />;
+                    displayLinkPrefix = 'tel:';
+                  } else if (contactType.includes('email') || contactType.includes('mail')) {
+                    iconElement = <Mail size={18} className="flex-shrink-0" />;
+                    displayLinkPrefix = 'mailto:';
+                  } else {
+                    iconElement = <Info size={18} className="flex-shrink-0" />;
+                    displayLinkPrefix = '';
                   }
 
                   return (
@@ -325,22 +282,17 @@ export default function Footer() {
           <h3 className="font-bold text-white mb-4">Ikuti Kami</h3>
           <div className="flex gap-4">
             {!socialMediaLoading && socialMedia.length > 0 ? (
-              socialMedia.map((social) => {
-                if (!social.url) return null;
-                const IconComponent = getSocialIcon(social.name);
-                return (
-                  <a
-                    key={social.id}
-                    href={social.url || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors ${getSocialHoverColor(social.name)}`}
-                    aria-label={social.name}
-                  >
-                    <IconComponent size={18} className="text-current" />
-                  </a>
-                );
-              })
+              socialMedia.map((social) => (
+                <SocialLink
+                  key={social.id}
+                  url={social.url}
+                  name={social.name}
+                  icon={social.icon}
+                  color={social.color}
+                  className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-white transition-colors"
+                  iconSize={18}
+                />
+              ))
             ) : (
               // Show loading placeholders only
               <div className="flex gap-4">

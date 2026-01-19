@@ -1,7 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Menu, X, Search, Facebook, Twitter, Instagram, Linkedin, Youtube, ChevronDown, User } from "lucide-react"
+import { Menu, X, Search, ChevronDown, User } from "lucide-react"
+import IconoirLoader from "./iconoir-loader"
+import SocialLink from "./social-link"
 import SearchModal from "./search-modal"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -74,7 +76,7 @@ export default function Navigation() {
 
   // Function to determine if menu item should be displayed based on status and login state
   const shouldDisplayHeader = (status: string, currentUser: UserInfo | null) => {
-    switch(status) {
+    switch (status) {
       case 'Show':
         return true;
       case 'Show Login':
@@ -174,46 +176,7 @@ export default function Navigation() {
   }, [isOpen])
 
 
-  // Map social media names to Lucide icons
-  const getSocialIcon = (name: string) => {
-    switch (name.toLowerCase()) {
-      case 'facebook':
-        return Facebook;
-      case 'twitter':
-      case 'x':
-        return Twitter;
-      case 'instagram':
-        return Instagram;
-      case 'linkedin':
-        return Linkedin;
-      case 'youtube':
-        return Youtube;
-      default:
-        // Generic icon or name-based logic
-        return ({ size, className }: { size: number; className: string }) => (
-          <div className={className} style={{ width: size, height: size }} />
-        );
-    }
-  };
 
-  // Get appropriate hover color for the icon
-  const getSocialHoverColor = (name: string) => {
-    switch (name.toLowerCase()) {
-      case 'facebook':
-        return 'hover:text-blue-600';
-      case 'twitter':
-      case 'x':
-        return 'hover:text-blue-400';
-      case 'instagram':
-        return 'hover:text-pink-600';
-      case 'linkedin':
-        return 'hover:text-blue-700';
-      case 'youtube':
-        return 'hover:text-red-600';
-      default:
-        return 'hover:text-gray-700';
-    }
-  };
 
   return (
     <>
@@ -301,22 +264,17 @@ export default function Navigation() {
             <div className="flex items-center gap-2 md:gap-4">
               <div className="hidden lg:flex items-center gap-2">
                 {!socialMediaLoading && socialMedia.length > 0 ? (
-                  socialMedia.map((social) => {
-                    if (!social.url) return null;
-                    const IconComponent = getSocialIcon(social.name);
-                    return (
-                      <a
-                        key={social.id}
-                        href={social.url || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`p-2 hover:bg-purple-50 rounded-lg transition-colors ${getSocialHoverColor(social.name)}`}
-                        title={social.name}
-                      >
-                        <IconComponent size={18} className="text-gray-700 hover:text-current" />
-                      </a>
-                    );
-                  })
+                  socialMedia.map((social) => (
+                    <SocialLink
+                      key={social.id}
+                      url={social.url}
+                      name={social.name}
+                      icon={social.icon}
+                      color={social.color}
+                      className="text-gray-700 p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                      iconSize={18}
+                    />
+                  ))
                 ) : (
                   // Show loading placeholders only
                   <div className="flex gap-2">
@@ -375,9 +333,8 @@ export default function Navigation() {
                   </Link>
 
                   <div
-                    className={`hidden md:flex items-center gap-2 text-sm font-medium ${
-                      user.type === 'Admin' ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 cursor-pointer hover:text-purple-600'
-                    }`}
+                    className={`hidden md:flex items-center gap-2 text-sm font-medium ${user.type === 'Admin' ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 cursor-pointer hover:text-purple-600'
+                      }`}
                     onClick={() => {
                       if (user.type === 'Admin') {
                         alert('Anda adalah admin, silahkan login ke halaman yang telah ditentukan');
@@ -559,21 +516,17 @@ export default function Navigation() {
 
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-purple-100">
                 {!socialMediaLoading && socialMedia.length > 0 ? (
-                  socialMedia.map((social) => {
-                    if (!social.url) return null;
-                    const IconComponent = getSocialIcon(social.name);
-                    return (
-                      <a
-                        key={social.id}
-                        href={social.url || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 hover:bg-purple-50 rounded-lg transition-colors"
-                      >
-                        <IconComponent size={18} className="text-gray-700 hover:text-current" />
-                      </a>
-                    );
-                  })
+                  socialMedia.map((social) => (
+                    <SocialLink
+                      key={social.id}
+                      url={social.url}
+                      name={social.name}
+                      icon={social.icon}
+                      color={social.color}
+                      className="text-gray-700 p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                      iconSize={18}
+                    />
+                  ))
                 ) : (
                   // Show loading placeholders only
                   <div className="flex gap-2">

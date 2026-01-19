@@ -107,8 +107,11 @@ export default function GreetingCard() {
                   sizes="(max-width: 200px) 100vw, 200px"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.onerror = null; // prevents looping
-                    target.src = "/placeholder-person.jpg"; // fallback to placeholder
+                    if (!target.src.includes("/placeholder-person.jpg")) {
+                      target.src = "/placeholder-person.jpg";
+                    } else {
+                      target.onerror = null;
+                    }
                   }}
                 />
               ) : (
@@ -142,8 +145,11 @@ export default function GreetingCard() {
                   sizes="(max-width: 200px) 100vw, 200px"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.onerror = null; // prevents looping
-                    target.src = "/placeholder-person.jpg"; // fallback to placeholder
+                    if (!target.src.includes("/placeholder-person.jpg")) {
+                      target.src = "/placeholder-person.jpg";
+                    } else {
+                      target.onerror = null;
+                    }
                   }}
                 />
               ) : (
@@ -180,8 +186,11 @@ export default function GreetingCard() {
                     sizes="(max-width: 200px) 100vw, 200px"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.onerror = null; // prevents looping
-                      target.src = "/placeholder-person.jpg"; // fallback to placeholder
+                      if (!target.src.includes("/placeholder-person.jpg")) {
+                        target.src = "/placeholder-person.jpg";
+                      } else {
+                        target.onerror = null;
+                      }
                     }}
                   />
                 ) : (

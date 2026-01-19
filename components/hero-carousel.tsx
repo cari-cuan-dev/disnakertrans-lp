@@ -36,21 +36,24 @@ export default function HeroCarousel() {
               title: "Memberdayakan Tenaga Kerja Indonesia",
               subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
               image_path: "/indonesian-workers-training-program.jpg",
-              blog_id: "1", // Tambahkan blog_id untuk fallback
+              blog_id: "1",
+              status: true,
             },
             {
               id: "2",
               title: "Dukungan Kerja Berkah untuk Kalteng",
               subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
               image_path: "/employment-program-sustainable-jobs.jpg",
-              blog_id: "2", // Tambahkan blog_id untuk fallback
+              blog_id: "2",
+              status: true,
             },
             {
               id: "3",
               title: "Transparansi dan Pelayanan Terbaik",
               subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
               image_path: "/government-service-transparency.jpg",
-              blog_id: "3", // Tambahkan blog_id untuk fallback
+              blog_id: "3",
+              status: true,
             },
           ]);
         }
@@ -63,21 +66,24 @@ export default function HeroCarousel() {
             title: "Memberdayakan Tenaga Kerja Indonesia",
             subtitle: "Program pelatihan dan sertifikasi untuk meningkatkan kompetensi",
             image_path: "/indonesian-workers-training-program.jpg",
-            blog_id: "1", // Tambahkan blog_id untuk fallback
+            blog_id: "1",
+            status: true,
           },
           {
             id: "2",
             title: "Dukungan Kerja Berkah untuk Kalteng",
             subtitle: "Menciptakan lapangan kerja berkelanjutan untuk masyarakat",
             image_path: "/employment-program-sustainable-jobs.jpg",
-            blog_id: "2", // Tambahkan blog_id untuk fallback
+            blog_id: "2",
+            status: true,
           },
           {
             id: "3",
             title: "Transparansi dan Pelayanan Terbaik",
             subtitle: "Komitmen kami untuk melayani dengan sepenuh hati",
             image_path: "/government-service-transparency.jpg",
-            blog_id: "3", // Tambahkan blog_id untuk fallback
+            blog_id: "3",
+            status: true,
           },
         ]);
       } finally {
@@ -123,18 +129,20 @@ export default function HeroCarousel() {
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === current ? "opacity-100 pointer-events-auto z-10" : "opacity-0 pointer-events-none z-0"
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${index === current ? "opacity-100 pointer-events-auto z-10" : "opacity-0 pointer-events-none z-0"
+            }`}
         >
-          <img 
-            src={slide.image_path || "/placeholder-blog.jpg"} 
-            alt={slide.title} 
-            className="w-full h-full object-cover" 
+          <img
+            src={slide.image_path || "/placeholder-blog.jpg"}
+            alt={slide.title}
+            className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.onerror = null; // prevents looping
-              target.src = "/placeholder-blog.jpg"; // fallback to placeholder
+              if (!target.src.includes("/placeholder-blog.jpg")) {
+                target.src = "/placeholder-blog.jpg";
+              } else {
+                target.onerror = null;
+              }
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent flex items-center">
@@ -185,9 +193,8 @@ export default function HeroCarousel() {
               setCurrent(index);
               setAutoPlay(false);
             }}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === current ? "bg-white w-8" : "bg-white/60"
-            }`}
+            className={`w-2 h-2 rounded-full transition-all ${index === current ? "bg-white w-8" : "bg-white/60"
+              }`}
           />
         ))}
       </div>

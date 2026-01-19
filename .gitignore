@@ -4,5 +4,6 @@
 /.env
 note.md
 .DS_Store
+/private
 
 certificates
