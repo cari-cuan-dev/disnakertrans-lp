@@ -8,6 +8,14 @@ import SearchModal from "./search-modal"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { getAccessToken, isAuthenticated } from "@/lib/auth"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface SocialMediaItem {
   id: string;  // bigint is serialized as string in JSON
@@ -332,22 +340,55 @@ export default function Navigation() {
                     <span className="hidden lg:inline">Cari</span>
                   </Link>
 
-                  <div
-                    className={`hidden md:flex items-center gap-2 text-sm font-medium ${user.type === 'Admin' ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 cursor-pointer hover:text-purple-600'
-                      }`}
-                    onClick={() => {
-                      if (user.type === 'Admin') {
-                        alert('Anda adalah admin, silahkan login ke halaman yang telah ditentukan');
-                      } else {
+                  {user.type === 'Admin' ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <div className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:text-purple-600 group">
+                          <User size={18} className="text-purple-600" />
+                          <span className="max-w-[120px] truncate" title={user.name || user.email}>
+                            {user.name || user.email}
+                          </span>
+                          <ChevronDown size={14} className="text-gray-400 group-data-[state=open]:rotate-180 transition-transform" />
+                        </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56 mt-2">
+                        <DropdownMenuLabel>Panel Administrator</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <a
+                            href={`${process.env.NEXT_PUBLIC_DISNAKERTRANS_LOGIN_URL}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full cursor-pointer"
+                          >
+                            Masuk ke CMS Disnakertrans
+                          </a>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <a
+                            href={`${process.env.NEXT_PUBLIC_KERJABERKAH_LOGIN_URL}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full cursor-pointer"
+                          >
+                            Masuk ke CMS Kerja Berkah
+                          </a>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <div
+                      className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:text-purple-600"
+                      onClick={() => {
                         window.location.href = '/profile';
-                      }
-                    }}
-                  >
-                    <User size={18} className={user.type === 'Admin' ? 'text-gray-400' : 'text-purple-600'} />
-                    <span className="max-w-[120px] truncate" title={user.name || user.email}>
-                      {user.name || user.email}
-                    </span>
-                  </div>
+                      }}
+                    >
+                      <User size={18} className="text-purple-600" />
+                      <span className="max-w-[120px] truncate" title={user.name || user.email}>
+                        {user.name || user.email}
+                      </span>
+                    </div>
+                  )}
                   <button
                     onClick={() => {
                       localStorage.removeItem('access_token');
@@ -492,10 +533,41 @@ export default function Navigation() {
                     <span>Temukan Apa yang Anda Cari</span>
                   </Link>
                   <div className="py-2 text-gray-700 font-medium">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mb-2">
                       <User size={18} className="text-purple-600" />
                       <span>{user.name || user.email}</span>
+                      {user.type === 'Admin' && (
+                        <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">Admin</span>
+                      )}
                     </div>
+
+                    {user.type === 'Admin' ? (
+                      <div className="flex flex-col gap-1 pl-6 border-l-2 border-purple-100 mt-2 mb-4">
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_DISNAKERTRANS_URL}/admin`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2 text-sm text-gray-600 hover:text-purple-600 transition-colors"
+                        >
+                          Masuk ke CMS Disnakertrans
+                        </a>
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_KERJABERKAH_URL}/admin`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2 text-sm text-gray-600 hover:text-purple-600 transition-colors"
+                        >
+                          Masuk ke CMS Kerja Berkah
+                        </a>
+                      </div>
+                    ) : (
+                      <Link
+                        href="/profile"
+                        className="block py-2 text-sm text-gray-600 hover:text-purple-600 transition-colors pl-6"
+                      >
+                        Lihat Profil
+                      </Link>
+                    )}
                   </div>
                   <button
                     onClick={() => {
