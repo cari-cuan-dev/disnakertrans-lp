@@ -544,7 +544,7 @@ export default function Navigation() {
                     {user.type === 'Admin' ? (
                       <div className="flex flex-col gap-1 pl-6 border-l-2 border-purple-100 mt-2 mb-4">
                         <a
-                          href={`${process.env.NEXT_PUBLIC_DISNAKERTRANS_URL}/admin`}
+                          href={`${process.env.NEXT_PUBLIC_DISNAKERTRANS_LOGIN_URL}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="py-2 text-sm text-gray-600 hover:text-purple-600 transition-colors"
@@ -552,7 +552,7 @@ export default function Navigation() {
                           Masuk ke CMS Disnakertrans
                         </a>
                         <a
-                          href={`${process.env.NEXT_PUBLIC_KERJABERKAH_URL}/admin`}
+                          href={`${process.env.NEXT_PUBLIC_KERJABERKAH_LOGIN_URL}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="py-2 text-sm text-gray-600 hover:text-purple-600 transition-colors"
