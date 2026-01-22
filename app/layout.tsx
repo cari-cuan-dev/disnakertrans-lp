@@ -18,22 +18,12 @@ export const metadata: Metadata = {
   keywords: ["Disnakertrans", "Ketenagakerjaan", "Kalimantan Tengah", "Kerja Berkah", "Lowongan Kerja"],
   icons: {
     icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
+      "/logo.avif",
+      "/logo.svg",
     ],
-    apple: "/apple-icon.png",
+    apple: "/logo.avif",
   },
-    generator: 'v0.app'
+  generator: 'v0.app'
 }
 
 export const viewport = {

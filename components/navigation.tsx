@@ -194,7 +194,7 @@ export default function Navigation() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="hidden sm:inline font-bold text-gray-900">Disnakertrans Kalteng</span>
             </Link>
