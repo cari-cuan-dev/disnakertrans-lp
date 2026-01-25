@@ -1,7 +1,18 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+// Singleton S3 Client
+const s3Client = new S3Client({
+  region: process.env.AWS_DEFAULT_REGION || "us-east-1",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+  },
+  endpoint: process.env.AWS_ENDPOINT,
+  forcePathStyle: process.env.AWS_USE_PATH_STYLE_ENDPOINT === "true",
+});
 
 // Untuk mengatasi masalah SSL di development
 if (process.env.NODE_ENV !== 'production') {
@@ -18,14 +29,43 @@ export function cn(...inputs: ClassValue[]) {
 function normalizeS3Key(key: string): string {
   if (!key) return key;
 
+  let normalizedKey = key;
+
+  // Jika berupa full URL, coba ekstrak key-nya
+  if (key.startsWith('http')) {
+    try {
+      const url = new URL(key);
+      const pathname = url.pathname; // e.g. /disnakertrans/blog-covers/file.jpg
+      const bucketName = process.env.AWS_BUCKET || '';
+
+      // Jika pathname dimulai dengan /bucketName/, hapus bagian itu
+      if (bucketName && pathname.startsWith(`/${bucketName}/`)) {
+        normalizedKey = pathname.substring(bucketName.length + 2);
+      } else {
+        // Fallback: ambil setelah slash ke-2 (asumsi format /bucket/key atau /key)
+        const parts = pathname.split('/').filter(Boolean);
+        if (parts.length > 1 && parts[0] === bucketName) {
+          normalizedKey = parts.slice(1).join('/');
+        } else {
+          normalizedKey = parts.join('/');
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing S3 URL:", e);
+    }
+  }
+
   // Hapus leading slash jika ada
-  let normalizedKey = key.startsWith('/') ? key.substring(1) : key;
+  normalizedKey = normalizedKey.startsWith('/') ? normalizedKey.substring(1) : normalizedKey;
 
   // Hilangkan bagian folder uploads jika ada (ini umum di sistem upload lokal)
-  normalizedKey = normalizedKey.replace(/^uploads\//, '');
-  normalizedKey = normalizedKey.replace(/^images\//, '');
-  normalizedKey = normalizedKey.replace(/^documents\//, '');
-  normalizedKey = normalizedKey.replace(/^sliders\//, '');
+  // Tapi hati-hati, jangan hapus jika itu sudah bagian dari S3 key yang benar
+  // Kita biarkan saja karena normalize ini biasanya untuk mapping dari sistem lama
+
+  // normalizedKey = normalizedKey.replace(/^uploads\//, '');
+  // normalizedKey = normalizedKey.replace(/^images\//, '');
+  // normalizedKey = normalizedKey.replace(/^documents\//, '');
+  // normalizedKey = normalizedKey.replace(/^sliders\//, '');
 
   return normalizedKey;
 }
@@ -34,27 +74,20 @@ function normalizeS3Key(key: string): string {
  * Mengambil presigned URL untuk file di S3
  */
 export async function getUrlPreSign(path: string) {
-  const s3ClientForSigning = new S3Client({
-    region: process.env.AWS_DEFAULT_REGION!,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-    endpoint: process.env.AWS_ENDPOINT,
-    forcePathStyle: process.env.AWS_USE_PATH_STYLE_ENDPOINT === "true",
-  });
+  if (!path) return "";
 
   try {
+    const key = normalizeS3Key(path);
     const command = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET,
-      Key: normalizeS3Key(path), // Gunakan fungsi normalisasi
+      Key: key,
     });
 
-    const url = await getSignedUrl(s3ClientForSigning, command, { expiresIn: 900 });
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 900 });
     return url;
   } catch (error) {
     console.error(`Error generating presigned URL for path "${path}":`, error);
-    throw error;
+    return path; // Fallback ke path asli jika gagal
   }
 }
 
@@ -144,31 +177,31 @@ export async function convertCoversToPresignedUrls<T extends Record<string, any>
  * Mengambil metadata file dari S3
  */
 export async function getFileMetadata(path: string) {
-  const s3ClientForMetadata = new S3Client({
-    region: process.env.AWS_DEFAULT_REGION!,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-    endpoint: process.env.AWS_ENDPOINT,
-    forcePathStyle: process.env.AWS_USE_PATH_STYLE_ENDPOINT === "true",
-  });
+  if (!path) return { size: 0, lastModified: new Date(), contentType: '' };
 
   try {
-    const command = new GetObjectCommand({
+    const key = normalizeS3Key(path);
+    const command = new HeadObjectCommand({
       Bucket: process.env.AWS_BUCKET,
-      Key: normalizeS3Key(path), // Gunakan fungsi normalisasi
+      Key: key,
     });
 
-    const response = await s3ClientForMetadata.send(command);
+    const response = await s3Client.send(command);
     return {
-      size: response.ContentLength,
-      lastModified: response.LastModified,
-      contentType: response.ContentType
+      size: response.ContentLength || 0,
+      lastModified: response.LastModified || new Date(),
+      contentType: response.ContentType || ''
     };
-  } catch (error) {
-    console.error(`Error getting file metadata for path "${path}":`, error);
-    throw error;
+  } catch (error: any) {
+    // Jangan throw error di sini agar tidak memutus loop konversi, tapi catat errornya
+    console.error(`Error getting file metadata for path "${path}" (Key: "${normalizeS3Key(path)}"):`, error.name, error.message);
+
+    // Jika 404, kita return metadata default
+    return {
+      size: 0,
+      lastModified: new Date(),
+      contentType: ''
+    };
   }
 }
 

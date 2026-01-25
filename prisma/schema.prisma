@@ -179,7 +179,7 @@ model hexa_roles {
   guard           String           @default("web") @db.VarChar(255)
   created_at      DateTime?        @db.Timestamp(0)
   updated_at      DateTime?        @db.Timestamp(0)
-  hexa_role_user  hexa_role_user[] @ignore
+  hexa_role_user  hexa_role_user[]
 }
 
 model job_batches {
