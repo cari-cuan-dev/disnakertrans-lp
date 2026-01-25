@@ -137,7 +137,7 @@ export default function BlogDetailPage() {
 
                 {/* Content */}
                 <div
-                  className="prose prose-lg max-w-none mb-8 [&_p]:text-gray-700 [&_p]:mb-4 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:text-lg [&_h3]:font-medium [&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6 [&_li]:mb-1 [&_strong]:font-bold [&_em]:italic [&_a]:text-purple-600 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-purple-500 [&_blockquote]:pl-4 [&_blockquote]:italic"
+                  className="rich-text max-w-none mb-8"
                   dangerouslySetInnerHTML={{
                     __html: article.content
                   }}

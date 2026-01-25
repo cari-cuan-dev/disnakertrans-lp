@@ -650,7 +650,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Deskripsi Pekerjaan</h2>
                   <div
-                    className="text-gray-700 leading-relaxed [&_p]:mb-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:text-lg [&_h3]:font-medium [&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6 [&_li]:mb-1 [&_strong]:font-bold [&_em]:italic [&_a]:text-purple-600 [&_a]:underline"
+                    className="rich-text"
                     dangerouslySetInnerHTML={{
                       __html: vacancy.description || 'Deskripsi pekerjaan tidak tersedia.'
                     }}

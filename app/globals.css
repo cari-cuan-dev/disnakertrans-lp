@@ -114,11 +114,82 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+@layer utilities {
+
+  .rich-text,
+  .rich-text p {
+    @apply text-gray-700 leading-relaxed text-base mb-4;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  .rich-text :last-child {
+    @apply mb-0;
+  }
+
+  .rich-text ul,
+  ul.rich-text {
+    @apply list-disc list-outside ml-6 mb-4;
+  }
+
+  .rich-text ol,
+  ol.rich-text {
+    @apply list-decimal list-outside ml-6 mb-4;
+  }
+
+  .rich-text li {
+    @apply mb-2;
+  }
+
+  .rich-text table,
+  table.rich-text {
+    @apply w-full border-collapse mb-6 border border-gray-200;
+  }
+
+  .rich-text figure.table {
+    @apply w-full overflow-x-auto mb-6;
+  }
+
+  .rich-text figure.table table {
+    @apply mb-0;
+  }
+
+  .rich-text th,
+  .rich-text td {
+    @apply border border-gray-200 p-3 text-left;
+  }
+
+  .rich-text th {
+    @apply bg-gray-50 font-bold text-gray-900;
+  }
+
+  .rich-text tr:nth-child(even) {
+    @apply bg-gray-50/30;
+  }
+
+  .rich-text tr:hover {
+    @apply bg-gray-100/50;
+  }
+
+  .rich-text h1 {
+    @apply text-2xl font-bold mb-4 text-gray-900;
+  }
+
+  .rich-text h2 {
+    @apply text-xl font-bold mb-3 text-gray-900;
+  }
+
+  .rich-text h3 {
+    @apply text-lg font-bold mb-2 text-gray-900;
+  }
+
+  .rich-text strong {
+    @apply font-bold text-gray-900;
+  }
+
+  .rich-text em {
+    @apply italic;
+  }
+
+  .rich-text a {
+    @apply text-purple-600 underline hover:text-purple-700 transition-colors;
   }
 }

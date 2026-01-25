@@ -111,7 +111,7 @@ export default function InformationSection() {
           <div>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">Penjelasan Disnakertrans Kalteng</h3>
             <div
-              className="text-gray-600"
+              className="rich-text"
               dangerouslySetInnerHTML={{ __html: description }}
             />
           </div>
@@ -122,17 +122,17 @@ export default function InformationSection() {
             <div className="space-y-6">
               <div>
                 <h4 className="font-bold text-purple-600 mb-2">Visi</h4>
-                <p className="text-gray-600" dangerouslySetInnerHTML={{ __html: vision }} />
+                <div className="rich-text" dangerouslySetInnerHTML={{ __html: vision }} />
               </div>
               <div>
                 <h4 className="font-bold text-purple-600 mb-2">Misi</h4>
                 {missions.length === 1 && (missions[0].includes('<ul>') || missions[0].includes('<ol>')) ? (
                   <div
-                    className="text-gray-600 [&_ul]:list-disc [&_ul]:list-outside [&_ol]:list-decimal [&_ol]:list-outside [&_li]:ml-5 [&_li]:mb-2 [&_p]:my-0 [&_p]:inline"
+                    className="rich-text"
                     dangerouslySetInnerHTML={{ __html: missions[0] }}
                   />
                 ) : (
-                  <ul className="text-gray-600 space-y-2 list-disc list-inside">
+                  <ul className="rich-text">
                     {missions.map((mission, index) => (
                       <li key={index} dangerouslySetInnerHTML={{ __html: mission }} />
                     ))}
