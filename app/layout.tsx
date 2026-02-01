@@ -12,9 +12,9 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: "Disnakertrans Kalteng - Dinas Ketenagakerjaan dan Perindustrian",
+  title: "Dinas tenaga kerja dan Transmigrasi Provinsi Kalimantan Tengah",
   description:
-    "Website resmi Dinas Ketenagakerjaan dan Perindustrian Kalimantan Tengah. Akses informasi lowongan kerja, sertifikasi, dan program kerja berkah.",
+    "Website resmi Dinas tenaga kerja dan Transmigrasi Provinsi Kalimantan Tengah. Akses informasi lowongan kerja, sertifikasi, dan program kerja berkah.",
   keywords: ["Disnakertrans", "Ketenagakerjaan", "Kalimantan Tengah", "Kerja Berkah", "Lowongan Kerja"],
   icons: {
     icon: [

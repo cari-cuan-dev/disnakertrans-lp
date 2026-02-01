@@ -116,7 +116,7 @@ export default function Footer() {
               </div>
               <span className="font-bold text-white">Disnakertrans</span>
             </div>
-            <p className="text-sm text-gray-400">Dinas Ketenagakerjaan dan Perindustrian Kalimantan Tengah</p>
+            <p className="text-sm text-gray-400">Dinas tenaga kerja dan Transmigrasi Provinsi Kalimantan Tengah</p>
           </div>
 
           {/* Layanan */}
@@ -308,7 +308,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-            <p>&copy; {currentYear} Disnakertrans Kalteng. Semua hak dilindungi.</p>
+            <p>&copy; {currentYear} Disnakertrans Kalteng.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <a href="#" className="hover:text-purple-400 transition-colors">
                 Kebijakan Privasi
