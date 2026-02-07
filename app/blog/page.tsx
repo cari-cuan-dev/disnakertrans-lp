@@ -21,6 +21,7 @@ export interface BlogItem {
   categories: {
     id: string;
     name: string;
+    show_back_button: boolean;
   };
 }
 
@@ -30,7 +31,7 @@ export default function BlogPage() {
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState(() => {
-    const initialCategory = searchParams.get("category") || "Semua";
+    const initialCategory = searchParams?.get("category") || "Semua";
     return initialCategory;
   })
   const [sortBy, setSortBy] = useState("terbaru") // terbaru or terlama
@@ -54,8 +55,8 @@ export default function BlogPage() {
         }
 
         // Then fetch filtered data
-        const category = searchParams.get("category")
-        const service = searchParams.get("service")
+        const category = searchParams?.get("category")
+        const service = searchParams?.get("service")
 
         const params = new URLSearchParams();
         if (category) params.append('category', category);
@@ -115,13 +116,13 @@ export default function BlogPage() {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mb-12">
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                  {searchParams.get("category") || searchParams.get("service") ? "Hasil Pencarian" : "Semua Berita"}
+                  {searchParams?.get("category") || searchParams?.get("service") ? "Hasil Pencarian" : "Semua Berita"}
                 </h1>
                 <p className="text-gray-600">
-                  {searchParams.get("category") && `Kategori: ${searchParams.get("category")}`}
-                  {searchParams.get("service") && `Layanan: ${searchParams.get("service")}`}
-                  {!searchParams.get("category") &&
-                    !searchParams.get("service") &&
+                  {searchParams?.get("category") && `Kategori: ${searchParams.get("category")}`}
+                  {searchParams?.get("service") && `Layanan: ${searchParams.get("service")}`}
+                  {!searchParams?.get("category") &&
+                    !searchParams?.get("service") &&
                     "Informasi lengkap dari Disnakertrans Kalimantan Tengah"}
                 </p>
               </div>
@@ -149,16 +150,15 @@ export default function BlogPage() {
                               params.set('category', category);
                             }
                             // Only preserve service parameter, not search term when switching category
-                            const service = searchParams.get("service");
+                            const service = searchParams?.get("service");
                             if (service) params.set('service', service);
 
                             router.push(`?${params.toString()}`);
                           }}
-                          className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
-                            selectedCategory === category
-                              ? "bg-purple-600 text-white shadow-lg"
-                              : "bg-white border border-gray-300 text-gray-700 hover:border-purple-300"
-                          }`}
+                          className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${selectedCategory === category
+                            ? "bg-purple-600 text-white shadow-lg"
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-purple-300"
+                            }`}
                         >
                           {category}
                         </button>
@@ -246,13 +246,21 @@ export default function BlogPage() {
         ) : article ? (
           <section className="py-12 md:py-20">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <button
-                onClick={() => setSelectedArticle(null)}
-                className="flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-8 font-medium"
-              >
-                <ChevronLeft size={20} />
-                Kembali ke Daftar Berita
-              </button>
+              {article.categories.show_back_button && (
+                <button
+                  onClick={() => {
+                    setSelectedArticle(null);
+                    setSelectedCategory(article.categories.name);
+                    const params = new URLSearchParams();
+                    params.set('category', article.categories.name);
+                    router.push(`?${params.toString()}`);
+                  }}
+                  className="flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-8 font-medium"
+                >
+                  <ChevronLeft size={20} />
+                  Kembali ke Daftar {article.categories.name}
+                </button>
+              )}
 
               <article className="bg-white rounded-lg overflow-hidden shadow-lg">
                 <div className="w-full h-96 overflow-hidden bg-gray-200">

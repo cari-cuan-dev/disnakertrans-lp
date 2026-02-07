@@ -69,6 +69,7 @@ model cache_locks {
 model categories {
   id                                 BigInt             @id @default(autoincrement())
   name                               String             @db.VarChar(255)
+  show_back_button                   Boolean            @default(true)
   created_at                         DateTime?          @db.Timestamp(0)
   updated_at                         DateTime?          @db.Timestamp(0)
   deleted_at                         DateTime?          @db.Timestamp(0)
@@ -424,4 +425,45 @@ model users {
   social_media_social_media_created_byTousers         social_media[]     @relation("social_media_created_byTousers")
   social_media_social_media_deleted_byTousers         social_media[]     @relation("social_media_deleted_byTousers")
   social_media_social_media_updated_byTousers         social_media[]     @relation("social_media_updated_byTousers")
+  galleries_galleries_created_byTousers            galleries[]        @relation("galleries_created_byTousers")
+  galleries_galleries_deleted_byTousers            galleries[]        @relation("galleries_deleted_byTousers")
+  galleries_galleries_updated_byTousers            galleries[]        @relation("galleries_updated_byTousers")
+  parameters_parameters_created_byTousers          parameters[]       @relation("parameters_created_byTousers")
+  parameters_parameters_deleted_byTousers          parameters[]       @relation("parameters_deleted_byTousers")
+  parameters_parameters_updated_byTousers          parameters[]       @relation("parameters_updated_byTousers")
+}
+
+model galleries {
+  id                               BigInt    @id @default(autoincrement())
+  title                            String    @db.VarChar(255)
+  description                      String?   @db.VarChar(255)
+  media_path                       String    @db.VarChar(255)
+  type                             String    @db.VarChar(255)
+  status                           Boolean   @default(true)
+  sort                             Int?      @default(0)
+  created_at                       DateTime? @db.Timestamp(0)
+  updated_at                       DateTime? @db.Timestamp(0)
+  deleted_at                       DateTime? @db.Timestamp(0)
+  created_by                       BigInt?
+  updated_by                       BigInt?
+  deleted_by                       BigInt?
+  users_galleries_created_byTousers users?    @relation("galleries_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "galleries_created_by_foreign")
+  users_galleries_deleted_byTousers users?    @relation("galleries_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "galleries_deleted_by_foreign")
+  users_galleries_updated_byTousers users?    @relation("galleries_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "galleries_updated_by_foreign")
+}
+
+model parameters {
+  id                             BigInt    @id @default(autoincrement())
+  code                           String    @unique @db.VarChar(255)
+  name                           String    @db.VarChar(255)
+  value                          String?
+  created_at                     DateTime? @db.Timestamp(0)
+  updated_at                     DateTime? @db.Timestamp(0)
+  deleted_at                     DateTime? @db.Timestamp(0)
+  created_by                     BigInt?
+  updated_by                     BigInt?
+  deleted_by                     BigInt?
+  users_parameters_created_byTousers users? @relation("parameters_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction, map: "parameters_created_by_foreign")
+  users_parameters_deleted_byTousers users? @relation("parameters_deleted_byTousers", fields: [deleted_by], references: [id], onUpdate: NoAction, map: "parameters_deleted_by_foreign")
+  users_parameters_updated_byTousers users? @relation("parameters_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "parameters_updated_by_foreign")
 }

@@ -117,6 +117,7 @@ export async function GET(
           select: {
             id: true,
             name: true,
+            show_back_button: true,
           },
         },
       },

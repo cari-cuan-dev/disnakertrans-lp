@@ -21,6 +21,7 @@ export interface BlogItem {
   categories: {
     id: string;
     name: string;
+    show_back_button: boolean;
   };
 }
 
@@ -35,8 +36,8 @@ export default function BlogDetailPage() {
     const fetchBlogDetail = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/blogs/${params.id}`)
-        if (response.ok) {
+        const response = await fetch(`/api/blogs/${params?.id}`)
+        if (response?.ok) {
           const data: BlogItem = await response.json()
           setArticle(data)
         } else {
@@ -51,7 +52,7 @@ export default function BlogDetailPage() {
     }
 
     fetchBlogDetail()
-  }, [params.id])
+  }, [params?.id])
 
   if (loading) {
     return (
@@ -95,13 +96,15 @@ export default function BlogDetailPage() {
       <main className="min-h-screen bg-gray-50">
         <section className="py-12 md:py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <button
-              onClick={() => router.push("/blog")}
-              className="flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-8 font-medium"
-            >
-              <ChevronLeft size={20} />
-              Kembali ke Daftar Berita
-            </button>
+            {article.categories.show_back_button && (
+              <button
+                onClick={() => router.push(`/blog?category=${encodeURIComponent(article.categories.name)}`)}
+                className="flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-8 font-medium"
+              >
+                <ChevronLeft size={20} />
+                Kembali ke Daftar {article.categories.name}
+              </button>
+            )}
 
             {/* Article Container */}
             <article className="bg-white rounded-lg overflow-hidden shadow-lg">

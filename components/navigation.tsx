@@ -202,61 +202,69 @@ export default function Navigation() {
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
               {!menuHeadersLoading ? (
-                menuHeaders.map((header) => {
-                  if (!shouldDisplayHeader(header.status, user)) return null;
+                <>
+                  {menuHeaders.map((header) => {
+                    if (!shouldDisplayHeader(header.status, user)) return null;
 
-                  // Check if this menu item has sub-headers
-                  if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
-                    return (
-                      <div key={header.id} className="relative group">
-                        <button className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium flex items-center gap-1">
-                          {header.name}
-                          <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
-                        </button>
-                        <div className="absolute left-0 mt-0 w-48 bg-white border border-purple-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
-                          {header.menu_sub_headers.map((subHeader) => {
-                            // Check if sub-header should be displayed
-                            if (!shouldDisplayHeader(subHeader.status, user)) return null;
+                    // Check if this menu item has sub-headers
+                    if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
+                      return (
+                        <div key={header.id} className="relative group">
+                          <button className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium flex items-center gap-1">
+                            {header.name}
+                            <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
+                          </button>
+                          <div className="absolute left-0 mt-0 w-48 bg-white border border-purple-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
+                            {header.menu_sub_headers.map((subHeader) => {
+                              // Check if sub-header should be displayed
+                              if (!shouldDisplayHeader(subHeader.status, user)) return null;
 
-                            // If type is 'category' and category exists, link to /blog?category=NAME
-                            let subLinkUrl = subHeader.url || '#';
-                            if (subHeader.type.toLowerCase() === 'category' && subHeader.categories) {
-                              // If type is 'category' and has category info, link to /blog?category=CATEGORY_NAME
-                              subLinkUrl = `/blog?category=${encodeURIComponent(subHeader.categories.name)}`;
-                            }
+                              // If type is 'category' and category exists, link to /blog?category=NAME
+                              let subLinkUrl = subHeader.url || '#';
+                              if (subHeader.type.toLowerCase() === 'category' && subHeader.categories) {
+                                // If type is 'category' and has category info, link to /blog?category=CATEGORY_NAME
+                                subLinkUrl = `/blog?category=${encodeURIComponent(subHeader.categories.name)}`;
+                              }
 
-                            return (
-                              <Link
-                                key={subHeader.id}
-                                href={subLinkUrl}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
-                              >
-                                {subHeader.name}
-                              </Link>
-                            );
-                          })}
+                              return (
+                                <Link
+                                  key={subHeader.id}
+                                  href={subLinkUrl}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                                >
+                                  {subHeader.name}
+                                </Link>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  } else {
-                    // Menu header without sub-headers
-                    // If type is 'category' and category exists, link to /blog?category=NAME
-                    let linkUrl = header.url || '#';
-                    if (header.type.toLowerCase() === 'category' && header.categories) {
-                      linkUrl = `/blog?category=${encodeURIComponent(header.categories.name)}`;
-                    }
+                      );
+                    } else {
+                      // Menu header without sub-headers
+                      // If type is 'category' and category exists, link to /blog?category=NAME
+                      let linkUrl = header.url || '#';
+                      if (header.type.toLowerCase() === 'category' && header.categories) {
+                        linkUrl = `/blog?category=${encodeURIComponent(header.categories.name)}`;
+                      }
 
-                    return (
-                      <Link
-                        key={header.id}
-                        href={linkUrl}
-                        className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium"
-                      >
-                        {header.name}
-                      </Link>
-                    );
-                  }
-                })
+                      return (
+                        <Link
+                          key={header.id}
+                          href={linkUrl}
+                          className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium"
+                        >
+                          {header.name}
+                        </Link>
+                      );
+                    }
+                  })}
+                  <Link
+                    href="/gallery"
+                    className="text-gray-700 hover:text-purple-600 transition-colors text-sm font-medium"
+                  >
+                    Galeri
+                  </Link>
+                </>
               ) : (
                 // Loading placeholders
                 <>
@@ -429,74 +437,82 @@ export default function Navigation() {
           {isOpen && (
             <div className="md:hidden pb-4 border-t border-purple-100">
               {!menuHeadersLoading ? (
-                menuHeaders.map((header) => {
-                  if (!shouldDisplayHeader(header.status, user)) return null;
+                <>
+                  {menuHeaders.map((header) => {
+                    if (!shouldDisplayHeader(header.status, user)) return null;
 
-                  // Check if this menu item has sub-headers
-                  if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
-                    const isDropdownOpen = openDropdowns[header.id] || false;
-                    const toggleDropdown = () => {
-                      setOpenDropdowns(prev => ({
-                        ...prev,
-                        [header.id]: !prev[header.id]
-                      }));
-                    };
+                    // Check if this menu item has sub-headers
+                    if (header.menu_sub_headers && header.menu_sub_headers.length > 0) {
+                      const isDropdownOpen = openDropdowns[header.id] || false;
+                      const toggleDropdown = () => {
+                        setOpenDropdowns(prev => ({
+                          ...prev,
+                          [header.id]: !prev[header.id]
+                        }));
+                      };
 
-                    return (
-                      <div key={header.id}>
-                        <button
-                          onClick={toggleDropdown}
-                          className="w-full text-left py-2 text-gray-700 hover:text-purple-600 transition-colors flex items-center justify-between"
+                      return (
+                        <div key={header.id}>
+                          <button
+                            onClick={toggleDropdown}
+                            className="w-full text-left py-2 text-gray-700 hover:text-purple-600 transition-colors flex items-center justify-between"
+                          >
+                            {header.name}
+                            <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+                          </button>
+                          {isDropdownOpen && (
+                            <div className="bg-purple-50 rounded-lg mt-2 py-2">
+                              {header.menu_sub_headers.map((subHeader) => {
+                                // Check if sub-header should be displayed
+                                if (!shouldDisplayHeader(subHeader.status, user)) return null;
+
+                                // If type is 'category' and category exists, link to /blog?category=NAME
+                                let subLinkUrl = subHeader.url || '#';
+                                if (subHeader.type.toLowerCase() === 'category' && subHeader.categories) {
+                                  // If type is 'category' and has category info, link to /blog?category=CATEGORY_NAME
+                                  subLinkUrl = `/blog?category=${encodeURIComponent(subHeader.categories.name)}`;
+                                }
+
+                                return (
+                                  <Link
+                                    key={subHeader.id}
+                                    href={subLinkUrl}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:text-purple-600 transition-colors"
+                                  >
+                                    {subHeader.name}
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    } else {
+                      // Menu header without sub-headers
+                      // If type is 'category' and category exists, link to /blog?category=NAME
+                      let linkUrl = header.url || '#';
+                      if (header.type.toLowerCase() === 'category' && header.categories) {
+                        linkUrl = `/blog?category=${encodeURIComponent(header.categories.name)}`;
+                      }
+
+                      return (
+                        <Link
+                          key={header.id}
+                          href={linkUrl}
+                          className="block py-2 text-gray-700 hover:text-purple-600 transition-colors"
                         >
                           {header.name}
-                          <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
-                        </button>
-                        {isDropdownOpen && (
-                          <div className="bg-purple-50 rounded-lg mt-2 py-2">
-                            {header.menu_sub_headers.map((subHeader) => {
-                              // Check if sub-header should be displayed
-                              if (!shouldDisplayHeader(subHeader.status, user)) return null;
-
-                              // If type is 'category' and category exists, link to /blog?category=NAME
-                              let subLinkUrl = subHeader.url || '#';
-                              if (subHeader.type.toLowerCase() === 'category' && subHeader.categories) {
-                                // If type is 'category' and has category info, link to /blog?category=CATEGORY_NAME
-                                subLinkUrl = `/blog?category=${encodeURIComponent(subHeader.categories.name)}`;
-                              }
-
-                              return (
-                                <Link
-                                  key={subHeader.id}
-                                  href={subLinkUrl}
-                                  className="block px-4 py-2 text-sm text-gray-700 hover:text-purple-600 transition-colors"
-                                >
-                                  {subHeader.name}
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  } else {
-                    // Menu header without sub-headers
-                    // If type is 'category' and category exists, link to /blog?category=NAME
-                    let linkUrl = header.url || '#';
-                    if (header.type.toLowerCase() === 'category' && header.categories) {
-                      linkUrl = `/blog?category=${encodeURIComponent(header.categories.name)}`;
+                        </Link>
+                      );
                     }
-
-                    return (
-                      <Link
-                        key={header.id}
-                        href={linkUrl}
-                        className="block py-2 text-gray-700 hover:text-purple-600 transition-colors"
-                      >
-                        {header.name}
-                      </Link>
-                    );
-                  }
-                })
+                  })}
+                  <Link
+                    href="/gallery"
+                    className="block py-2 text-gray-700 hover:text-purple-600 transition-colors"
+                  >
+                    Galeri
+                  </Link>
+                </>
               ) : (
                 // Loading placeholders
                 <div className="space-y-2">
@@ -612,8 +628,8 @@ export default function Navigation() {
               </div>
             </div>
           )}
-        </div>
-      </nav>
+        </div >
+      </nav >
 
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     const service = searchParams.get('service');
     const search = searchParams.get('search');
-    
+
     // Build where clause based on filters
     const whereClause: any = {
       status: true, // Only get published blog posts
@@ -119,6 +119,7 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             name: true,
+            show_back_button: true,
           },
         },
       },

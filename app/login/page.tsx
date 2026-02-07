@@ -8,6 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -16,6 +23,8 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [forgotPasswordMsg, setForgotPasswordMsg] = useState("")
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -102,6 +111,24 @@ export default function LoginPage() {
     }
   }
 
+  const handleForgotPassword = async () => {
+    try {
+      const response = await fetch('/api/parameters/forgot_password_message')
+      if (response.ok) {
+        const data = await response.json()
+        setForgotPasswordMsg(data.value || "Silakan hubungi administrator.")
+        setIsForgotPasswordModalOpen(true)
+      } else {
+        setForgotPasswordMsg("Silakan hubungi administrator untuk mereset password Anda.")
+        setIsForgotPasswordModalOpen(true)
+      }
+    } catch (error) {
+      console.error('Error fetching forgot password message:', error)
+      setForgotPasswordMsg("Silakan hubungi administrator untuk mereset password Anda.")
+      setIsForgotPasswordModalOpen(true)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-transparent flex items-center justify-center p-4">
       <Card className="w-full max-w-sm shadow-lg border border-purple-100">
@@ -147,6 +174,15 @@ export default function LoginPage() {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-xs text-purple-600 hover:text-purple-700 font-medium"
+                >
+                  Lupa Password?
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center space-x-2 pt-2">
@@ -170,6 +206,30 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
+
+      <Dialog open={isForgotPasswordModalOpen} onOpenChange={setIsForgotPasswordModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Lupa Password</DialogTitle>
+            <DialogDescription>
+              Ikuti instruksi di bawah ini untuk memulihkan akun Anda.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center space-x-2 p-4 bg-purple-50 border border-purple-100 rounded-lg">
+            <p className="text-sm text-purple-800 leading-relaxed font-medium">
+              {forgotPasswordMsg}
+            </p>
+          </div>
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={() => setIsForgotPasswordModalOpen(false)}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              Mengerti
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
