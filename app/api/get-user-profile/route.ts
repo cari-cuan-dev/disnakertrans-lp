@@ -26,9 +26,9 @@ export async function GET(request: NextRequest) {
     // Kita tidak bisa mengakses Prisma langsung di sini karena ini adalah file client-side
     // Jadi kita perlu membuat implementasi sebenarnya di server action
     // Untuk saat ini, kita buat endpoint API yang akan dipanggil oleh server action
-    
+
     // Kode ini akan berjalan di client, jadi kita perlu panggil API server
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

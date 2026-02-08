@@ -372,7 +372,7 @@ export default function Navigation() {
                             Masuk ke CMS Disnakertrans
                           </a>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
+                        {/* <DropdownMenuItem asChild>
                           <a
                             href={`${process.env.NEXT_PUBLIC_KERJABERKAH_LOGIN_URL}`}
                             target="_blank"
@@ -381,7 +381,7 @@ export default function Navigation() {
                           >
                             Masuk ke CMS Kerja Berkah
                           </a>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   ) : (
@@ -567,14 +567,14 @@ export default function Navigation() {
                         >
                           Masuk ke CMS Disnakertrans
                         </a>
-                        <a
+                        {/* <a
                           href={`${process.env.NEXT_PUBLIC_KERJABERKAH_LOGIN_URL}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="py-2 text-sm text-gray-600 hover:text-purple-600 transition-colors"
                         >
                           Masuk ke CMS Kerja Berkah
-                        </a>
+                        </a> */}
                       </div>
                     ) : (
                       <Link

@@ -24,7 +24,7 @@ import CompanyProfileForm from '@/components/profile/company-profile-form'
 import CompanyVacanciesTab from '@/components/profile/company-vacancies-tab'
 
 export default function ProfilePage() {
-  const [userType, setUserType] = useState<'Employee' | 'Company' | null>(null)
+  const [userType, setUserType] = useState<'pegawai' | 'perusahaan' | 'admin' | null>(null)
   const [userProfile, setUserProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -58,7 +58,7 @@ export default function ProfilePage() {
           }
 
           // Menggunakan API eksternal untuk mendapatkan informasi user
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -74,9 +74,9 @@ export default function ProfilePage() {
               // Simpan user ID untuk digunakan di masa mendatang
               localStorage.setItem('user_id', retrievedUserId.toString());
 
-              const profile = await getUserProfile(Number(retrievedUserId));
+              const profile = await getUserProfile(Number(retrievedUserId)) as any;
               setUserProfile(profile);
-              setUserType(profile.type);
+              setUserType(profile.type as 'pegawai' | 'perusahaan' | 'admin');
             } else {
               setError('Gagal mendapatkan user ID dari API');
               setLoading(false);
@@ -88,9 +88,9 @@ export default function ProfilePage() {
             return;
           }
         } else {
-          const profile = await getUserProfile(userId);
+          const profile = await getUserProfile(userId) as any;
           setUserProfile(profile);
-          setUserType(profile.type);
+          setUserType(profile.type as 'pegawai' | 'perusahaan' | 'admin');
         }
       } catch (err) {
         setError('Gagal memuat profil pengguna');
@@ -121,7 +121,7 @@ export default function ProfilePage() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/change-password`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user/change-password`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -176,7 +176,13 @@ export default function ProfilePage() {
         <div className="mb-6 flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => window.history.back() || (window.location.href = '/')}
+            onClick={() => {
+              if (window.history.length > 1) {
+                window.history.back();
+              } else {
+                window.location.href = '/';
+              }
+            }}
             className="flex items-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -295,12 +301,12 @@ export default function ProfilePage() {
         </div>
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Profil {userType === 'Employee' ? 'Pekerja' : 'Perusahaan'}</CardTitle>
+            <CardTitle className="text-2xl font-bold">Profil {userType === 'pegawai' ? 'Pekerja' : userType === 'perusahaan' ? 'Perusahaan' : 'Admin'}</CardTitle>
           </CardHeader>
           <CardContent>
-            {userType === 'Employee' ? (
+            {userType === 'pegawai' ? (
               <EmployeeProfileForm userId={userProfile.id} userProfile={userProfile} />
-            ) : userType === 'Company' ? (
+            ) : userType === 'perusahaan' ? (
               <Tabs defaultValue="profile" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="profile">Profil</TabsTrigger>

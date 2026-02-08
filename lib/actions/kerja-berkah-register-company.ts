@@ -1,6 +1,7 @@
 'use server'
 
 import { kerjaBerkahPrisma } from '@/lib/kerjaberkah-prisma'
+import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcrypt'
 import { randomInt } from 'crypto'
 
@@ -23,8 +24,8 @@ interface CompanyRegistrationData {
 
 export async function registerCompany(data: CompanyRegistrationData) {
   try {
-    // Validasi apakah email sudah ada di tabel users
-    const existingUser = await kerjaBerkahPrisma.users.findUnique({
+    // Validasi apakah email sudah ada di tabel users (DB Utama)
+    const existingUser = await prisma.users.findUnique({
       where: {
         email: data.email,
       },
@@ -39,10 +40,10 @@ export async function registerCompany(data: CompanyRegistrationData) {
     // const hashedPassword = await bcrypt.hash(randomPassword, 10)
     const randomPassword = 'password'
     const hashedPassword = '$2y$12$WKDcVUyO6ROv8mFKEXF5huzN3zsD3LodJ5.DnzZwIwdyV7r/Pt90y'
-    // Buat user baru di tabel users
-    const newUser = await kerjaBerkahPrisma.users.create({
+    // Buat user baru di tabel users (DB Utama)
+    const newUser = await prisma.users.create({
       data: {
-        type: 'Company', // Tipe untuk perusahaan
+        type: 'perusahaan', // Tipe untuk perusahaan
         name: data.name,
         email: data.email,
         password: hashedPassword,
@@ -70,8 +71,8 @@ export async function registerCompany(data: CompanyRegistrationData) {
       },
     })
 
-    // Simpan data ke hexa_role_user dengan role_id = 2
-    await kerjaBerkahPrisma.$executeRaw`
+    // Simpan data ke hexa_role_user dengan role_id = 2 (DB Utama)
+    await prisma.$executeRaw`
       INSERT INTO hexa_role_user (role_id, user_id) 
       VALUES (2, ${newUser.id})
     `

@@ -1,6 +1,7 @@
 'use server'
 
 import { kerjaBerkahPrisma } from '@/lib/kerjaberkah-prisma'
+import { prisma } from '@/lib/prisma'
 
 export async function getUserProfile(userId: number) {
   try {
@@ -8,8 +9,8 @@ export async function getUserProfile(userId: number) {
       throw new Error('User ID tidak ditemukan')
     }
 
-    // Ambil user profile dari users table
-    const user = await kerjaBerkahPrisma.users.findUnique({
+    // Ambil user profile dari users table (DB Utama)
+    const user = await prisma.users.findUnique({
       where: { id: BigInt(userId) },
     })
 
@@ -17,8 +18,10 @@ export async function getUserProfile(userId: number) {
       throw new Error('User tidak ditemukan')
     }
 
-    // Berdasarkan tipe user (Employee atau Company), ambil data tambahan
-    if (user.type === 'Employee') {
+    // Berdasarkan tipe user (pegawai atau perusahaan), ambil data tambahan
+    const userType = user.type?.toLowerCase();
+
+    if (userType === 'pegawai' || userType === 'employee') {
       const worker = await kerjaBerkahPrisma.workers.findFirst({
         where: { user_id: BigInt(userId) },
       })
@@ -30,8 +33,9 @@ export async function getUserProfile(userId: number) {
       return {
         ...user,
         ...worker,
+        type: 'pegawai' // Pastikan konsisten
       }
-    } else if (user.type === 'Company') {
+    } else if (userType === 'perusahaan' || userType === 'company') {
       const company = await kerjaBerkahPrisma.companies.findFirst({
         where: { user_id: BigInt(userId) },
       })
@@ -43,10 +47,15 @@ export async function getUserProfile(userId: number) {
       return {
         ...user,
         ...company,
+        type: 'perusahaan' // Pastikan konsisten
       }
-    } else if (user.type === 'Admin') {
+    } else if (userType === 'admin') {
+      return {
+        ...user,
+        type: 'admin'
+      }
     } else {
-      throw new Error('Tipe user tidak valid')
+      throw new Error(`Tipe user tidak valid: ${user.type}`)
     }
   } catch (error) {
     console.error('Error getting user profile:', error)
@@ -66,8 +75,8 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
       throw new Error('User ID tidak ditemukan')
     }
 
-    // Ambil user untuk mengetahui tipe
-    const user = await kerjaBerkahPrisma.users.findUnique({
+    // Ambil user untuk mengetahui tipe (DB Utama)
+    const user = await prisma.users.findUnique({
       where: { id: BigInt(userId) },
     })
 
@@ -76,9 +85,11 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
     }
 
     // Berdasarkan tipe user, update tabel yang sesuai
-    if (user.type === 'Employee') {
-      // Update users table
-      await kerjaBerkahPrisma.users.update({
+    const userType = user.type?.toLowerCase();
+
+    if (userType === 'pegawai' || userType === 'employee') {
+      // Update users table (DB Utama)
+      await prisma.users.update({
         where: { id: BigInt(userId) },
         data: {
           name: data.name,
@@ -112,9 +123,9 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
           },
         })
       }
-    } else if (user.type === 'Company') {
-      // Update users table
-      await kerjaBerkahPrisma.users.update({
+    } else if (userType === 'perusahaan' || userType === 'company') {
+      // Update users table (DB Utama)
+      await prisma.users.update({
         where: { id: BigInt(userId) },
         data: {
           name: data.name,

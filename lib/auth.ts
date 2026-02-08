@@ -3,13 +3,13 @@
 // Check if user is authenticated by verifying the token with the API
 export const isAuthenticated = async (): Promise<boolean> => {
   const token = localStorage.getItem('access_token');
-  
+
   if (!token) {
     return false;
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

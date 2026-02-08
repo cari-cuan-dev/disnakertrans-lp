@@ -32,7 +32,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
