@@ -43,54 +43,49 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        // Mendapatkan user ID dari tempat penyimpanan setelah login
-        // Ini bisa dari localStorage, sessionStorage, maupun context
-        const userId = Number(localStorage.getItem('user_id') || sessionStorage.getItem('user_id'));
+        const token = localStorage.getItem('access_token');
 
-        if (!userId) {
-          // Jika user ID tidak ditemukan di local storage, coba ambil dari API berdasarkan token
-          const token = localStorage.getItem('access_token');
+        if (!token) {
+          // If no token, redirect to login
+          window.location.href = '/login';
+          return;
+        }
 
-          if (!token) {
-            setError('User tidak login atau token tidak ditemukan');
-            setLoading(false);
-            return;
-          }
+        // Always verify identity via API first to avoid stale localStorage issues
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+          },
+        });
 
-          // Menggunakan API eksternal untuk mendapatkan informasi user
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Accept': 'application/json',
-            },
-          });
+        if (response.status === 200) {
+          const userData = await response.json();
+          console.log(userData);
+          const retrievedUserId = userData.id || (userData.user && userData.user.id);
+          console.log(retrievedUserId);
+          if (retrievedUserId) {
+            // Update localStorage with fresh confirmed ID
+            localStorage.setItem('user_id', retrievedUserId.toString());
 
-          if (response.status === 200) {
-            const userData = await response.json();
-            const retrievedUserId = userData.id || (userData.user && userData.user.id);
+            // Check if we already have the profile data from the API response
+            // The API might return mixed data, but getUserProfile is safer for full details
+            console.log(retrievedUserId);
+            console.log(Number(retrievedUserId));
+            const profile = await getUserProfile(Number(retrievedUserId)) as any;
+            console.log(profile);
+            setUserProfile(profile);
+            setUserType(profile.type as 'pegawai' | 'perusahaan' | 'admin');
 
-            if (retrievedUserId) {
-              // Simpan user ID untuk digunakan di masa mendatang
-              localStorage.setItem('user_id', retrievedUserId.toString());
-
-              const profile = await getUserProfile(Number(retrievedUserId)) as any;
-              setUserProfile(profile);
-              setUserType(profile.type as 'pegawai' | 'perusahaan' | 'admin');
-            } else {
-              setError('Gagal mendapatkan user ID dari API');
-              setLoading(false);
-              return;
-            }
           } else {
-            setError('Gagal mendapatkan informasi pengguna dari API');
-            setLoading(false);
-            return;
+            setError('Gagal mendapatkan user ID dari validasi token');
           }
         } else {
-          const profile = await getUserProfile(userId) as any;
-          setUserProfile(profile);
-          setUserType(profile.type as 'pegawai' | 'perusahaan' | 'admin');
+          // If token is invalid, clear storage and redirect
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user_id');
+          window.location.href = '/login';
         }
       } catch (err) {
         setError('Gagal memuat profil pengguna');
@@ -103,6 +98,7 @@ export default function ProfilePage() {
     fetchUserProfile();
   }, [])
 
+  console.log(userProfile);
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setPasswordError(null)

@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { updateUserProfile } from '@/lib/actions/user-profile-actions'
 
-export default function EmployeeProfileForm({ userId, userProfile }) {
+export default function EmployeeProfileForm({ userId, userProfile }: any) {
   const [formData, setFormData] = useState({
     name: userProfile.name || '',
     email: userProfile.email || '',
@@ -25,12 +25,13 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
     description: userProfile.description || '',
     certifications: Array.isArray(userProfile.certifications) ? userProfile.certifications.join(', ') : userProfile.certifications || '',
   })
-  
+
+  console.log(userProfile);
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -38,24 +39,24 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
     }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
     setSaving(true)
     setMessage('')
-    
+
     try {
       // Ubah skills dan languages ke format JSON string
       const updatedData = {
         ...formData,
-        skills: JSON.stringify(formData.skills.split(',').map(s => s.trim()).filter(s => s)),
-        languages: JSON.stringify(formData.languages.split(',').map(l => l.trim()).filter(l => l)),
-        certifications: JSON.stringify(formData.certifications.split(',').map(c => c.trim()).filter(c => c)),
+        skills: JSON.stringify(formData.skills.split(',').map((s: any) => s.trim()).filter((s: any) => s)),
+        languages: JSON.stringify(formData.languages.split(',').map((l: any) => l.trim()).filter((l: any) => l)),
+        certifications: JSON.stringify(formData.certifications.split(',').map((c: any) => c.trim()).filter((c: any) => c)),
       }
-      
+
       const result = await updateUserProfile(userId, updatedData)
       setMessage(result.message)
       setEditing(false)
-    } catch (error) {
+    } catch (error: any) {
       setMessage('Gagal menyimpan perubahan: ' + error.message)
     } finally {
       setSaving(false)
@@ -93,7 +94,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="phone">Telepon</Label>
@@ -117,7 +118,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="address">Alamat</Label>
               <Textarea
@@ -128,7 +129,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 disabled={!editing}
               />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="city">Kota</Label>
@@ -142,9 +143,9 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
               </div>
               <div>
                 <Label htmlFor="education">Pendidikan</Label>
-                <Select 
-                  value={formData.education} 
-                  onValueChange={(value) => setFormData({...formData, education: value})} 
+                <Select
+                  value={formData.education}
+                  onValueChange={(value) => setFormData({ ...formData, education: value })}
                   disabled={!editing}
                 >
                   <SelectTrigger>
@@ -160,13 +161,13 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 </Select>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="experience">Pengalaman Kerja</Label>
-                <Select 
-                  value={formData.experience} 
-                  onValueChange={(value) => setFormData({...formData, experience: value})} 
+                <Select
+                  value={formData.experience}
+                  onValueChange={(value) => setFormData({ ...formData, experience: value })}
                   disabled={!editing}
                 >
                   <SelectTrigger>
@@ -191,7 +192,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="skills">Keahlian Umum (dipisahkan koma)</Label>
               <Input
@@ -203,7 +204,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 placeholder="Web Development, Desain Grafis, Manajemen Proyek"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="languages">Bahasa (dipisahkan koma)</Label>
               <Input
@@ -215,7 +216,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 placeholder="Indonesia, Inggris, Mandarin"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="certifications">Sertifikasi (dipisahkan koma)</Label>
               <Input
@@ -227,7 +228,7 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 placeholder="Sertifikasi PM, Sertifikasi IT, dll"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="description">Deskripsi Diri</Label>
               <Textarea
@@ -239,13 +240,13 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 rows={4}
               />
             </div>
-            
+
             {message && (
               <div className={`p-3 rounded-lg ${message.includes('berhasil') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                 {message}
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               {!editing ? (
                 <Button type="button" onClick={() => setEditing(true)}>
@@ -253,9 +254,9 @@ export default function EmployeeProfileForm({ userId, userProfile }) {
                 </Button>
               ) : (
                 <>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={() => {
                       setEditing(false)
                       // Reset form ke data asli

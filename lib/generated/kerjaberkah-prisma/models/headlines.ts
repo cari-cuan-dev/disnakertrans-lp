@@ -39,6 +39,7 @@ export type HeadlinesMinAggregateOutputType = {
   title: string | null
   description: string | null
   image: string | null
+  status: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -48,6 +49,7 @@ export type HeadlinesMaxAggregateOutputType = {
   title: string | null
   description: string | null
   image: string | null
+  status: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -57,6 +59,7 @@ export type HeadlinesCountAggregateOutputType = {
   title: number
   description: number
   image: number
+  status: number
   created_at: number
   updated_at: number
   _all: number
@@ -76,6 +79,7 @@ export type HeadlinesMinAggregateInputType = {
   title?: true
   description?: true
   image?: true
+  status?: true
   created_at?: true
   updated_at?: true
 }
@@ -85,6 +89,7 @@ export type HeadlinesMaxAggregateInputType = {
   title?: true
   description?: true
   image?: true
+  status?: true
   created_at?: true
   updated_at?: true
 }
@@ -94,6 +99,7 @@ export type HeadlinesCountAggregateInputType = {
   title?: true
   description?: true
   image?: true
+  status?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -190,6 +196,7 @@ export type HeadlinesGroupByOutputType = {
   title: string
   description: string | null
   image: string | null
+  status: boolean | null
   created_at: Date | null
   updated_at: Date | null
   _count: HeadlinesCountAggregateOutputType | null
@@ -222,6 +229,7 @@ export type headlinesWhereInput = {
   title?: Prisma.StringFilter<"headlines"> | string
   description?: Prisma.StringNullableFilter<"headlines"> | string | null
   image?: Prisma.StringNullableFilter<"headlines"> | string | null
+  status?: Prisma.BoolNullableFilter<"headlines"> | boolean | null
   created_at?: Prisma.DateTimeNullableFilter<"headlines"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"headlines"> | Date | string | null
 }
@@ -231,6 +239,7 @@ export type headlinesOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
 }
@@ -243,6 +252,7 @@ export type headlinesWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"headlines"> | string
   description?: Prisma.StringNullableFilter<"headlines"> | string | null
   image?: Prisma.StringNullableFilter<"headlines"> | string | null
+  status?: Prisma.BoolNullableFilter<"headlines"> | boolean | null
   created_at?: Prisma.DateTimeNullableFilter<"headlines"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"headlines"> | Date | string | null
 }, "id">
@@ -252,6 +262,7 @@ export type headlinesOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.headlinesCountOrderByAggregateInput
@@ -269,6 +280,7 @@ export type headlinesScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"headlines"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"headlines"> | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"headlines"> | string | null
+  status?: Prisma.BoolNullableWithAggregatesFilter<"headlines"> | boolean | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"headlines"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"headlines"> | Date | string | null
 }
@@ -278,6 +290,7 @@ export type headlinesCreateInput = {
   title: string
   description?: string | null
   image?: string | null
+  status?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -287,6 +300,7 @@ export type headlinesUncheckedCreateInput = {
   title: string
   description?: string | null
   image?: string | null
+  status?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -296,6 +310,7 @@ export type headlinesUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -305,6 +320,7 @@ export type headlinesUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -314,6 +330,7 @@ export type headlinesCreateManyInput = {
   title: string
   description?: string | null
   image?: string | null
+  status?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -323,6 +340,7 @@ export type headlinesUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -332,6 +350,7 @@ export type headlinesUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -341,6 +360,7 @@ export type headlinesCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -354,6 +374,7 @@ export type headlinesMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -363,12 +384,17 @@ export type headlinesMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type headlinesSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+}
+
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
 }
 
 
@@ -378,6 +404,7 @@ export type headlinesSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   title?: boolean
   description?: boolean
   image?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["headlines"]>
@@ -387,6 +414,7 @@ export type headlinesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   description?: boolean
   image?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["headlines"]>
@@ -396,6 +424,7 @@ export type headlinesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   description?: boolean
   image?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["headlines"]>
@@ -405,11 +434,12 @@ export type headlinesSelectScalar = {
   title?: boolean
   description?: boolean
   image?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type headlinesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "image" | "created_at" | "updated_at", ExtArgs["result"]["headlines"]>
+export type headlinesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "image" | "status" | "created_at" | "updated_at", ExtArgs["result"]["headlines"]>
 
 export type $headlinesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "headlines"
@@ -419,6 +449,7 @@ export type $headlinesPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     title: string
     description: string | null
     image: string | null
+    status: boolean | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["headlines"]>
@@ -848,6 +879,7 @@ export interface headlinesFieldRefs {
   readonly title: Prisma.FieldRef<"headlines", 'String'>
   readonly description: Prisma.FieldRef<"headlines", 'String'>
   readonly image: Prisma.FieldRef<"headlines", 'String'>
+  readonly status: Prisma.FieldRef<"headlines", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"headlines", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"headlines", 'DateTime'>
 }

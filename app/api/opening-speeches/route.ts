@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
     const limitParam = searchParams.get('limit');
 
     const whereClause: any = {
+      status: true, // Only get active records
       deleted_at: null, // Only get non-deleted records
     };
 

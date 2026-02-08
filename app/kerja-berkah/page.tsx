@@ -37,10 +37,12 @@ function getIcon(name: string | null) {
 
 export default async function KerjaBerkahPage() {
   const headline = await kerjaBerkahPrisma.headlines.findFirst({
+    where: { status: true },
     orderBy: { id: 'desc' }
   })
 
   const introduction = await kerjaBerkahPrisma.introductions.findFirst({
+    where: { status: true },
     orderBy: { id: 'desc' }
   })
 
@@ -85,32 +87,36 @@ export default async function KerjaBerkahPage() {
         <ProtectedSearchSection />
 
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 text-white py-20 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h1 className="text-5xl font-bold mb-6 text-balance">{headline?.title || 'Kerja Berkah'}</h1>
-                <p className="text-xl text-purple-100 mb-8">
-                  {headline?.description || 'Program pemberdayaan ekonomi dari Pemerintah Provinsi Kalimantan Tengah untuk memberikan kesempatan kerja kepada masyarakat yang membutuhkan.'}
-                </p>
-                <UnauthenticatedOnly>
-                  <Link href="/kerja-berkah/daftar" className="inline-block">
-                    <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center gap-2">
-                      Daftar Sekarang <ArrowRight size={20} />
-                    </button>
-                  </Link>
-                </UnauthenticatedOnly>
-              </div>
-              <div className="hidden md:block">
-                <img
-                  src={resolveImage(headline?.image || null, "/kerja-berkah-community-work-program.jpg", headlineImageUrl)}
-                  alt="Kerja Berkah"
-                  className="w-full rounded-lg shadow-2xl"
-                />
+        {headline && (
+          <section className="relative bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 text-white py-20 px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h1 className="text-5xl font-bold mb-6 text-balance">{headline.title}</h1>
+                  <p className="text-xl text-purple-100 mb-8">
+                    {headline.description}
+                  </p>
+                  <UnauthenticatedOnly>
+                    <Link href="/kerja-berkah/daftar" className="inline-block">
+                      <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-colors flex items-center gap-2">
+                        Daftar Sekarang <ArrowRight size={20} />
+                      </button>
+                    </Link>
+                  </UnauthenticatedOnly>
+                </div>
+                {headline.image && (
+                  <div className="hidden md:block">
+                    <img
+                      src={resolveImage(headline.image, "/kerja-berkah-community-work-program.jpg", headlineImageUrl)}
+                      alt={headline.title}
+                      className="w-full rounded-lg shadow-2xl"
+                    />
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Carousel Section */}
         <section className="py-8 px-4 bg-gray-50">
@@ -148,40 +154,42 @@ export default async function KerjaBerkahPage() {
         </section>
 
         {/* Program Details */}
-        <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Tentang Program Kerja Berkah</h2>
-            <div className="grid md:grid-cols-2 gap-12">
-              <div>
-                <img
-                  src={resolveImage(introduction?.image || null, "/community-service-work.jpg", introductionImageUrl)}
-                  alt="Program Details"
-                  className="w-full rounded-lg shadow-lg"
-                />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">{introduction?.title || 'Solusi Berkelanjutan untuk Pengangguran'}</h3>
-                <p className="text-gray-700 mb-6 leading-relaxed">
-                  {introduction?.description || 'Kerja Berkah adalah inisiatif strategis dari Pemerintah Provinsi Kalimantan Tengah yang dirancang untuk memberikan kesempatan kerja kepada masyarakat yang kurang beruntung.'}
-                </p>
-                <ul className="space-y-4">
-                  {(introduction?.details as unknown as AboutDetail[] || []).map((about, index) => {
-                    const Icon = getIcon(about.icon);
-                    return (
-                      <li key={index} className="flex items-start gap-3">
-                        <Icon style={{ color: about.icon_color || '#9333ea' }} className="flex-shrink-0 mt-1" size={20} />
-                        <div>
-                          <h4 className="font-semibold text-gray-900">{about.title}</h4>
-                          <p className="text-gray-600 text-sm">{about.description}</p>
-                        </div>
-                      </li>
-                    )
-                  })}
-                </ul>
+        {introduction && (
+          <section className="py-16 px-4">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Tentang Program Kerja Berkah</h2>
+              <div className="grid md:grid-cols-2 gap-12">
+                <div>
+                  <img
+                    src={resolveImage(introduction.image || null, "/community-service-work.jpg", introductionImageUrl)}
+                    alt="Program Details"
+                    className="w-full rounded-lg shadow-lg"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">{introduction.title}</h3>
+                  <p className="text-gray-700 mb-6 leading-relaxed">
+                    {introduction.description}
+                  </p>
+                  <ul className="space-y-4">
+                    {(introduction.details as unknown as AboutDetail[] || []).map((about, index) => {
+                      const Icon = getIcon(about.icon);
+                      return (
+                        <li key={index} className="flex items-start gap-3">
+                          <Icon style={{ color: about.icon_color || '#9333ea' }} className="flex-shrink-0 mt-1" size={20} />
+                          <div>
+                            <h4 className="font-semibold text-gray-900">{about.title}</h4>
+                            <p className="text-gray-600 text-sm">{about.description}</p>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
 
         {/* How to Apply */}

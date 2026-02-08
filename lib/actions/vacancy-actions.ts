@@ -2,41 +2,55 @@
 
 import { kerjaBerkahPrisma } from '@/lib/kerjaberkah-prisma'
 
-export async function getCompanyVacancies(companyId: number) {
+/**
+ * Helper to serialize BigInt to Number for Next.js Client Components
+ */
+function serializeData(data: any) {
+  return JSON.parse(JSON.stringify(data, (key, value) =>
+    typeof value === 'bigint' ? Number(value) : value
+  ));
+}
+
+/**
+ * Mendapatkan lowongan kerja berdasarkan User ID (ID Akun)
+ */
+export async function getCompanyVacancies(userId: number) {
   try {
+    // Cari real company_id (ID internal tabel companies) berdasarkan User ID (ID Akun)
+    const company = await kerjaBerkahPrisma.companies.findFirst({
+      where: { user_id: BigInt(userId) }
+    });
+
+    if (!company) {
+      console.log(`No company found for user_id: ${userId}`);
+      return [];
+    }
+
     const vacancies = await kerjaBerkahPrisma.vacancies.findMany({
       where: {
-        company_id: BigInt(companyId),
+        company_id: company.id, // Gunakan Internal Company ID
       },
       orderBy: {
         created_at: 'desc',
       },
     })
 
-    return vacancies.map(vacancy => {
-      let parsedType = vacancy.type;
+    return serializeData(vacancies.map(vacancy => {
       let parsedBenefits = vacancy.benefits;
-
-      // type sekarang adalah string tunggal, bukan array
-      parsedType = vacancy.type;
 
       if (typeof vacancy.benefits === 'string') {
         try {
           parsedBenefits = JSON.parse(vacancy.benefits);
         } catch (e) {
-          // Jika parsing gagal, biarkan sebagai string atau ubah ke array kosong
           parsedBenefits = vacancy.benefits.split(',').map(b => b.trim()).filter(b => b);
         }
       }
 
       return {
         ...vacancy,
-        salary_start: Number(vacancy.salary_start),
-        salary_end: vacancy.salary_end ? Number(vacancy.salary_end) : null,
-        type: parsedType,
         benefits: parsedBenefits,
       };
-    })
+    }));
   } catch (error) {
     console.error('Error getting company vacancies:', error)
     throw error
@@ -44,7 +58,7 @@ export async function getCompanyVacancies(companyId: number) {
 }
 
 export async function createVacancy(data: {
-  company_id: number,
+  company_id: number, // Ini adalah User ID yang dikirim dari frontend
   title: string,
   salary_start: string,
   salary_end?: string,
@@ -53,42 +67,36 @@ export async function createVacancy(data: {
   benefits?: string,
 }) {
   try {
-    // Konversi hanya benefits dari string dipisahkan koma ke format JSON array, sedangkan type adalah string tunggal
-    const parsedBenefits = data.benefits ? JSON.stringify(data.benefits.split(',').map(b => b.trim()).filter(b => b)) : []
+    // Cari real company_id berdasarkan User ID
+    const company = await kerjaBerkahPrisma.companies.findFirst({
+      where: { user_id: BigInt(data.company_id) }
+    });
+
+    if (!company) {
+      throw new Error(`Data perusahaan tidak ditemukan untuk User ID: ${data.company_id}`);
+    }
+
+    const benefitsArray = data.benefits ? data.benefits.split(',').map(b => b.trim()).filter(b => b) : [];
+    const typeArray = data.type ? [data.type] : [];
 
     const newVacancy = await kerjaBerkahPrisma.vacancies.create({
       data: {
-        company_id: BigInt(data.company_id),
+        company_id: company.id, // Gunakan Internal Company ID
         title: data.title,
         salary_start: BigInt(data.salary_start),
         salary_end: data.salary_end ? BigInt(data.salary_end) : null,
-        type: data.type || '',  // type sekarang hanya string tunggal
+        type: typeArray as any,
         description: data.description,
-        benefits: parsedBenefits,
-        created_at: new Date(), // Isi created_at saat membuat data baru
+        benefits: benefitsArray as any,
+        created_at: new Date(),
       },
     })
 
-    let parsedNewBenefits = newVacancy.benefits;
-
-    // type adalah string tunggal, tidak perlu diparsing
-    const parsedNewType = newVacancy.type;
-
-    if (typeof newVacancy.benefits === 'string') {
-      try {
-        parsedNewBenefits = JSON.parse(newVacancy.benefits);
-      } catch (e) {
-        parsedNewBenefits = newVacancy.benefits.split(',').map(b => b.trim()).filter(b => b);
-      }
-    }
-
-    return {
+    return serializeData({
       ...newVacancy,
-      salary_start: Number(newVacancy.salary_start),
-      salary_end: newVacancy.salary_end ? Number(newVacancy.salary_end) : null,
-      type: parsedNewType,
-      benefits: parsedNewBenefits,
-    }
+      type: Array.isArray(newVacancy.type) ? (newVacancy.type as any)[0] : newVacancy.type,
+      benefits: Array.isArray(newVacancy.benefits) ? newVacancy.benefits : []
+    });
   } catch (error) {
     console.error('Error creating vacancy:', error)
     throw error
@@ -104,23 +112,21 @@ export async function updateVacancy(vacancyId: number, data: {
   benefits?: string,
 }) {
   try {
-    // Parse type dan benefits ke format JSON array jika tersedia
     const updateData: any = {}
-    
+
     if (data.title !== undefined) updateData.title = data.title
     if (data.salary_start !== undefined) updateData.salary_start = BigInt(data.salary_start)
     if (data.salary_end !== undefined) {
       updateData.salary_end = data.salary_end ? BigInt(data.salary_end) : null
     }
     if (data.type !== undefined) {
-      updateData.type = data.type || ''  // type sekarang hanya string tunggal
+      updateData.type = data.type ? [data.type] : []
     }
     if (data.description !== undefined) updateData.description = data.description
     if (data.benefits !== undefined) {
-      updateData.benefits = data.benefits ? JSON.stringify(data.benefits.split(',').map(b => b.trim()).filter(b => b)) : []
+      updateData.benefits = data.benefits ? data.benefits.split(',').map(b => b.trim()).filter(b => b) : []
     }
-    
-    // Tambahkan updated_at ke dalam data yang akan diupdate
+
     updateData.updated_at = new Date();
 
     const updatedVacancy = await kerjaBerkahPrisma.vacancies.update({
@@ -130,26 +136,11 @@ export async function updateVacancy(vacancyId: number, data: {
       data: updateData,
     })
 
-    let parsedUpdatedBenefits = updatedVacancy.benefits;
-
-    // type adalah string tunggal, tidak perlu diparsing
-    const parsedUpdatedType = updatedVacancy.type;
-
-    if (typeof updatedVacancy.benefits === 'string') {
-      try {
-        parsedUpdatedBenefits = JSON.parse(updatedVacancy.benefits);
-      } catch (e) {
-        parsedUpdatedBenefits = updatedVacancy.benefits.split(',').map(b => b.trim()).filter(b => b);
-      }
-    }
-
-    return {
+    return serializeData({
       ...updatedVacancy,
-      salary_start: Number(updatedVacancy.salary_start),
-      salary_end: updatedVacancy.salary_end ? Number(updatedVacancy.salary_end) : null,
-      type: parsedUpdatedType,
-      benefits: parsedUpdatedBenefits,
-    }
+      type: Array.isArray(updatedVacancy.type) ? (updatedVacancy.type as any)[0] : updatedVacancy.type,
+      benefits: Array.isArray(updatedVacancy.benefits) ? updatedVacancy.benefits : []
+    });
   } catch (error) {
     console.error('Error updating vacancy:', error)
     throw error
@@ -163,7 +154,7 @@ export async function deleteVacancy(vacancyId: number) {
         id: BigInt(vacancyId),
       },
     })
-    
+
     return { success: true, message: 'Lowongan berhasil dihapus' }
   } catch (error) {
     console.error('Error deleting vacancy:', error)

@@ -306,6 +306,7 @@ export const HeadlinesScalarFieldEnum = {
   title: 'title',
   description: 'description',
   image: 'image',
+  status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -319,6 +320,7 @@ export const IntroductionsScalarFieldEnum = {
   description: 'description',
   image: 'image',
   details: 'details',
+  status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

@@ -39,6 +39,7 @@ export type IntroductionsMinAggregateOutputType = {
   title: string | null
   description: string | null
   image: string | null
+  status: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -48,6 +49,7 @@ export type IntroductionsMaxAggregateOutputType = {
   title: string | null
   description: string | null
   image: string | null
+  status: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -58,6 +60,7 @@ export type IntroductionsCountAggregateOutputType = {
   description: number
   image: number
   details: number
+  status: number
   created_at: number
   updated_at: number
   _all: number
@@ -77,6 +80,7 @@ export type IntroductionsMinAggregateInputType = {
   title?: true
   description?: true
   image?: true
+  status?: true
   created_at?: true
   updated_at?: true
 }
@@ -86,6 +90,7 @@ export type IntroductionsMaxAggregateInputType = {
   title?: true
   description?: true
   image?: true
+  status?: true
   created_at?: true
   updated_at?: true
 }
@@ -96,6 +101,7 @@ export type IntroductionsCountAggregateInputType = {
   description?: true
   image?: true
   details?: true
+  status?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -193,6 +199,7 @@ export type IntroductionsGroupByOutputType = {
   description: string | null
   image: string | null
   details: runtime.JsonValue | null
+  status: boolean | null
   created_at: Date | null
   updated_at: Date | null
   _count: IntroductionsCountAggregateOutputType | null
@@ -226,6 +233,7 @@ export type introductionsWhereInput = {
   description?: Prisma.StringNullableFilter<"introductions"> | string | null
   image?: Prisma.StringNullableFilter<"introductions"> | string | null
   details?: Prisma.JsonNullableFilter<"introductions">
+  status?: Prisma.BoolNullableFilter<"introductions"> | boolean | null
   created_at?: Prisma.DateTimeNullableFilter<"introductions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"introductions"> | Date | string | null
 }
@@ -236,6 +244,7 @@ export type introductionsOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   details?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
 }
@@ -249,6 +258,7 @@ export type introductionsWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"introductions"> | string | null
   image?: Prisma.StringNullableFilter<"introductions"> | string | null
   details?: Prisma.JsonNullableFilter<"introductions">
+  status?: Prisma.BoolNullableFilter<"introductions"> | boolean | null
   created_at?: Prisma.DateTimeNullableFilter<"introductions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"introductions"> | Date | string | null
 }, "id">
@@ -259,6 +269,7 @@ export type introductionsOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   details?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.introductionsCountOrderByAggregateInput
@@ -277,6 +288,7 @@ export type introductionsScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"introductions"> | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"introductions"> | string | null
   details?: Prisma.JsonNullableWithAggregatesFilter<"introductions">
+  status?: Prisma.BoolNullableWithAggregatesFilter<"introductions"> | boolean | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"introductions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"introductions"> | Date | string | null
 }
@@ -287,6 +299,7 @@ export type introductionsCreateInput = {
   description?: string | null
   image?: string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -297,6 +310,7 @@ export type introductionsUncheckedCreateInput = {
   description?: string | null
   image?: string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -307,6 +321,7 @@ export type introductionsUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -317,6 +332,7 @@ export type introductionsUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -327,6 +343,7 @@ export type introductionsCreateManyInput = {
   description?: string | null
   image?: string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -337,6 +354,7 @@ export type introductionsUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -347,6 +365,7 @@ export type introductionsUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   details?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -357,6 +376,7 @@ export type introductionsCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
   details?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -370,6 +390,7 @@ export type introductionsMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -379,6 +400,7 @@ export type introductionsMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -395,6 +417,7 @@ export type introductionsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   description?: boolean
   image?: boolean
   details?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["introductions"]>
@@ -405,6 +428,7 @@ export type introductionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   description?: boolean
   image?: boolean
   details?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["introductions"]>
@@ -415,6 +439,7 @@ export type introductionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   description?: boolean
   image?: boolean
   details?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["introductions"]>
@@ -425,11 +450,12 @@ export type introductionsSelectScalar = {
   description?: boolean
   image?: boolean
   details?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type introductionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "image" | "details" | "created_at" | "updated_at", ExtArgs["result"]["introductions"]>
+export type introductionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "image" | "details" | "status" | "created_at" | "updated_at", ExtArgs["result"]["introductions"]>
 
 export type $introductionsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "introductions"
@@ -440,6 +466,7 @@ export type $introductionsPayload<ExtArgs extends runtime.Types.Extensions.Inter
     description: string | null
     image: string | null
     details: runtime.JsonValue | null
+    status: boolean | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["introductions"]>
@@ -870,6 +897,7 @@ export interface introductionsFieldRefs {
   readonly description: Prisma.FieldRef<"introductions", 'String'>
   readonly image: Prisma.FieldRef<"introductions", 'String'>
   readonly details: Prisma.FieldRef<"introductions", 'Json'>
+  readonly status: Prisma.FieldRef<"introductions", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"introductions", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"introductions", 'DateTime'>
 }

@@ -224,6 +224,7 @@ model headlines {
   title       String    @db.VarChar(255)
   description String?
   image       String?   @db.VarChar(255)
+  status      Boolean?  @default(true)
   created_at  DateTime? @db.Timestamp(0)
   updated_at  DateTime? @db.Timestamp(0)
 }
@@ -234,6 +235,7 @@ model introductions {
   description String?
   image       String?   @db.VarChar(255)
   details     Json?
+  status      Boolean?  @default(true)
   created_at  DateTime? @db.Timestamp(0)
   updated_at  DateTime? @db.Timestamp(0)
 }

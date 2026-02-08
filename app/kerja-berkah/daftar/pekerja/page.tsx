@@ -72,6 +72,7 @@ export default function DaftarPekerjaPage() {
 
       if (response.ok) {
         alert(`Pendaftaran berhasil! Silakan gunakan email dan password sementara berikut untuk login:\n\nEmail: ${formData.email}\nPassword: ${result.temporaryPassword}`)
+        window.location.href = '/login'
       } else {
         alert(`Error: ${result.message}`)
       }

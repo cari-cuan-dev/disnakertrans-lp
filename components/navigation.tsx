@@ -100,32 +100,41 @@ export default function Navigation() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      // Check if user is authenticated first
-      const authenticated = await isAuthenticated();
-      if (authenticated) {
-        const token = getAccessToken();
-        if (token) {
-          try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
-              method: 'GET',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-              },
-            });
-
-            if (response.ok) {
-              const userData: UserInfo = await response.json();
-              setUser(userData);
-            } else {
-              console.error('Failed to fetch user data:', response.status);
-            }
-          } catch (error) {
-            console.error('Error fetching user data:', error);
-          }
-        }
+      const token = getAccessToken();
+      if (!token) {
+        setUserLoading(false);
+        return;
       }
-      setUserLoading(false);
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/kerjaberkah/user`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const userData: UserInfo = await response.json();
+          setUser(userData);
+          // Sync user_id to localStorage to prevent stale data
+          if (userData.id) {
+            localStorage.setItem('user_id', userData.id.toString());
+          }
+        } else if (response.status === 401) {
+          // Token invalid/expired
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user_id');
+          setUser(null);
+        } else {
+          console.error('Failed to fetch user data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setUserLoading(false);
+      }
     };
 
     const fetchData = async () => {
@@ -400,6 +409,7 @@ export default function Navigation() {
                   <button
                     onClick={() => {
                       localStorage.removeItem('access_token');
+                      localStorage.removeItem('user_id');
                       window.location.href = '/login';
                     }}
                     className="hidden md:block px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
@@ -588,6 +598,7 @@ export default function Navigation() {
                   <button
                     onClick={() => {
                       localStorage.removeItem('access_token');
+                      localStorage.removeItem('user_id');
                       window.location.href = '/login';
                     }}
                     className="block w-full py-2 text-left text-gray-700 hover:text-purple-600 transition-colors"
