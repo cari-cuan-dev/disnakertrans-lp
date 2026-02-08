@@ -1,19 +1,6 @@
-'use server'
-
 import { kerjaBerkahPrisma } from '@/lib/kerjaberkah-prisma'
 import { prisma } from '@/lib/prisma'
-import fs from 'fs';
-import path from 'path';
 
-function logDebug(message: string) {
-  try {
-    const logFile = path.join(process.cwd(), 'debug-profile-action.log');
-    const timestamp = new Date().toISOString();
-    fs.appendFileSync(logFile, `[${timestamp}] ${message}\n`);
-  } catch (e) {
-    console.error('Failed to write log:', e);
-  }
-}
 
 export async function getUserProfile(userId: number) {
   try {
@@ -81,9 +68,6 @@ interface UserProfileData {
 }
 
 export async function updateUserProfile(userId: number, data: UserProfileData) {
-  logDebug(`START updateUserProfile for userId: ${userId}`);
-  logDebug(`Data received: ${JSON.stringify(data)}`);
-
   try {
     if (!userId) {
       throw new Error('User ID tidak ditemukan')
@@ -98,13 +82,10 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
       throw new Error('User tidak ditemukan')
     }
 
-    logDebug(`User found: ${user.email}, type: ${user.type}`);
-
     // Berdasarkan tipe user, update tabel yang sesuai
     const userType = user.type?.toLowerCase();
 
     if (userType === 'pegawai' || userType === 'employee') {
-      logDebug('Processing as PEGAWAI');
       // Update users table (DB Utama)
       await prisma.users.update({
         where: { id: BigInt(userId) },
@@ -113,14 +94,11 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
           // email: data.email,
         },
       })
-      logDebug('Updated main user table');
 
       // Cari ID worker terlebih dahulu berdasarkan user_id (KerjaBerkah DB)
       const worker = await kerjaBerkahPrisma.workers.findFirst({
         where: { user_id: BigInt(userId) },
       })
-
-      logDebug(`Worker found: ${worker ? worker.id : 'NO'}`);
 
       const workerData = {
         name: data.name,
@@ -140,15 +118,12 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
       };
 
       if (worker) {
-        logDebug(`Updating worker ${worker.id}...`);
         // Update workers table menggunakan ID unik
         await kerjaBerkahPrisma.workers.update({
           where: { id: worker.id },
           data: workerData,
         })
-        logDebug('Worker updated.');
       } else {
-        logDebug('Creating new worker...');
         // Create new worker record
         await kerjaBerkahPrisma.workers.create({
           data: {
@@ -157,14 +132,8 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
             created_at: new Date(),
           },
         })
-        logDebug('Worker created.');
       }
     } else if (userType === 'perusahaan' || userType === 'company') {
-      logDebug('Processing as PERUSAHAAN');
-      logDebug(userType);
-      logDebug(user.email);
-      logDebug(user.name);
-      logDebug(String(user.id));
       // Update users table (DB Utama)
       await prisma.users.update({
         where: { id: BigInt(userId) },
@@ -198,15 +167,12 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
       };
 
       if (company) {
-        logDebug(`Updating company ${company.id}...`);
         // Update companies table menggunakan ID unik
         await kerjaBerkahPrisma.companies.update({
           where: { id: company.id },
           data: companyData,
         })
-        logDebug('Company updated.');
       } else {
-        logDebug('Creating new company...');
         // Create new company record
         await kerjaBerkahPrisma.companies.create({
           data: {
@@ -215,16 +181,12 @@ export async function updateUserProfile(userId: number, data: UserProfileData) {
             created_at: new Date(),
           },
         })
-        logDebug('Company created.');
       }
     } else {
-      logDebug(`Unknown user type: ${userType}`);
     }
 
-    logDebug('END updateUserProfile SUCCESS');
     return { success: true, message: 'Profil berhasil diperbarui' }
   } catch (error) {
-    logDebug(`ERROR in updateUserProfile: ${error}`);
     console.error('Error updating user profile:', error)
     throw error
   }

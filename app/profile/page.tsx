@@ -62,19 +62,14 @@ export default function ProfilePage() {
 
         if (response.status === 200) {
           const userData = await response.json();
-          console.log(userData);
           const retrievedUserId = userData.id || (userData.user && userData.user.id);
-          console.log(retrievedUserId);
           if (retrievedUserId) {
             // Update localStorage with fresh confirmed ID
             localStorage.setItem('user_id', retrievedUserId.toString());
 
             // Check if we already have the profile data from the API response
             // The API might return mixed data, but getUserProfile is safer for full details
-            console.log(retrievedUserId);
-            console.log(Number(retrievedUserId));
             const profile = await getUserProfile(Number(retrievedUserId)) as any;
-            console.log(profile);
             setUserProfile(profile);
             setUserType(profile.type as 'pegawai' | 'perusahaan' | 'admin');
 
@@ -98,7 +93,6 @@ export default function ProfilePage() {
     fetchUserProfile();
   }, [])
 
-  console.log(userProfile);
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setPasswordError(null)

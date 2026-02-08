@@ -22,7 +22,6 @@ export async function getCompanyVacancies(userId: number) {
     });
 
     if (!company) {
-      console.log(`No company found for user_id: ${userId}`);
       return [];
     }
 

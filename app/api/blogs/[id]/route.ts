@@ -22,13 +22,8 @@ export async function GET(
   //   }
   // )
   try {
-    console.log("Raw params.id:", JSON.stringify(id));
-    console.log("Type of params.id:", typeof id);
-
     // Ensure id is a string by converting it
     const stringId = String(id);
-    console.log("Converted to string:", stringId);
-
     // Check if the conversion worked
     if (typeof stringId !== 'string') {
       console.error("FAIL 1: Could not convert id to string");
@@ -40,8 +35,6 @@ export async function GET(
 
     // Trim the value
     const idStr = stringId.trim();
-    console.log("After trim:", JSON.stringify(idStr));
-
     // Check if empty
     if (idStr === '') {
       console.error("FAIL 2: ID is empty after trimming");
@@ -71,7 +64,6 @@ export async function GET(
 
     // Convert to number and validate
     const numId = Number(idStr);
-    console.log("Parsed number:", numId);
 
     if (!Number.isInteger(numId)) {
       console.error("FAIL 5: Not an integer:", numId);
@@ -93,7 +85,6 @@ export async function GET(
     let bigIntId: bigint;
     try {
       bigIntId = BigInt(idStr);
-      console.log("Successfully created BigInt:", bigIntId);
     } catch (conversionError) {
       console.error("BigInt creation failed for:", idStr, "Error:", conversionError);
       return NextResponse.json(
@@ -124,14 +115,11 @@ export async function GET(
     });
 
     if (!blog) {
-      console.log("Blog not found for ID:", bigIntId.toString());
       return NextResponse.json(
         { message: 'Blog not found' },
         { status: 404 }
       );
     }
-
-    console.log("Successfully found blog for ID:", bigIntId.toString());
 
     // Serialize and return the result
     const serializedData = serializeBigInt(blog);
