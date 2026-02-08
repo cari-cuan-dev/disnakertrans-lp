@@ -552,12 +552,12 @@ export default function Navigation() {
                     <div className="flex items-center gap-2 mb-2">
                       <User size={18} className="text-purple-600" />
                       <span>{user.name || user.email}</span>
-                      {user.type === 'Admin' && (
-                        <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">Admin</span>
+                      {user.type === 'admin' && (
+                        <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">admin</span>
                       )}
                     </div>
 
-                    {user.type === 'Admin' ? (
+                    {user.type === 'admin' ? (
                       <div className="flex flex-col gap-1 pl-6 border-l-2 border-purple-100 mt-2 mb-4">
                         <a
                           href={`${process.env.NEXT_PUBLIC_DISNAKERTRANS_LOGIN_URL}`}
