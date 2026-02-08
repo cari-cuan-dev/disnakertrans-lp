@@ -4,7 +4,7 @@ import NewsSection from "@/components/news-section"
 import StatsSection from "@/components/stats-section"
 import VisitorInfoSection from "@/components/visitor-info-section"
 import DocumentationSection from "@/components/documentation-section"
-import BlessedWorkspaceSection from "@/components/blessed-workspace-section"
+import HighlightSection from "@/components/highlight-section"
 import QuickAccessSection from "@/components/quick-access-section"
 import InformationSection from "@/components/information-section"
 import Footer from "@/components/footer"
@@ -21,7 +21,7 @@ export default function Home() {
       <StatsSection />
       <VisitorInfoSection />
       <DocumentationSection />
-      <BlessedWorkspaceSection />
+      <HighlightSection />
       <QuickAccessSection />
       <InformationSection />
       <Footer />
