@@ -348,7 +348,7 @@ export default function Navigation() {
                     <span className="hidden lg:inline">Cari</span>
                   </Link>
 
-                  {user.type === 'Admin' ? (
+                  {user.type === 'admin' ? (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <div className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:text-purple-600 group">
