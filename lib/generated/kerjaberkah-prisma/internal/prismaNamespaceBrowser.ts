@@ -64,7 +64,12 @@ export const ModelName = {
   companies: 'companies',
   personal_access_tokens: 'personal_access_tokens',
   vacancies: 'vacancies',
-  workers: 'workers'
+  workers: 'workers',
+  headlines: 'headlines',
+  introductions: 'introductions',
+  slides: 'slides',
+  benefits: 'benefits',
+  join_steps: 'join_steps'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -294,6 +299,75 @@ export const WorkersScalarFieldEnum = {
 } as const
 
 export type WorkersScalarFieldEnum = (typeof WorkersScalarFieldEnum)[keyof typeof WorkersScalarFieldEnum]
+
+
+export const HeadlinesScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  image: 'image',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type HeadlinesScalarFieldEnum = (typeof HeadlinesScalarFieldEnum)[keyof typeof HeadlinesScalarFieldEnum]
+
+
+export const IntroductionsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  image: 'image',
+  details: 'details',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type IntroductionsScalarFieldEnum = (typeof IntroductionsScalarFieldEnum)[keyof typeof IntroductionsScalarFieldEnum]
+
+
+export const SlidesScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  image: 'image',
+  sort: 'sort',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type SlidesScalarFieldEnum = (typeof SlidesScalarFieldEnum)[keyof typeof SlidesScalarFieldEnum]
+
+
+export const BenefitsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  icon: 'icon',
+  border_color: 'border_color',
+  sort: 'sort',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BenefitsScalarFieldEnum = (typeof BenefitsScalarFieldEnum)[keyof typeof BenefitsScalarFieldEnum]
+
+
+export const Join_stepsScalarFieldEnum = {
+  id: 'id',
+  step_number: 'step_number',
+  title: 'title',
+  description: 'description',
+  bg_color: 'bg_color',
+  sort: 'sort',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Join_stepsScalarFieldEnum = (typeof Join_stepsScalarFieldEnum)[keyof typeof Join_stepsScalarFieldEnum]
 
 
 export const SortOrder = {

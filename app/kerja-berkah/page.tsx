@@ -6,10 +6,76 @@ import KerjaBerkahSearch from "@/components/kerja-berkah-search"
 import ProtectedSearchSection from "@/components/protected-search-section"
 import UnauthenticatedOnly from "@/components/unauthenticated-only"
 import ScrollToHash from "@/components/scroll-to-hash"
-import { ArrowRight, CheckCircle, Users, Briefcase, Heart, MapPin, Phone, Mail } from "lucide-react"
+import { ArrowRight, CheckCircle, Users, Briefcase, Heart, MapPin, Phone, Mail, HelpCircle } from "lucide-react"
+import * as IconoirIcons from "iconoir-react"
 import Link from "next/link"
 
-export default function KerjaBerkahPage() {
+import { kerjaBerkahPrisma } from "@/lib/kerjaberkah-prisma"
+import { getUrlPreSign } from "@/lib/utils"
+
+interface AboutDetail {
+  icon: string;
+  icon_color: string;
+  title: string;
+  description: string;
+}
+
+function getIcon(name: string | null) {
+  if (!name) return IconoirIcons.QuestionMark
+
+  // Convert kebab-case or snake_case to PascalCase for Iconoir icons
+  // e.g., 'check-circle' -> 'CheckCircle'
+  const pascalName = name.split(/[-_]/).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')
+
+  // Try to find the icon in iconoir-react
+  const Icon = (IconoirIcons as any)[pascalName]
+  if (Icon) return Icon
+
+  // Fallback to a default icon
+  return IconoirIcons.CheckCircle
+}
+
+export default async function KerjaBerkahPage() {
+  const headline = await kerjaBerkahPrisma.headlines.findFirst({
+    orderBy: { id: 'desc' }
+  })
+
+  const introduction = await kerjaBerkahPrisma.introductions.findFirst({
+    orderBy: { id: 'desc' }
+  })
+
+  const slides = await kerjaBerkahPrisma.slides.findMany({
+    where: { status: true },
+    orderBy: { sort: 'asc' }
+  })
+
+  const benefits = await kerjaBerkahPrisma.benefits.findMany({
+    where: { status: true },
+    orderBy: { sort: 'asc' }
+  })
+
+  const joinSteps = await kerjaBerkahPrisma.join_steps.findMany({
+    where: { status: true },
+    orderBy: { sort: 'asc' }
+  })
+
+  // Resolve images using presigned URLs
+  const [headlineImageUrl, introductionImageUrl, resolvedSlides] = await Promise.all([
+    getUrlPreSign(headline?.image || ""),
+    getUrlPreSign(introduction?.image || ""),
+    Promise.all((slides || []).map(async (s) => ({
+      ...s,
+      image: await getUrlPreSign(s.image)
+    })))
+  ])
+
+  const resolveImage = (path: string | null, fallback: string, resolvedUrl?: string) => {
+    if (resolvedUrl && resolvedUrl.startsWith('http')) return resolvedUrl
+    if (!path) return fallback
+    if (path.startsWith('http') || path.startsWith('/')) return path
+    return fallback
+  }
+
   return (
     <>
       <Navigation />
@@ -23,10 +89,9 @@ export default function KerjaBerkahPage() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h1 className="text-5xl font-bold mb-6 text-balance">Kerja Berkah</h1>
+                <h1 className="text-5xl font-bold mb-6 text-balance">{headline?.title || 'Kerja Berkah'}</h1>
                 <p className="text-xl text-purple-100 mb-8">
-                  Program pemberdayaan ekonomi dari Pemerintah Provinsi Kalimantan Tengah untuk memberikan kesempatan
-                  kerja kepada masyarakat yang membutuhkan.
+                  {headline?.description || 'Program pemberdayaan ekonomi dari Pemerintah Provinsi Kalimantan Tengah untuk memberikan kesempatan kerja kepada masyarakat yang membutuhkan.'}
                 </p>
                 <UnauthenticatedOnly>
                   <Link href="/kerja-berkah/daftar" className="inline-block">
@@ -38,7 +103,7 @@ export default function KerjaBerkahPage() {
               </div>
               <div className="hidden md:block">
                 <img
-                  src="/kerja-berkah-community-work-program.jpg"
+                  src={resolveImage(headline?.image || null, "/kerja-berkah-community-work-program.jpg", headlineImageUrl)}
                   alt="Kerja Berkah"
                   className="w-full rounded-lg shadow-2xl"
                 />
@@ -50,38 +115,30 @@ export default function KerjaBerkahPage() {
         {/* Carousel Section */}
         <section className="py-8 px-4 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <KerjaBerkahCarousel />
+            <KerjaBerkahCarousel slides={resolvedSlides.map(s => ({ ...s, id: Number(s.id) })) as any} />
           </div>
         </section>
 
         {/* Benefits Section */}
-        <section className="py-16 px-4 bg-gray-50">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Manfaat Program</h2>
-            <div className="grid md:grid-cols-4 gap-8">
-              <div className="bg-white p-8 rounded-lg shadow-md border-l-4 border-purple-600">
-                <Briefcase className="text-purple-600 mb-4" size={32} />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Kesempatan Kerja</h3>
-                <p className="text-gray-600">Akses ke pekerjaan yang layak dan sesuai dengan kemampuan Anda.</p>
-              </div>
-              <div className="bg-white p-8 rounded-lg shadow-md border-l-4 border-blue-600">
-                <Heart className="text-blue-600 mb-4" size={32} />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Kesejahteraan Keluarga</h3>
-                <p className="text-gray-600">Tingkatkan pendapatan keluarga dan kualitas hidup Anda.</p>
-              </div>
-              <div className="bg-white p-8 rounded-lg shadow-md border-l-4 border-purple-600">
-                <Users className="text-purple-600 mb-4" size={32} />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Pemberdayaan Komunitas</h3>
-                <p className="text-gray-600">Bekerja bersama masyarakat untuk membangun lingkungan yang lebih baik.</p>
-              </div>
-              <div className="bg-white p-8 rounded-lg shadow-md border-l-4 border-blue-600">
-                <CheckCircle className="text-blue-600 mb-4" size={32} />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Pengalaman Kerja</h3>
-                <p className="text-gray-600">Dapatkan pengalaman kerja dan keterampilan yang berharga.</p>
+        {benefits.length > 0 && (
+          <section className="py-16 px-4 bg-gray-50">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Manfaat Program</h2>
+              <div className="grid md:grid-cols-4 gap-8">
+                {benefits.map((benefit) => {
+                  const Icon = getIcon(benefit.icon);
+                  return (
+                    <div key={benefit.id.toString()} className="bg-white p-8 rounded-lg shadow-md border-l-4" style={{ borderColor: benefit.border_color || '#9333ea' }}>
+                      <Icon className="mb-4" size={32} style={{ color: benefit.border_color || '#9333ea' }} />
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
+                      <p className="text-gray-600">{benefit.description}</p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Statistics Section */}
         <section className="py-16 px-4">
@@ -96,46 +153,30 @@ export default function KerjaBerkahPage() {
             <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Tentang Program Kerja Berkah</h2>
             <div className="grid md:grid-cols-2 gap-12">
               <div>
-                <img src="/community-service-work.jpg" alt="Program Details" className="w-full rounded-lg shadow-lg" />
+                <img
+                  src={resolveImage(introduction?.image || null, "/community-service-work.jpg", introductionImageUrl)}
+                  alt="Program Details"
+                  className="w-full rounded-lg shadow-lg"
+                />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Solusi Berkelanjutan untuk Pengangguran</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">{introduction?.title || 'Solusi Berkelanjutan untuk Pengangguran'}</h3>
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Kerja Berkah adalah inisiatif strategis dari Pemerintah Provinsi Kalimantan Tengah yang dirancang
-                  untuk memberikan kesempatan kerja kepada masyarakat yang kurang beruntung. Program ini telah membantu
-                  ribuan orang menemukan pekerjaan yang bermakna.
+                  {introduction?.description || 'Kerja Berkah adalah inisiatif strategis dari Pemerintah Provinsi Kalimantan Tengah yang dirancang untuk memberikan kesempatan kerja kepada masyarakat yang kurang beruntung.'}
                 </p>
                 <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="text-purple-600 flex-shrink-0 mt-1" size={20} />
-                    <div>
-                      <h4 className="font-semibold text-gray-900">Pelatihan Keterampilan</h4>
-                      <p className="text-gray-600 text-sm">
-                        Program pelatihan gratis untuk meningkatkan kompetensi kerja
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="text-blue-600 flex-shrink-0 mt-1" size={20} />
-                    <div>
-                      <h4 className="font-semibold text-gray-900">Penempatan Kerja</h4>
-                      <p className="text-gray-600 text-sm">Bantuan penempatan ke berbagai perusahaan dan organisasi</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="text-purple-600 flex-shrink-0 mt-1" size={20} />
-                    <div>
-                      <h4 className="font-semibold text-gray-900">Dukungan Berkelanjutan</h4>
-                      <p className="text-gray-600 text-sm">Pendampingan dan dukungan selama masa kerja</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="text-blue-600 flex-shrink-0 mt-1" size={20} />
-                    <div>
-                      <h4 className="font-semibold text-gray-900">Jaminan Sosial</h4>
-                      <p className="text-gray-600 text-sm">Perlindungan dan jaminan sosial untuk peserta program</p>
-                    </div>
-                  </li>
+                  {(introduction?.details as unknown as AboutDetail[] || []).map((about, index) => {
+                    const Icon = getIcon(about.icon);
+                    return (
+                      <li key={index} className="flex items-start gap-3">
+                        <Icon style={{ color: about.icon_color || '#9333ea' }} className="flex-shrink-0 mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{about.title}</h4>
+                          <p className="text-gray-600 text-sm">{about.description}</p>
+                        </div>
+                      </li>
+                    )
+                  })}
                 </ul>
               </div>
             </div>
@@ -144,45 +185,27 @@ export default function KerjaBerkahPage() {
 
 
         {/* How to Apply */}
-        <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Cara Mengikuti Program</h2>
-            <div className="grid md:grid-cols-4 gap-8">
-              <div className="relative">
-                <div className="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold mb-4 text-lg">
-                  1
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Pendaftaran</h3>
-                <p className="text-gray-600">Isi formulir pendaftaran dan lengkapi dokumen yang diperlukan.</p>
-                {/* Arrow */}
-                <div className="hidden md:block absolute -right-4 top-6 text-purple-600 text-2xl">→</div>
-              </div>
-              <div className="relative">
-                <div className="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold mb-4 text-lg">
-                  2
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Seleksi</h3>
-                <p className="text-gray-600">Proses seleksi untuk menentukan kelayakan peserta program.</p>
-                <div className="hidden md:block absolute -right-4 top-6 text-purple-600 text-2xl">→</div>
-              </div>
-              <div className="relative">
-                <div className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold mb-4 text-lg">
-                  3
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Pelatihan</h3>
-                <p className="text-gray-600">Mengikuti program pelatihan keterampilan kerja yang komprehensif.</p>
-                <div className="hidden md:block absolute -right-4 top-6 text-blue-600 text-2xl">→</div>
-              </div>
-              <div>
-                <div className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold mb-4 text-lg">
-                  4
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Penempatan</h3>
-                <p className="text-gray-600">Ditempatkan di perusahaan mitra sesuai kompetensi Anda.</p>
+        {joinSteps.length > 0 && (
+          <section className="py-16 px-4">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Cara Mengikuti Program</h2>
+              <div className="flex flex-wrap justify-center gap-x-10 gap-y-16">
+                {joinSteps.map((step, index) => (
+                  <div key={step.id.toString()} className="relative flex flex-col items-center text-center w-full sm:w-64">
+                    <div className="text-white min-w-[48px] h-12 px-4 rounded-full flex items-center justify-center font-bold mb-4 text-lg mx-auto" style={{ backgroundColor: step.bg_color || '#9333ea' }}>
+                      {step.step_number}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
+                    <p className="text-gray-600">{step.description}</p>
+                    {index < joinSteps.length - 1 && (index + 1) % 4 !== 0 && (
+                      <div className="hidden lg:block absolute -right-8 top-6 text-2xl" style={{ color: step.bg_color || '#9333ea' }}>→</div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* CTA Section */}
         {/* <UnauthenticatedOnly>

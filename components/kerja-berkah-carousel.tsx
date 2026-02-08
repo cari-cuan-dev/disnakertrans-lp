@@ -3,30 +3,24 @@
 import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-const slides = [
-  {
-    id: 1,
-    title: "Kesempatan Kerja untuk Semua",
-    description: "Program Kerja Berkah membuka peluang kerja bagi masyarakat yang membutuhkan",
-    image: "/kerja-berkah-community-work-program.jpg",
-  },
-  {
-    id: 2,
-    title: "Bangun Karir yang Bermakna",
-    description: "Dapatkan pelatihan keterampilan dan penempatan kerja profesional",
-    image: "/community-service-work.jpg",
-  },
-  {
-    id: 3,
-    title: "Tingkatkan Kesejahteraan Keluarga",
-    description: "Raih pendapatan yang layak dan masa depan yang lebih cerah",
-    image: "/kerja-berkah-community-work-program.jpg",
-  },
-]
+interface Slide {
+  id: number | bigint
+  title: string
+  description: string | null
+  image: string
+}
 
-export default function KerjaBerkahCarousel() {
+interface KerjaBerkahCarouselProps {
+  slides: Slide[]
+}
+
+export default function KerjaBerkahCarousel({ slides = [] }: KerjaBerkahCarouselProps) {
   const [current, setCurrent] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
+
+  if (slides.length === 0) {
+    return null;
+  }
 
   useEffect(() => {
     if (!autoPlay) return
@@ -57,11 +51,14 @@ export default function KerjaBerkahCarousel() {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === current ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${index === current ? "opacity-100" : "opacity-0"
+              }`}
           >
-            <img src={slide.image || "/placeholder.svg"} alt={slide.title} className="w-full h-full object-cover" />
+            <img
+              src={slide.image?.startsWith('http') ? slide.image : (slide.image?.startsWith('/') ? slide.image : `https://storagedisnakertrans.kalteng.go.id/disnakertrans/${slide.image}`)}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <div className="text-center text-white px-4">
                 <h2 className="text-4xl md:text-5xl font-bold mb-4">{slide.title}</h2>
@@ -97,9 +94,8 @@ export default function KerjaBerkahCarousel() {
               setCurrent(index)
               setAutoPlay(false)
             }}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === current ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
-            }`}
+            className={`w-3 h-3 rounded-full transition-all ${index === current ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

@@ -219,3 +219,56 @@ model workers {
   users_workers_updated_byTousers users?    @relation("workers_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction, map: "workers_updated_by_foreign")
   users_workers_user_idTousers    users?    @relation("workers_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "workers_user_id_foreign")
 }
+model headlines {
+  id          BigInt    @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String?
+  image       String?   @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model introductions {
+  id          BigInt    @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String?
+  image       String?   @db.VarChar(255)
+  details     Json?
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model slides {
+  id          BigInt    @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String?
+  image       String    @db.VarChar(255)
+  sort        Int       @default(0)
+  status      Boolean   @default(true)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model benefits {
+  id           BigInt    @id @default(autoincrement())
+  title        String    @db.VarChar(255)
+  description  String?
+  icon         String    @db.VarChar(255)
+  border_color String?   @db.VarChar(255)
+  sort         Int       @default(0)
+  status       Boolean   @default(true)
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+}
+
+model join_steps {
+  id          BigInt    @id @default(autoincrement())
+  step_number String
+  title       String    @db.VarChar(255)
+  description String?
+  bg_color    String?   @db.VarChar(255)
+  sort        Int       @default(0)
+  status      Boolean   @default(true)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}

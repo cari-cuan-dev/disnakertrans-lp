@@ -109,3 +109,28 @@ export type vacancies = Prisma.vacanciesModel
  * 
  */
 export type workers = Prisma.workersModel
+/**
+ * Model headlines
+ * 
+ */
+export type headlines = Prisma.headlinesModel
+/**
+ * Model introductions
+ * 
+ */
+export type introductions = Prisma.introductionsModel
+/**
+ * Model slides
+ * 
+ */
+export type slides = Prisma.slidesModel
+/**
+ * Model benefits
+ * 
+ */
+export type benefits = Prisma.benefitsModel
+/**
+ * Model join_steps
+ * 
+ */
+export type join_steps = Prisma.join_stepsModel
