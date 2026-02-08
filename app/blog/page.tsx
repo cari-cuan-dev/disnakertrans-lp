@@ -40,6 +40,12 @@ export default function BlogPage() {
   const [categories, setCategories] = useState<string[]>([])
   const [article, setArticle] = useState<BlogItem | null>(null)
 
+  // Sync selectedCategory with URL params
+  useEffect(() => {
+    const categoryFromUrl = searchParams?.get("category") || "Semua"
+    setSelectedCategory(categoryFromUrl)
+  }, [searchParams])
+
   useEffect(() => {
     const fetchCategoriesAndData = async () => {
       try {
