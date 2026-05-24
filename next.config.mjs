@@ -25,6 +25,30 @@ const nextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        // Cache static assets (images, fonts, icons) for 1 year
+        source: '/:path*(\\.(jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2|ttf|otf))',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Cache JS/CSS bundles (they have content hashes in filenames)
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ]
+  },
   serverExternalPackages: [
     '@prisma/client',
     '@prisma/adapter-pg',

@@ -1,15 +1,8 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { ScrollToTopProvider } from "@/components/scroll-to-top-provider"
 import AnalyticsTracker from "@/components/analytics-tracker"
-
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
-
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: "Dinas tenaga kerja dan Transmigrasi Provinsi Kalimantan Tengah",
@@ -47,7 +40,6 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         <ScrollToTopProvider>{children}</ScrollToTopProvider>
         <AnalyticsTracker />
-        <Analytics />
       </body>
     </html>
   )
