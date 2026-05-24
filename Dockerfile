@@ -8,7 +8,7 @@ RUN npm i -g pnpm
 
 COPY . .
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
 
 RUN pnpm build
 
