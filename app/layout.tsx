@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import "./globals.css"
 import { ScrollToTopProvider } from "@/components/scroll-to-top-provider"
 import AnalyticsTracker from "@/components/analytics-tracker"
@@ -39,7 +40,9 @@ export default function RootLayout({
     <html lang="id">
       <body className={`font-sans antialiased`}>
         <ScrollToTopProvider>{children}</ScrollToTopProvider>
-        <AnalyticsTracker />
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
       </body>
     </html>
   )
