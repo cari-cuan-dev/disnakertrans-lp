@@ -37,16 +37,6 @@ const nextConfig = {
           },
         ],
       },
-      {
-        // Cache Next.js image optimizer output
-        source: '/_next/image:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=2592000',
-          },
-        ],
-      },
     ]
   },
   serverExternalPackages: [
