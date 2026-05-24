@@ -1,3 +1,5 @@
+'use server'
+
 import { kerjaBerkahPrisma } from '@/lib/kerjaberkah-prisma'
 import { prisma } from '@/lib/prisma'
 
