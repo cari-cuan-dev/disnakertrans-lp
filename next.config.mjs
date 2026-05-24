@@ -28,8 +28,8 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Cache static assets (images, fonts, icons) for 1 year
-        source: '/:path*(\\.(jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2|ttf|otf))',
+        // Cache Next.js JS/CSS bundles — safe with immutable because filenames have content hashes
+        source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
@@ -38,12 +38,12 @@ const nextConfig = {
         ],
       },
       {
-        // Cache JS/CSS bundles (they have content hashes in filenames)
-        source: '/_next/static/:path*',
+        // Cache Next.js image optimizer output
+        source: '/_next/image:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: 'public, max-age=2592000',
           },
         ],
       },
