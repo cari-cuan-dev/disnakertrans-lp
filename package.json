@@ -88,5 +88,14 @@
     "tsx": "^4.21.0",
     "tw-animate-css": "1.3.3",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma",
+      "bcrypt",
+      "esbuild",
+      "sharp"
+    ]
   }
 }
