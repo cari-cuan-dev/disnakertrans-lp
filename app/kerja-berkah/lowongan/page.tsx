@@ -1,7 +1,7 @@
 "use client"
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
@@ -219,7 +219,9 @@ function LowonganPageContent() {
 export default function ProtectedLowonganPage() {
   return (
     <ProtectedRoute>
-      <LowonganPageContent />
+      <Suspense fallback={null}>
+        <LowonganPageContent />
+      </Suspense>
     </ProtectedRoute>
   );
 }

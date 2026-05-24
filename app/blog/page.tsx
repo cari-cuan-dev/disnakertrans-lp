@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { ChevronLeft, ArrowUpDown } from "lucide-react"
@@ -25,7 +25,7 @@ export interface BlogItem {
   };
 }
 
-export default function BlogPage() {
+function BlogPageInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null)
@@ -462,5 +462,13 @@ function BlogComments({ articleId }: { articleId: string }) {
         ))}
       </div> */}
     </div>
+  )
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={null}>
+      <BlogPageInner />
+    </Suspense>
   )
 }

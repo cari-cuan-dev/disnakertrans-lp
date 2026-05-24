@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { FileText, Download, PlayCircle, ImageIcon, File, Search, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Navigation from "@/components/navigation"
@@ -25,7 +25,7 @@ export interface DocumentationItem {
   } | null;
 }
 
-const DocumentationPage = () => {
+const DocumentationPageInner = () => {
   const searchParams = useSearchParams();
   const [documents, setDocuments] = useState<DocumentationItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -355,5 +355,11 @@ const DocumentationPage = () => {
     </>
   )
 }
+
+const DocumentationPage = () => (
+  <Suspense fallback={null}>
+    <DocumentationPageInner />
+  </Suspense>
+)
 
 export default DocumentationPage

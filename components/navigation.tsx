@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Menu, X, Search, ChevronDown, User } from "lucide-react"
 import IconoirLoader from "./iconoir-loader"
 import SocialLink from "./social-link"
@@ -70,7 +70,7 @@ interface UserInfo {
   [key: string]: any;  // Allow other fields
 }
 
-export default function Navigation() {
+function NavigationInner() {
   const [isOpen, setIsOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
@@ -644,5 +644,13 @@ export default function Navigation() {
 
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
+  )
+}
+
+export default function Navigation() {
+  return (
+    <Suspense fallback={null}>
+      <NavigationInner />
+    </Suspense>
   )
 }
